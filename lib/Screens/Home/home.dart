@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stormymart/Screens/Home/gridview.dart';
-import 'package:stormymart/Screens/Home/header.dart';
 import 'package:stormymart/Screens/Home/horizontal_category.dart';
+import 'package:stormymart/Screens/Home/hot_deals.dart';
 import 'package:stormymart/Screens/Home/imageslider.dart';
 
 import '../../Components/searchfield.dart';
@@ -20,12 +20,23 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
-          SliverPadding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.035),
-            sliver: const SliverAppBar(
+          const SliverPadding(
+            padding: EdgeInsets.all(0),
+            sliver: SliverAppBar(
               backgroundColor: Colors.white,
               pinned: true,
-              flexibleSpace: HomePageHeader(),
+              leading: Icon(Icons.menu, color: Colors.black),
+              title: Text(
+                'StormyMart',
+                style: TextStyle(
+                    color: Color(0xFF212121),
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Urbanist'
+                ),
+                textAlign: TextAlign.start,
+              ),
+              //flexibleSpace: HomePageHeader(),
             ),
           ),
           SliverPadding(
@@ -53,12 +64,15 @@ class _HomePageState extends State<HomePage> {
   Widget _buildBody(BuildContext context){
     return const Column(
       children: [
+        SizedBox(height: 10,),
         SearchField(),
         SizedBox(height: 10,),
         ImageSlider(),
         SizedBox(height: 10,),
         GridViewPart(),
         SizedBox(height: 10,),
+        HotDealsTitle(),
+        HotDeals(),
         MostPupularCategory()
       ],
     );

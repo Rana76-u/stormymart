@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:slide_countdown/slide_countdown.dart';
 
 class MostPupularCategory extends StatefulWidget {
   const MostPupularCategory({super.key});
@@ -26,7 +26,10 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
             final data = snapshot.data!.data();
             lengthOfFields = data!.length;
 
-            data!.forEach((key, value) {
+            List<dynamic> allRow = ['All', 'image']; // Replace 'imagelink' with the desired image link
+            dataSets.add(allRow);
+
+            data.forEach((key, value) {
               if(value is List){
                 List<dynamic> row = value.cast<dynamic>();
                 dataSets.add(row);
@@ -59,9 +62,11 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
     return SizedBox(
       height: 47,//38
       child: ListView.separated(
-        itemCount: lengthOfFields,
+        itemCount: lengthOfFields + 1,
         scrollDirection: Axis.horizontal,
-        itemBuilder: _buildItem,
+        itemBuilder:(BuildContext context, int index) {
+          return _buildItem(context, index);
+        },
         separatorBuilder: (BuildContext context, int index) {
           return const SizedBox(width: 12);
         },
@@ -69,10 +74,11 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
     );
   }
 
+
   Widget _buildItem(BuildContext context, int index) {
     final data = dataSets[index];
 
-    final isActive = _selectIndex == index;
+    final isActive = _selectIndex == index ;
     const radius = BorderRadius.all(Radius.circular(9)); //19
     return Container(
       decoration: BoxDecoration(
@@ -91,7 +97,11 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
               SizedBox(
                 height: 30,
                 width: 30,
-                child: ClipRRect(
+                child: index == 0 ? Icon(
+                    Icons.select_all_rounded,
+                  color: isActive ? Colors.white : Colors.grey,
+                ) :
+                ClipRRect(
                   borderRadius: BorderRadius.circular(9),
                   child: Image.network(
                     data[1],
@@ -124,23 +134,35 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
   }
 }
 
-class MostPopularTitle extends StatelessWidget {
-  const MostPopularTitle({
+class HotDealsTitle extends StatelessWidget {
+  const HotDealsTitle({
     Key? key,
-    required this.onTapseeAll,
   }) : super(key: key);
 
-  final Function onTapseeAll;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text('Most Popular', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color(0xFF212121))),
+        const Text('Hot Deals', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color(0xFF212121))),
+
+        const Expanded(child: SizedBox()),
+
+        const SlideCountdownSeparated(
+          duration: Duration(days: 2),
+          height: 20,
+          width: 20,
+          textStyle: TextStyle(
+            fontSize: 11,
+            color: Colors.white,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        const SizedBox(width: 10,),
         TextButton(
-          onPressed: () => onTapseeAll(),
+          //onPressed: () => onTapseeAll(),
+          onPressed: () {  },
           child: const Text(
             'See All',
             style: TextStyle(
