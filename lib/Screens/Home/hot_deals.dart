@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../Components/custom_image.dart';
 import '../../theme/color.dart';
+import '../Product Screen/product_screen.dart';
 class HotDeals extends StatefulWidget {
   const HotDeals({super.key});
 
@@ -31,14 +32,14 @@ class _HotDealsState extends State<HotDeals> {
                   if(snapshot.hasData) {
                     DocumentSnapshot product = snapshot.data!.docs[index];
                     double discountCal = (product.get('price') / 100) * (100 - product.get('discount'));
-                    return Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: GestureDetector(
-                          onTap: () {
-                            /*Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) => ProductScreen(productId: product.id))
-                            );*/
-                          },
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => ProductScreen(productId: product.id))
+                        );
+                      },
+                      child: Padding(
+                          padding: const EdgeInsets.only(right: 10),
                           child: SizedBox(
                             //width: 200,
                             width: MediaQuery.of(context).size.width*0.48,
@@ -197,8 +198,8 @@ class _HotDealsState extends State<HotDeals> {
                                 ),
                               ],
                             ),
-                          ),
-                        )
+                          )
+                      ),
                     );
 
                   }else if(snapshot.connectionState == ConnectionState.waiting){

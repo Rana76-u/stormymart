@@ -23,9 +23,9 @@ class Authservice {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, snapShot) {
         if (snapShot.hasData) {
-          return BottomBar(bottomIndex: 0); // Modify  1 to 0 (Do it later)
+          //return BottomBar(bottomIndex: 0); // Modify  1 to 0 (Do it later)
         } else {
-          return const LoginScreen();
+          //return const LoginScreen();
         }
       },
     );

@@ -39,6 +39,7 @@ dependencies:
   flutter_image_slideshow: ^0.1.5
   slide_countdown: ^0.6.0
   cached_network_image: ^3.2.3
+  photo_view: ^0.14.0
 
 
   # The following adds the Cupertino Icons font to your application.

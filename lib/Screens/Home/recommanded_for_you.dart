@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../Components/custom_image.dart';
 import '../../theme/color.dart';
+import '../Product Screen/product_screen.dart';
 
 class RecommandedForYou extends StatefulWidget {
   const RecommandedForYou({super.key});
@@ -41,9 +42,9 @@ class _RecommandedForYouState extends State<RecommandedForYou> {
                       padding: const EdgeInsets.only(right: 10),
                       child: GestureDetector(
                         onTap: () {
-                          /*Navigator.of(context).push(
+                          Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => ProductScreen(productId: product.id))
-                          );*/
+                          );
                         },
                         child: SizedBox(
                           //width: 200,
