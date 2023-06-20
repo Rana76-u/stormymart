@@ -3,6 +3,7 @@ import 'package:stormymart/Screens/Home/gridview.dart';
 import 'package:stormymart/Screens/Home/horizontal_category.dart';
 import 'package:stormymart/Screens/Home/hot_deals.dart';
 import 'package:stormymart/Screens/Home/imageslider.dart';
+import 'package:stormymart/Screens/Home/recommanded_for_you.dart';
 
 import '../../Components/searchfield.dart';
 
@@ -73,7 +74,10 @@ class _HomePageState extends State<HomePage> {
         SizedBox(height: 10,),
         HotDealsTitle(),
         HotDeals(),
-        MostPupularCategory()
+        RecommandedForYouTitle(),
+        SizedBox(height: 10,),
+        MostPupularCategory(),
+        RecommandedForYou(),
       ],
     );
   }

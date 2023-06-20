@@ -22,20 +22,19 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
         FutureBuilder(
           future: FirebaseFirestore.instance.collection('/Category').doc('Search Recommandation').get(),
           builder: (context, snapshot) {
-
-            final data = snapshot.data!.data();
-            lengthOfFields = data!.length;
-
-            List<dynamic> allRow = ['All', 'image']; // Replace 'imagelink' with the desired image link
-            dataSets.add(allRow);
-
-            data.forEach((key, value) {
-              if(value is List){
-                List<dynamic> row = value.cast<dynamic>();
-                dataSets.add(row);
-              }
-            });
             if(snapshot.hasData){
+              final data = snapshot.data?.data();
+              lengthOfFields = data!.length;
+
+              List<dynamic> allRow = ['All', 'image']; // Replace 'imagelink' with the desired image link
+              dataSets.add(allRow);
+
+              data.forEach((key, value) {
+                if(value is List){
+                  List<dynamic> row = value.cast<dynamic>();
+                  dataSets.add(row);
+                }
+              });
               return _buildBody();
             }
             else if(snapshot.connectionState == ConnectionState.waiting) {
@@ -145,7 +144,14 @@ class HotDealsTitle extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text('Hot Deals', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color(0xFF212121))),
+        const Text('Hot Deals',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                fontFamily: 'Urbanist',
+                color: Color(0xFF212121)
+            )
+        ),
 
         const Expanded(child: SizedBox()),
 
@@ -168,6 +174,7 @@ class HotDealsTitle extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
+              fontFamily: 'Urbanist',
               color: Color(0xFF212121),
             ),
           ),

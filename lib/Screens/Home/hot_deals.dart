@@ -26,7 +26,7 @@ class _HotDealsState extends State<HotDeals> {
               height: 300,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: snapshot.data!.docs.length,
+                itemCount: snapshot.data?.docs.length,
                 itemBuilder: (context, index) {
                   if(snapshot.hasData) {
                     DocumentSnapshot product = snapshot.data!.docs[index];
@@ -40,7 +40,8 @@ class _HotDealsState extends State<HotDeals> {
                             );*/
                           },
                           child: SizedBox(
-                            //width: MediaQuery.of(context).size.width*0.4,
+                            //width: 200,
+                            width: MediaQuery.of(context).size.width*0.48,
                             height: 300,
                             child: Stack(
                               children: [
@@ -89,10 +90,10 @@ class _HotDealsState extends State<HotDeals> {
                                     else{
                                       return const Center(
                                         child: Text(
-                                            "Nothings Found",
+                                          "Nothings Found",
                                           style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey
                                           ),
                                         ),
                                       );
