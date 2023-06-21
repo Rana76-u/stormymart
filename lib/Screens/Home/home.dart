@@ -172,23 +172,32 @@ class _HomePageState extends State<HomePage> {
       ),
       body: CustomScrollView(
         slivers: <Widget>[
-          const SliverPadding(
-            padding: EdgeInsets.all(0),
+          SliverPadding(
+            padding: const EdgeInsets.all(0),
             sliver: SliverAppBar(
-              iconTheme: IconThemeData(
+              iconTheme: const IconThemeData(
                 color: Colors.black,
               ),
               backgroundColor: Colors.white,
               pinned: true,
-              title: Text(
-                'StormyMart',
-                style: TextStyle(
-                    color: Color(0xFF212121),
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Urbanist'
-                ),
-                textAlign: TextAlign.start,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'StormyMart',
+                    style: TextStyle(
+                        color: Color(0xFF212121),
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Urbanist'
+                    ),
+                    textAlign: TextAlign.start,
+                  ),
+                  Image.asset(
+                      'assets/lottie/gold-coin.gif',
+                    height: 60,
+                  ),
+                ],
               ),
               //flexibleSpace: HomePageHeader(),
             ),

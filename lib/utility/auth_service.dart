@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'bottom_nav_bar.dart';
 
 class Authservice {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -18,16 +21,21 @@ class Authservice {
     return user;
   }
 
-  /*handleAuthState() {
+  void signOut() {
+    _auth.signOut();
+    _googleSignIn.signOut();
+    //FirebaseAuth.instance.signOut();
+  }
+  handleAuthState() {
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, snapShot) {
         if (snapShot.hasData) {
-          //return BottomBar(bottomIndex: 0); // Modify  1 to 0 (Do it later)
+          return BottomBar(bottomIndex: 3); // Modify  1 to 0 (Do it later)
         } else {
-          //return const LoginScreen();
+          return BottomBar(bottomIndex: 3);
         }
       },
     );
-  }*/
+  }
 }

@@ -138,6 +138,7 @@ class _RecommandedForYouState extends State<RecommandedForYou> {
                                 child: Text(
                                   product.get('title'),
                                   style: const TextStyle(
+                                    overflow: TextOverflow.clip,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
                                       color: Colors.black45//darker

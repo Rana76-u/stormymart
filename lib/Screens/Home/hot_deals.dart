@@ -132,6 +132,7 @@ class _HotDealsState extends State<HotDeals> {
                                   child: Text(
                                     product.get('title'),
                                     style: const TextStyle(
+                                      overflow: TextOverflow.clip,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 14,
                                         color: Colors.black45//darker
