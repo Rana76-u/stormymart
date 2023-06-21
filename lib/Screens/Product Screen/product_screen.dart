@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:stormymart/theme/color.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 import '../../Components/image_viewer.dart';
 
@@ -58,6 +60,7 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     String id = widget.productId.toString().trim();
+    List<SizedBox> sizeWidget = [];
     return Scaffold(
       backgroundColor: appBgColor,
       body: Column(
@@ -86,7 +89,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
                       //SIZE LIST
                       List<dynamic> sizes = snapshot.data!.get('size');
-                      List<SizedBox> sizeWidget = [];
+                      //List<SizedBox> sizeWidget = [];
                       for (int i = 0; i < sizes.length; i++) {
                         sizeWidget.add(
                           SizedBox(
@@ -536,21 +539,74 @@ class _ProductScreenState extends State<ProductScreen> {
                                   borderRadius: BorderRadius.circular(20)
                               ),
                             ),
-                            onPressed: () {
-                              if(sizeSelected == -1){
+                            onPressed: () async {
+                              final messenger = ScaffoldMessenger.of(context);
+                              final mediaQuery = MediaQuery.of(context);
+
+                              if(sizeSelected == -1 && sizeWidget.isNotEmpty){
                                 ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Size')));
                               }else if(variationSelected == -1){
                                 ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Variant')));
                               }else{
-                                /*Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => OrderScreen(
-                          id: id,
-                          size: sizeSelected,
-                          variant: imageSliderDocID,
-                          quantity: quantity,
-                        ),
-                        ),
-                      );*/
+                                String uid = FirebaseAuth.instance.currentUser!.uid;
+
+                                await FirebaseFirestore.instance.collection('userData/$uid/Cart/')
+                                .doc()
+                                .set({
+                                  //'1': FieldValue.arrayUnion(valuesToAdd)
+                                  'id': id,
+                                  'selectedSize': sizeSelected,
+                                  'variant': imageSliderDocID,
+                                  'quantity': quantity
+                                });
+
+                                messenger.showSnackBar(
+                                    SnackBar(
+                                        content: GestureDetector(
+                                          onTap: (){
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),));
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SizedBox(
+                                                width: mediaQuery.size.width*0.4,
+                                                child: const Text(
+                                                  'Congratulations 🎉, Your Product added to the cart.',
+                                                  style: TextStyle(
+                                                      overflow: TextOverflow.clip
+                                                  ),
+                                                ),
+                                              ),
+                                              if(mounted)...[
+                                                SizedBox(
+                                                  width: mediaQuery.size.width*0.4,
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(20)
+                                                      ),
+                                                    ),
+                                                    onPressed: (){
+                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),));
+                                                    },
+                                                    child: const Text(
+                                                      'Open Cart',
+                                                      style: TextStyle(
+                                                          fontFamily: 'Urbanist',
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 14.5
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              ]
+                                            ],
+                                          ),
+                                        ),
+                                      duration: const Duration(seconds: 3),
+                                    )
+                                );
                               }
                             },
                             child: const Text(

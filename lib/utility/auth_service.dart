@@ -16,8 +16,7 @@ class Authservice {
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-    final User? user =
-        (await _auth.signInWithCredential(credential)).user;
+    final User? user = (await _auth.signInWithCredential(credential)).user;
     return user;
   }
 
