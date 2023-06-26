@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:stormymart/Screens/Cart/cart_loginpage.dart';
+import 'package:stormymart/Screens/Search/search.dart';
 
-import 'bottom_nav_bar.dart';
 
 class Authservice {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -30,9 +31,9 @@ class Authservice {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, snapShot) {
         if (snapShot.hasData) {
-          return BottomBar(bottomIndex: 3); // Modify  1 to 0 (Do it later)
+          return SearchPage(); // Modify  1 to 0 (Do it later)
         } else {
-          return BottomBar(bottomIndex: 3);
+          return CartLoginPage();
         }
       },
     );
