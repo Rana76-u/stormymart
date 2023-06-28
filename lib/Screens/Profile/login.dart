@@ -54,14 +54,12 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: BorderRadius.circular(20)
                 ),
               ),
-              onPressed: () {
+              onPressed: () async{
                 setState(() {
                   isLoading = true;
                 });
 
-                Authservice().signInWithGoogle();
-
-                Authservice().handleAuthState();
+                await Authservice().signInWithGoogle();
 
                 setState(() {
                   isLoading = false;
@@ -77,16 +75,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          isLoading ? AlertDialog(
-              content: SizedBox(
-                width: 200.0,
-                height: 200.0,
-                child: Lottie.network(
-                  'https://assets6.lottiefiles.com/packages/lf20_heoa8x46.json',
-                  fit: BoxFit.cover,
-                ),
-              )
-          ): const SizedBox(),
+          isLoading ? const LinearProgressIndicator(): const SizedBox(),
           const Expanded(child: SizedBox()),
         ],
       ),

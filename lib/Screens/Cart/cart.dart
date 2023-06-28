@@ -611,6 +611,35 @@ class _CartState extends State<Cart> {
                       ),
                     ),
 
+                    //Check Out Button
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: SizedBox(
+                              height: 50,
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: (){
+
+                                },
+                                style: const ButtonStyle(
+                                    backgroundColor: MaterialStatePropertyAll(Colors.green)
+                                ),
+                                child: isLoading ? const LinearProgressIndicator() : const Text(
+                                  'Proceed to Check Out',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                      ),
+                    ),
+
                     const  SizedBox(
                       height: 100,
                     )
