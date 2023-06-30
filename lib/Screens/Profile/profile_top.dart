@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stormymart/Screens/Profile/profile_accountinfo.dart';
@@ -86,79 +87,90 @@ class _ProfileTopState extends State<ProfileTop> {
           ),
         ),
         //Three items
-        Positioned(
-          top: MediaQuery.of(context).size.height*0.21,
-          left: MediaQuery.of(context).size.height*0.07,
-          right: MediaQuery.of(context).size.height*0.07,
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              //wishlist
-              Column(
-                children: [
-                  Text(
-                    '5',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis,
+        FutureBuilder(
+          future:  FirebaseFirestore.instance.collection('userData').doc(FirebaseAuth.instance.currentUser!.uid).get(),
+          builder: (context, snapshot) {
+            if(snapshot.hasData){
+              return Positioned(
+                top: MediaQuery.of(context).size.height*0.21,
+                left: MediaQuery.of(context).size.height*0.07,
+                right: MediaQuery.of(context).size.height*0.07,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    //wishlist
+                    Column(
+                      children: [
+                        Text(
+                          snapshot.data!.get('wishlist').toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const Text(
+                          'Wishlist',
+                          style: TextStyle(
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis,
+                              fontFamily: 'Urbanist'
+                          ),
+                        )
+                      ],
                     ),
-                  ),
-                  Text(
-                    'Wishlist',
-                    style: TextStyle(
-                        color: Colors.white,
-                        overflow: TextOverflow.ellipsis,
-                        fontFamily: 'Urbanist'
+                    //Coupons
+                    Column(
+                      children: [
+                        Text(
+                          snapshot.data!.get('coupons').toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const Text(
+                          'Coupons',
+                          style: TextStyle(
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis,
+                              fontFamily: 'Urbanist'
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
-              //Coupons
-              Column(
-                children: [
-                  Text(
-                    '10',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis,
+                    //Points
+                    Column(
+                      children: [
+                        Text(
+                          snapshot.data!.get('coins').toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const Text(
+                          'Coins',
+                          style: TextStyle(
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis,
+                              fontFamily: 'Urbanist'
+                          ),
+                        )
+                      ],
                     ),
-                  ),
-                  Text(
-                    'Coupons',
-                    style: TextStyle(
-                        color: Colors.white,
-                        overflow: TextOverflow.ellipsis,
-                        fontFamily: 'Urbanist'
-                    ),
-                  )
-                ],
-              ),
-              //Points
-              Column(
-                children: [
-                  Text(
-                    '500',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Text(
-                    'Coins',
-                    style: TextStyle(
-                        color: Colors.white,
-                        overflow: TextOverflow.ellipsis,
-                        fontFamily: 'Urbanist'
-                    ),
-                  )
-                ],
-              ),
-            ],
-          ),
+                  ],
+                ),
+              );
+            }else if(snapshot.connectionState == ConnectionState.waiting){
+              return const LinearProgressIndicator();
+            }else{
+              return const Center(child: Text('Error Loading Data'),);
+            }
+          },
         ),
       ],
     );
