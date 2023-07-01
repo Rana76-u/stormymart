@@ -22,6 +22,8 @@ class _ProductScreenState extends State<ProductScreen> {
   int quantity = 1;
   int variationCount = 0;
   int clickedIndex = 0;
+  List<dynamic> sizes = [];
+
   void checkLength() async {
     String id = widget.productId.toString().trim();
     final QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -88,38 +90,40 @@ class _ProductScreenState extends State<ProductScreen> {
                       var sold = snapshot.data!.get('sold');
 
                       //SIZE LIST
-                      List<dynamic> sizes = snapshot.data!.get('size');
+                      sizes = snapshot.data!.get('size');
                       //List<SizedBox> sizeWidget = [];
-                      for (int i = 0; i < sizes.length; i++) {
-                        sizeWidget.add(
-                          SizedBox(
-                            height: 45,
-                            width: 45,
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  sizeSelected = i;
-                                });
-                              },
-                              child: Card(
-                                color: _cardColor(i),
-                                shape: const CircleBorder(),
-                                child: Center(
-                                  child: Text(
-                                    sizes[i],
-                                    style: TextStyle(
-                                      color: sizeSelected == i
-                                          ? Colors.white
-                                          : Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17,
+                      if(sizeWidget.isEmpty){
+                        for (int i = 0; i < sizes.length; i++) {
+                          sizeWidget.add(
+                            SizedBox(
+                              height: 45,
+                              width: 45,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    sizeSelected = i;
+                                  });
+                                },
+                                child: Card(
+                                  color: _cardColor(i),
+                                  shape: const CircleBorder(),
+                                  child: Center(
+                                    child: Text(
+                                      sizes[i],
+                                      style: TextStyle(
+                                        color: sizeSelected == i
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       }
 
                       return Column(
@@ -555,7 +559,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                 .set({
                                   //'1': FieldValue.arrayUnion(valuesToAdd)
                                   'id': id,
-                                  'selectedSize': sizeSelected,
+                                  'selectedSize': sizeSelected == -1 ? 'not applicable' : sizes[sizeSelected].toString(),
                                   'variant': imageSliderDocID,
                                   'quantity': quantity
                                 });

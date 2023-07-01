@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 class CheckOut extends StatefulWidget {
 
   double usedCoins = 0.0;
+  double coinDiscount = 0.0;
   String usedPromoCode = '';
   double itemsTotal = 0.0;
   double promoDiscount = 0.0;
@@ -14,7 +16,8 @@ class CheckOut extends StatefulWidget {
     required this.usedCoins,
     required this.usedPromoCode,
     required this.itemsTotal,
-    required this.promoDiscount
+    required this.promoDiscount,
+    required this.coinDiscount
   });
 
   @override
@@ -25,6 +28,49 @@ class _CheckOutState extends State<CheckOut> {
 
   String selectedAddress = '';
   bool isLoading = false;
+
+  void fetchCartItemsAndPlaceOrder() async {
+
+    final cartSnapshot = await FirebaseFirestore.instance
+        .collection('userData')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('Cart')
+        .get();
+
+    for (var doc in cartSnapshot.docs) {
+      //For every Cart item
+      // add them into Order list
+      await FirebaseFirestore
+          .instance
+          .collection('Orders')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('Pending Orders').doc().set({
+        'productId' : doc['id'],
+        'quantity' : doc['quantity'],
+        'selectedSize' : doc['selectedSize'],
+        'variant' : doc['variant'],
+        'usedPromoCode': widget.usedPromoCode,
+        'usedCoin': widget.usedCoins,
+      });
+
+      //Then Delete added item from cart
+      await FirebaseFirestore.instance
+          .collection('userData')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('Cart')
+          .doc(doc.id).delete();
+
+      //Decrease Coin Value
+      final updateCoinRef = FirebaseFirestore.instance.collection('userData').doc(FirebaseAuth.instance.currentUser!.uid);
+
+      updateCoinRef.get().then((doc) {
+        int previousCoins = doc.data()?['coins'] ?? 0;
+        double newCoins = previousCoins - widget.usedCoins;
+
+        updateCoinRef.update({'coins': newCoins});
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +229,7 @@ class _CheckOutState extends State<CheckOut> {
                       width: double.infinity,
                       child: Card(
                         child: Padding(
-                          padding: EdgeInsets.all(15),
+                          padding: const EdgeInsets.all(15),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -199,7 +245,7 @@ class _CheckOutState extends State<CheckOut> {
 
                               //used coins
                               Text(
-                                'Coin Discount: ${widget.usedCoins}',
+                                'Coin Discount (${widget.usedCoins}) : ${widget.coinDiscount}',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontFamily: 'Urbanist',
@@ -236,31 +282,78 @@ class _CheckOutState extends State<CheckOut> {
                     ),
 
                     //Place Order Button
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15),
-                      child: SizedBox(
-                          width: double.infinity,
-                          child: Center(
-                            child: SizedBox(
-                              height: 50,
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: (){
-                                  //START WORKING FROM HERE
-                                },
-                                style: const ButtonStyle(
-                                    backgroundColor: MaterialStatePropertyAll(Colors.green)
-                                ),
-                                child: isLoading ? const LinearProgressIndicator() : const Text(
-                                  'Place Order',
+                    AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                      child: isLoading ?
+                      Center(
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width*0.4,
+                          child: const Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(13.5),
+                                child: Text(
+                                  'Placing Order',
                                   style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Urbanist',
+                                      fontSize: 17
                                   ),
                                 ),
                               ),
-                            ),
-                          )
+                              LinearProgressIndicator()
+                            ],
+                          ),
+                        ),
+                      ) :
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15),
+                        child: SizedBox(
+                            width: double.infinity,
+                            child: Center(
+                              child: SizedBox(
+                                height: 50,
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: (){
+
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+
+                                    fetchCartItemsAndPlaceOrder();
+
+                                    setState(() {
+                                      isLoading = false;
+
+                                      if(isLoading == false){
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                                content: Text('Congratulations 🎉, Your Order has been Placed.')
+                                            )
+                                        );
+
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 0),)
+                                        );
+                                      }
+                                    });
+
+                                  },
+                                  style: const ButtonStyle(
+                                      backgroundColor: MaterialStatePropertyAll(Colors.green)
+                                  ),
+                                  child: const Text(
+                                    'Place Order',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                        ),
                       ),
                     ),
                   ],
