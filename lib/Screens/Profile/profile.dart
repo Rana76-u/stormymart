@@ -86,8 +86,8 @@ class _ProfileState extends State<Profile> {
         'Email': FirebaseAuth.instance.currentUser?.email,
         'Phone Number': '',
         'Gender': 'not selected',
-        'Address1': '',
-        'Address2': '',
+        'Address1': ['',''],
+        'Address2': ['',''],
         'coins': 0,
         'coupons': 0,
         'wishlist': 0

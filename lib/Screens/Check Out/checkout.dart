@@ -125,8 +125,8 @@ class _CheckOutState extends State<CheckOut> {
                                   });
                                 },
                                 items: <String>[
-                                   snapshot.data!.get('Address1').toString(),
-                                   snapshot.data!.get('Address2').toString(),
+                                   snapshot.data!.get('Address1')[0].toString(),
+                                   snapshot.data!.get('Address2')[0].toString(),
                                 ].map<DropdownMenuItem<String>>((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
@@ -173,7 +173,7 @@ class _CheckOutState extends State<CheckOut> {
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 );
               }else if(snapshot.connectionState == ConnectionState.waiting){

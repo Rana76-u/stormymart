@@ -21,6 +21,7 @@ class Authservice {
     return user;
   }
 
+
   void signOut() {
     _auth.signOut();
     _googleSignIn.signOut();

@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,7 +19,7 @@ class _CartState extends State<Cart> {
 
   String uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
-  int deliveryCharge = 50;
+  int deliveryCharge = 0;
   double subTotal = 0.0;
   double total = 0.0;
 
@@ -30,6 +29,9 @@ class _CartState extends State<Cart> {
   bool isLoggedIn = false;
   bool isPromoCodeFound = false;
   String promoCode = '';
+  double availableCoins = 0.0;
+  double inputCoinAmount = 0.0;
+  double coinDiscount = 0.0;
 
   List<dynamic> productTitles = [];
   List<dynamic> productPrices = [];
@@ -57,6 +59,21 @@ class _CartState extends State<Cart> {
     }
   }
 
+  void fetchUserData() async {
+    final userDataSnapshot = await FirebaseFirestore.instance
+        .collection('userData')
+        .doc(uid)
+        .get();
+
+    availableCoins = userDataSnapshot.get('coins');
+    if( userDataSnapshot.get('Address1')[1] == 'Dhaka' ||
+        userDataSnapshot.get('Address2')[1] == 'Dhaka'){
+      deliveryCharge = 50;
+    }else{
+      deliveryCharge = 100;
+    }
+  }
+  
   void fetchCartItems() async {
     final cartSnapshot = await FirebaseFirestore.instance
         .collection('userData')
@@ -165,6 +182,7 @@ class _CartState extends State<Cart> {
   Widget build(BuildContext context) {
 
     TextEditingController promoController = TextEditingController();
+    TextEditingController coinController = TextEditingController();
 
     return Scaffold(
       body: SizedBox(
@@ -482,23 +500,188 @@ class _CartState extends State<Cart> {
                       ),
                     ),
 
-                    //Delivery Charge Line
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5, top: 5),
+                    //DeliveryCharge + coin
+                    FutureBuilder(
+                      future: FirebaseFirestore.instance
+                          .collection('userData')
+                          .doc(uid)
+                          .get(),
+                      builder: (context, userDatasnapshot) {
+                        if(userDatasnapshot.hasData){
+                          return Column(
+                            children: [
+                              //Delivery Charge Line
+                              if( userDatasnapshot.data!.get('Address1')[1] == 'Dhaka' ||
+                                  userDatasnapshot.data!.get('Address2')[1] == 'Dhaka')...[
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 5, top: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Delivery Charge'),
+                                      Padding(
+                                          padding: EdgeInsets.only(right: 10),
+                                          child: Text(
+                                            '50',
+                                          )
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ]else...[
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 5, top: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Delivery Charge'),
+                                      Padding(
+                                          padding: EdgeInsets.only(right: 10),
+                                          child: Text(
+                                            '100',
+                                          )
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                              
+                              //Coins Line
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5,left: 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const Text('You Have ',),
+                                    Text(
+                                      '${userDatasnapshot.data!.get('coins')}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.amber,
+                                      ),
+                                    ),
+                                    const Text(' available COINS to use',)
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Row(
+                                  children: [
+                                    //TextBox
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width*0.6,
+                                      height: 50,
+                                      child: TextField(
+                                        onChanged: (value) {
+                                          inputCoinAmount = double.parse(value);
+                                        },
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText: "INPUT COIN AMOUNT",
+                                          hintStyle: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey.shade500,
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(5),
+                                            borderSide: const BorderSide(color: Colors.grey),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(5),
+                                            borderSide: const BorderSide(color: Colors.grey),
+                                          ),
+                                          prefixIcon: const Icon(Icons.money, color: Colors.amber,),
+                                        ),
+                                        keyboardType: TextInputType.number,
+                                        controller: coinController,
+                                      ),
+                                    ),
+                                    //Space
+                                    const SizedBox(width: 10,),
+                                    //Button
+                                    SizedBox(
+                                      height: 50,
+                                      width: MediaQuery.of(context).size.width*0.30,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          if(inputCoinAmount <= userDatasnapshot.data!.get('coins')){
+                                            setState(() {
+                                              coinDiscount = inputCoinAmount / 25;
+                                              total = total - coinDiscount;
+                                            });
+                                          }else{
+                                            ScaffoldMessenger
+                                                .of(context)
+                                                .showSnackBar(
+                                                const SnackBar(
+                                                    content: Text('More than available coins')
+                                                )
+                                            );
+                                          }
+                                        },
+                                        style: const ButtonStyle(
+                                            backgroundColor: MaterialStatePropertyAll(Colors.amber)
+                                        ),
+                                        child: const Text('Redeem Coin'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if(coinDiscount != 0.0)...[
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 5, left: 5),
+                                        child: Text(
+                                            'Coin Discount for ${userDatasnapshot.data!.get('coins')} coins is : '
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 5, right: 5),
+                                        child: Text(
+                                            '- $coinDiscount',
+                                          style: const TextStyle(
+                                            color: Colors.red
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ]
+                            ],
+                          );
+                        }else if(userDatasnapshot.connectionState == ConnectionState.waiting){
+                          return const Center(child: LinearProgressIndicator(),);
+                        }else{
+                          return const Center(child: Text('Error Loading, Try again'),);
+                        }
+                      },
+                    ),
+
+                    //Promo Text
+                    const Padding(
+                      padding: EdgeInsets.only(top: 5,left: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Delivery Charge'),
-                          Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: Text(
-                                deliveryCharge.toString(),
-                              )
+                          Text(
+                              'Use Promo Code to get extra discount',
+                            style: TextStyle(
+                              overflow: TextOverflow.ellipsis
+                            ),
                           ),
                         ],
                       ),
                     ),
-
                     //Promo Code
                     Padding(
                       padding: const EdgeInsets.only(top: 10),

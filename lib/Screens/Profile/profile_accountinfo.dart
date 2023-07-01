@@ -19,6 +19,8 @@ class _AccountInfoState extends State<AccountInfo> {
   String name = '';
   String image = '';
   String gender = '';
+  String division1 = '';
+  String division2 = '';
   String email = '';
   String phone = '';
   String address1 = '';
@@ -57,11 +59,11 @@ class _AccountInfoState extends State<AccountInfo> {
         'Email': FirebaseAuth.instance.currentUser?.email,
         'Phone Number': '',
         'Gender': 'not selected',
-        'Address1': '',
-        'Address2': '',
+        'Address1': ['', 'not selected'],
+        'Address2': ['', 'not selected'],
         'coins': 0,
         'coupons': 0,
-        'wishlist': 0
+        'wishlist': 0,
       });
     }
     else{
@@ -83,8 +85,10 @@ class _AccountInfoState extends State<AccountInfo> {
         email = snapshot['Email'];
         phone = snapshot['Phone Number'];
 
-        address1 = snapshot['Address1'];
-        address2 = snapshot['Address2'];
+        address1 = snapshot['Address1'][0];
+        division1 = snapshot['Address1'][1];
+        address2 = snapshot['Address2'][0];
+        division2 = snapshot['Address2'][1];
 
         nameController.text = name;
         imageController.text = image;
@@ -115,8 +119,8 @@ class _AccountInfoState extends State<AccountInfo> {
       'Email' : emailController.text,
       'Gender' : gender,
       'Phone Number': phoneNumberController.text,
-      'Address1': address1Controller.text,
-      'Address2': address2Controller.text,
+      'Address1': [address1Controller.text, division1],
+      'Address2': [address2Controller.text, division2],
     });
   }
 
@@ -124,256 +128,353 @@ class _AccountInfoState extends State<AccountInfo> {
   Widget build(BuildContext context) {
     if(_isDataLoaded){
       return Scaffold(
-        body: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.030),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //Blank Space
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-              ),
-
-              //"Account Details" Text
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4,left: 7),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
-                        );
-                      },
-                      child: const Icon(
-                        Icons.arrow_back_ios,
-                      ),
-                    ),
-                    const Text(
-                      "Account Details",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 19,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.030),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //Blank Space
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.05,
                 ),
-              ),
 
-              const SizedBox(height: 10,),
+                //"Account Details" Text
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4,left: 7),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
+                          );
+                        },
+                        child: const Icon(
+                          Icons.arrow_back_ios,
+                        ),
+                      ),
+                      const Text(
+                        "Account Details",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 19,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-              //Details
-              SingleChildScrollView(
-                child: Card(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text("Name"),
-                        SizedBox(
-                          height: 50,
-                          child: TextField(
-                            controller: nameController,
-                            keyboardType: TextInputType.number,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            cursorColor: Colors.white,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                                borderSide: BorderSide.none,
+                const SizedBox(height: 10,),
+
+                //Details
+                SingleChildScrollView(
+                  child: Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text("Name *"),
+                          SizedBox(
+                            height: 50,
+                            child: TextField(
+                              controller: nameController,
+                              keyboardType: TextInputType.number,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
-                              hintText: "name . . . ",
-                              hintStyle: const TextStyle(
-                                fontSize: 13,
+                              cursorColor: Colors.white,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide.none,
+                                ),
+                                hintText: "name . . . ",
+                                hintStyle: const TextStyle(
+                                  fontSize: 13,
+                                ),
+                                prefixIcon: const Icon(Icons.abc),
+                                //labelText: "Semester",
                               ),
-                              prefixIcon: const Icon(Icons.abc),
-                              //labelText: "Semester",
                             ),
                           ),
-                        ),
 
-                        const Text("E-Mail"),
-                        SizedBox(
-                          height: 50,
-                          child: TextField(
-                            controller: emailController,
-                            keyboardType: TextInputType.number,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            cursorColor: Colors.white,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                                borderSide: BorderSide.none,
+                          const Text("E-Mail *"),
+                          SizedBox(
+                            height: 50,
+                            child: TextField(
+                              controller: emailController,
+                              keyboardType: TextInputType.number,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
-                              hintText: "example@mail.com",
-                              hintStyle: const TextStyle(
-                                fontSize: 13,
+                              cursorColor: Colors.white,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide.none,
+                                ),
+                                hintText: "example@mail.com",
+                                hintStyle: const TextStyle(
+                                  fontSize: 13,
+                                ),
+                                prefixIcon: const Icon(Icons.abc),
+                                //labelText: "Semester",
                               ),
-                              prefixIcon: const Icon(Icons.abc),
-                              //labelText: "Semester",
                             ),
                           ),
-                        ),
 
-                        const Text("Select Gender"),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: DropdownButton<String>(
-                            value: gender,
-                            icon: const Icon(Icons.arrow_drop_down),
-                            iconSize: 25,
-                            elevation: 16,
-                            isExpanded: true,
-                            autofocus: true,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            underline: const SizedBox(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                gender = newValue!;
-                              });
-                            },
-                            items: <String>[
-                              'Male',
-                              'Female',
-                              'others',
-                              'not selected'
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-
-                        const Text("Phone Number"),
-                        SizedBox(
-                          height: 50,
-                          child: TextField(
-                            controller: phoneNumberController,
-                            keyboardType: TextInputType.number,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            cursorColor: Colors.white,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                                borderSide: BorderSide.none,
+                          const Text("Select Gender *"),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: DropdownButton<String>(
+                              value: gender,
+                              icon: const Icon(Icons.arrow_drop_down),
+                              iconSize: 25,
+                              elevation: 16,
+                              isExpanded: true,
+                              autofocus: true,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
                               ),
-                              hintText: "ex: +880... ",
-                              hintStyle: const TextStyle(
-                                fontSize: 13,
-                              ),
-                              prefixIcon: const Icon(Icons.onetwothree),
-                              //labelText: "Semester",
+                              underline: const SizedBox(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  gender = newValue!;
+                                });
+                              },
+                              items: <String>[
+                                'Male',
+                                'Female',
+                                'others',
+                                'not selected'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
                             ),
                           ),
-                        ),
 
-                        const Text("Delivery Location 1"),
-                        SizedBox(
-                          height: 50,
-                          child: TextField(
-                            controller: address1Controller,
-                            keyboardType: TextInputType.number,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            cursorColor: Colors.white,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                                borderSide: BorderSide.none,
+                          const Text("Phone Number *"),
+                          SizedBox(
+                            height: 50,
+                            child: TextField(
+                              controller: phoneNumberController,
+                              keyboardType: TextInputType.number,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
-                              hintText: "address1",
-                              hintStyle: const TextStyle(
-                                fontSize: 13,
+                              cursorColor: Colors.white,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide.none,
+                                ),
+                                hintText: "ex: +880... ",
+                                hintStyle: const TextStyle(
+                                  fontSize: 13,
+                                ),
+                                prefixIcon: const Icon(Icons.onetwothree),
+                                //labelText: "Semester",
                               ),
-                              prefixIcon: const Icon(Icons.abc),
-                              //labelText: "Semester",
                             ),
                           ),
-                        ),
 
-                        const Text("Delivery Location 2"),
-                        SizedBox(
-                          height: 50,
-                          child: TextField(
-                            controller: address2Controller,
-                            keyboardType: TextInputType.number,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            cursorColor: Colors.white,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                                borderSide: BorderSide.none,
+                          const Text("Delivery Location 1 *"),
+                          SizedBox(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width*0.7,
+                            child: TextField(
+                              controller: address1Controller,
+                              keyboardType: TextInputType.number,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
-                              hintText: "address2",
-                              hintStyle: const TextStyle(
-                                fontSize: 13,
+                              cursorColor: Colors.white,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide.none,
+                                ),
+                                hintText: "address1",
+                                hintStyle: const TextStyle(
+                                  fontSize: 13,
+                                ),
+                                prefixIcon: const Icon(Icons.abc),
+                                //labelText: "Semester",
                               ),
-                              prefixIcon: const Icon(Icons.abc),
-                              //labelText: "Semester",
                             ),
                           ),
-                        ),
-                      ],
+                          //Select Division1
+                          const Padding(padding: EdgeInsets.only(left: 15),child: Text("Select Division *")),
+                          SizedBox(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width*0.7,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                              child: DropdownButton<String>(
+                                value: division1,
+                                icon: const Icon(Icons.arrow_drop_down),
+                                iconSize: 25,
+                                elevation: 16,
+                                isExpanded: true,
+                                autofocus: true,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                underline: const SizedBox(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    division1 = newValue!;
+                                  });
+                                },
+                                items: <String>[
+                                  'Dhaka',
+                                  'Mymensingh',
+                                  'Chittagong',
+                                  'Khulna',
+                                  'Rajshahi',
+                                  'Rangpur',
+                                  'Sylhet',
+                                  'Barisal',
+                                  'not selected'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+
+                          const Text("Delivery Location 2 (Optional)"),
+                          SizedBox(
+                            height: 50,
+                            child: TextField(
+                              controller: address2Controller,
+                              keyboardType: TextInputType.number,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              cursorColor: Colors.white,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide.none,
+                                ),
+                                hintText: "address2",
+                                hintStyle: const TextStyle(
+                                  fontSize: 13,
+                                ),
+                                prefixIcon: const Icon(Icons.abc),
+                                //labelText: "Semester",
+                              ),
+                            ),
+                          ),
+                          //Select Division2
+                          const Padding(padding: EdgeInsets.only(left: 15),child: Text("Select Division *")),
+                          SizedBox(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width*0.7,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                              child: DropdownButton<String>(
+                                value: division2,
+                                icon: const Icon(Icons.arrow_drop_down),
+                                iconSize: 25,
+                                elevation: 16,
+                                isExpanded: true,
+                                autofocus: true,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                underline: const SizedBox(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    division2 = newValue!;
+                                  });
+                                },
+                                items: <String>[
+                                  'Dhaka',
+                                  'Mymensingh',
+                                  'Chittagong',
+                                  'Khulna',
+                                  'Rajshahi',
+                                  'Rangpur',
+                                  'Sylhet',
+                                  'Barisal',
+                                  'not selected'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              SizedBox(
-                height: 33,
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: (){
-                    if(
-                        nameController.text == '' ||
-                        phoneNumberController.text == '' ||
-                        address1Controller.text == ''
-                    ){
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Name & Phone Number can not be empty"),
-                            duration: Duration(milliseconds: 1500),
-                          ));
-                    }else{
-                      _updatePersonalDetails();
-                      setState(() {
-                        _updateLoading = false;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Information Update Successful"),
-                            duration: Duration(milliseconds: 1500),
-                          ));
+                //update Button
+                SizedBox(
+                  height: 33,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: (){
+                      if(
+                          nameController.text == '' ||
+                          phoneNumberController.text == '' ||
+                          address1Controller.text == '' ||
+                          division1 == '' || division1 == 'not selected'
+                      ){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  "Name, Phone Number & Delivery Location \ncan not be empty / not selected",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              duration: Duration(milliseconds: 3000),
+                            ));
+                      }else{
+                        _updatePersonalDetails();
+                        setState(() {
+                          _updateLoading = false;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Information Update Successful"),
+                              duration: Duration(milliseconds: 1500),
+                            ));
+                      }
                     }
-                  },
-                  child: const Text("Update"),
+                    ,
+                    child: const Text("Update"),
+                  ),
                 ),
-              ),
-              _updateLoading == true ? const LinearProgressIndicator() : const SizedBox(),
-            ],
+                _updateLoading == true ? const LinearProgressIndicator() : const SizedBox(),
+              ],
+            ),
           ),
         ),
       );
