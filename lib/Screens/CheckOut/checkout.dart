@@ -3,7 +3,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CheckOut extends StatefulWidget {
-  const CheckOut({super.key});
+
+  double usedCoins = 0.0;
+  String usedPromoCode = '';
+  double itemsTotal = 0.0;
+  double promoDiscount = 0.0;
+
+  CheckOut({
+    super.key,
+    required this.usedCoins,
+    required this.usedPromoCode,
+    required this.itemsTotal,
+    required this.promoDiscount
+  });
 
   @override
   State<CheckOut> createState() => _CheckOutState();
@@ -12,6 +24,7 @@ class CheckOut extends StatefulWidget {
 class _CheckOutState extends State<CheckOut> {
 
   String selectedAddress = '';
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +32,7 @@ class _CheckOutState extends State<CheckOut> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-            'Chekcout',
+            'Checkout',
           style: TextStyle(
             fontWeight: FontWeight.bold
           ),
@@ -46,6 +59,9 @@ class _CheckOutState extends State<CheckOut> {
                 .get(),
             builder: (context, snapshot) {
               if(snapshot.hasData){
+                if(selectedAddress == ''){
+                  selectedAddress = snapshot.data!.get('Address1')[0];
+                }
                 return Column(
                   children: [
                     //Card 1
@@ -106,33 +122,35 @@ class _CheckOutState extends State<CheckOut> {
                                     overflow: TextOverflow.ellipsis
                                 ),
                               ),
-                              DropdownButton<String>(
-                                value: selectedAddress,
-                                icon: const Icon(Icons.arrow_drop_down),
-                                iconSize: 25,
-                                elevation: 16,
-                                isExpanded: true,
-                                autofocus: true,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 15),
+                                child: DropdownButton<String>(
+                                  value: selectedAddress,
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  iconSize: 25,
+                                  elevation: 16,
+                                  isExpanded: true,
+                                  autofocus: true,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  underline: const SizedBox(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedAddress = newValue!;
+                                    });
+                                  },
+                                  items: <String>[
+                                    snapshot.data!.get('Address1')[0],
+                                    snapshot.data!.get('Address2')[0],
+                                  ].map<DropdownMenuItem<String>>((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
                                 ),
-                                hint: const Text('Select Location'),
-                                underline: const SizedBox(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedAddress = newValue!;
-                                  });
-                                },
-                                items: <String>[
-                                   snapshot.data!.get('Address1')[0].toString(),
-                                   snapshot.data!.get('Address2')[0].toString(),
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
                               ),
                               const SizedBox(height: 10,),
                               
@@ -165,13 +183,84 @@ class _CheckOutState extends State<CheckOut> {
                       width: double.infinity,
                       child: Card(
                         child: Padding(
-                          padding: const EdgeInsets.all(15),
+                          padding: EdgeInsets.all(15),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              //order summary
+                              const Text(
+                                'Order Summary ',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Urbanist'
+                                ),
+                              ),
+                              const SizedBox(height: 10,),
 
+                              //used coins
+                              Text(
+                                'Coin Discount: ${widget.usedCoins}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Urbanist',
+                                    overflow: TextOverflow.ellipsis
+                                ),
+                              ),
+                              const SizedBox(height: 5,),
+
+                              //promo
+                              Text(
+                                'Promo Discount ( ${widget.usedPromoCode} ) : ${widget.promoDiscount}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Urbanist',
+                                    overflow: TextOverflow.ellipsis
+                                ),
+                              ),
+                              const SizedBox(height: 5,),
+
+                              //total
+                              Text(
+                                'Total Payable Amount : ${widget.itemsTotal}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontFamily: 'Urbanist',
+                                    color: Colors.green,
+                                    overflow: TextOverflow.ellipsis
+                                ),
+                              ),
                             ],
                           ),
                         ),
+                      ),
+                    ),
+
+                    //Place Order Button
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: SizedBox(
+                              height: 50,
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: (){
+                                  //START WORKING FROM HERE
+                                },
+                                style: const ButtonStyle(
+                                    backgroundColor: MaterialStatePropertyAll(Colors.green)
+                                ),
+                                child: isLoading ? const LinearProgressIndicator() : const Text(
+                                  'Place Order',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
                       ),
                     ),
                   ],

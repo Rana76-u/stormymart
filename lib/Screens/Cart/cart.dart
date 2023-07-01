@@ -3,9 +3,9 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:stormymart/Screens/Check Out/checkout.dart';
 
 import '../../utility/bottom_nav_bar.dart';
+import '../CheckOut/checkout.dart';
 import 'delivery_container.dart';
 
 class Cart extends StatefulWidget {
@@ -847,7 +847,14 @@ class _CartState extends State<Cart> {
                               child: ElevatedButton(
                                 onPressed: (){
                                   Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) => const CheckOut(),)
+                                    MaterialPageRoute(
+                                      builder: (context) => CheckOut(
+                                          usedCoins: coinDiscount,
+                                          usedPromoCode: promoCode,
+                                        itemsTotal: total,
+                                        promoDiscount: promoDiscountMoney,
+                                      ),
+                                    )
                                   );
                                 },
                                 style: const ButtonStyle(
