@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 class SearchField extends StatelessWidget {
   const SearchField({super.key});
@@ -15,22 +16,30 @@ class SearchField extends StatelessWidget {
         ),
       ),
       child: Center(
-        child: TextField(
-          onChanged: (value) => log(value),
-          decoration: const InputDecoration(
-            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-            border: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            hintText: "Search product",
-            prefixIcon: Icon(Icons.search),
-            hintStyle: TextStyle(
-              fontSize: 14,
-              color: Color(0xFFBDBDBD),
-            ),
-            labelStyle: TextStyle(
-              fontSize: 14,
-              color: Color(0xFF212121),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+            );
+          },
+          child: TextField(
+            onChanged: (value) => log(value),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              hintText: "Search product",
+              prefixIcon: Icon(Icons.search),
+              hintStyle: TextStyle(
+                fontSize: 14,
+                color: Color(0xFFBDBDBD),
+              ),
+              labelStyle: TextStyle(
+                fontSize: 14,
+                color: Color(0xFF212121),
+              ),
+              enabled: false
             ),
           ),
         ),
