@@ -5,6 +5,7 @@ import 'package:stormymart/Screens/Home/horizontal_category.dart';
 import 'package:stormymart/Screens/Home/hot_deals.dart';
 import 'package:stormymart/Screens/Home/imageslider.dart';
 import 'package:stormymart/Screens/Home/recommanded_for_you.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 import '../../Components/searchfield.dart';
 
@@ -32,31 +33,34 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   if(FirebaseAuth.instance.currentUser != null)...[
-                    Row(
-                      children: [
-                        SizedBox(
-                          height: 45,
-                          width: 45,
-                          /*decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(50),
-                          ),*/
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Image.network(FirebaseAuth.instance.currentUser!.photoURL.toString()),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            height: 45,
+                            width: 45,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.network(FirebaseAuth.instance.currentUser!.photoURL.toString()),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 14,),
-                        Text(
-                          FirebaseAuth.instance.currentUser!.displayName ?? "",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17,
-                              color: Colors.white,
-                              fontFamily: 'Urbanist'
+                          const SizedBox(width: 14,),
+                          Text(
+                            FirebaseAuth.instance.currentUser!.displayName ?? "",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                color: Colors.white,
+                                fontFamily: 'Urbanist'
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     )
                   ]else...[
                     SizedBox(

@@ -13,6 +13,17 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
 
+  final double _minRating = 0;
+  final double _maxRating = 5;
+  double _selectedMinRating = 0.0;
+  double _selectedMaxRating = 0.0;
+
+
+  final double _minPrice = 0;
+  final double _maxPrice = 1000000;
+  double _selectedMinPrice = 0.0;
+  double _selectedMaxPrice = 0.0;
+
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -32,6 +43,7 @@ class _SearchPageState extends State<SearchPage> {
 
   // Create a text controller and reference it
   final TextEditingController _searchController = TextEditingController();
+  String searchedText = '';
 
   // A list to hold the search results
   List<DocumentSnapshot> _searchResults = [];
@@ -39,22 +51,36 @@ class _SearchPageState extends State<SearchPage> {
   // A flag to determine if the search has completed
   bool _isSearching = false;
   bool isTyping = false;
+  bool isFilterOpen = false;
 
-  void performSearch(String searchItem) async {
+  void performSearch(String searchItem, {double? minPrice, double? maxPrice, double? minRating}) async {
     // Get a reference to the products collection
     var ref = FirebaseFirestore.instance.collection('/Products');
     // Convert the search query to uppercase
     searchItem = searchItem.toUpperCase();
-    // Build a query
-    var snapshot = await ref
-        .where('title', isGreaterThanOrEqualTo: searchItem) //isGreaterThanOrEqualTo
-        .get();
+    // Build a query for title filtering
+    var titleQuery = ref.where('title', isGreaterThanOrEqualTo: searchItem);
+
+    var titleSnapshot = await titleQuery.get();
+    var titleDocs = titleSnapshot.docs;
+
+    // Apply price and rating filtering on the title filtered documents
+    var filteredDocs = titleDocs.where((doc) {
+      var data = doc.data();
+      var price = data['price'].toDouble();
+      var rating = data['rating'].toDouble();
+      return (minPrice == null || price >= minPrice) &&
+          (maxPrice == null || price <= maxPrice) &&
+          (minRating == null || rating >= minRating);
+    }).toList();
+
     // Update the search results
     setState(() {
-      _searchResults = snapshot.docs;
+      _searchResults = filteredDocs;
       _isSearching = false;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,57 +115,82 @@ class _SearchPageState extends State<SearchPage> {
             // A text field for the user to enter their search query
             Card(
               elevation: 6,
-              child: TextField(
-                focusNode: _focusNode,
-                decoration: InputDecoration(
-                  hintText: "Search",
-                  hintStyle: TextStyle(
-                      fontSize: 17.0,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade500,
-                    fontFamily: 'Urbanist'
-                  ),
-                  prefixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        FocusScope.of(context).unfocus();
-                        _searchController.clear();
-                        isTyping = false;
-                      });
-                    },
-                      child: const Icon(Icons.arrow_back_rounded)
-                  ),
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      if(_searchController.text != ''){
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width*0.9 - 24,
+                    child: TextField(
+                      focusNode: _focusNode,
+                      decoration: InputDecoration(
+                        hintText: "Search",
+                        hintStyle: TextStyle(
+                            fontSize: 17.0,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade500,
+                            fontFamily: 'Urbanist'
+                        ),
+                        prefixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                FocusScope.of(context).unfocus();
+                                _searchController.clear();
+                                isTyping = false;
+                                isFilterOpen = false;
+                              });
+                            },
+                            child: const Icon(Icons.arrow_back_rounded)
+                        ),
+                        suffixIcon: GestureDetector(
+                            onTap: () {
+                              if(_searchController.text != ''){
+                                setState(() {
+                                  _isSearching = true;
+                                  performSearch(_searchController.text);
+                                  isTyping = false;
+                                });
+                              }
+                            },
+                            child: const Icon(
+                              Icons.search_rounded,
+                            )
+                        ),
+                      ),
+                      controller: _searchController,
+                      onChanged: (value) {
+                        // Start the search when the user enters a value in the text field
+                        setState(() {
+                          isTyping = true;
+                          searchedText = _searchController.text;
+                          isFilterOpen = false;
+                          _selectedMinPrice = 0;
+                          _selectedMaxPrice = 1000000;
+                          _selectedMinRating = 0;
+                          _selectedMaxRating = 5;
+                        });
+                        // Perform the search
+                        performSearch(value);
+                      },
+                      onSubmitted: (value) {
                         setState(() {
                           _isSearching = true;
-                          performSearch(_searchController.text);
+                          performSearch(value);
                           isTyping = false;
                         });
-                      }
-                    },
-                      child: const Icon(
-                          Icons.search_rounded,
-                      )
+                      },
+                    ),
                   ),
-                ),
-                controller: _searchController,
-                onChanged: (value) {
-                  // Start the search when the user enters a value in the text field
-                  setState(() {
-                    isTyping = true;
-                  });
-                  // Perform the search
-                  performSearch(value);
-                },
-                onSubmitted: (value) {
-                  setState(() {
-                    _isSearching = true;
-                    performSearch(value);
-                    isTyping = false;
-                  });
-                },
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isFilterOpen = true;
+                      });
+                    },
+                    child: Icon(
+                        Icons.filter_alt_outlined,
+                      color: _focusNode.hasFocus ? Colors.blue : Colors.grey ,
+                    ),
+                  )
+                ],
               ),
             ),
             // A loading indicator while the search is in progress
@@ -147,6 +198,98 @@ class _SearchPageState extends State<SearchPage> {
                 : const SizedBox(
               height: 0,
               width: 0,
+            ),
+
+            //Filter
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: isFilterOpen ?
+              Row(
+                children: [
+                  //Rating
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10, left: 18),
+                          child: Text(
+                              'Rating',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Urbanist'
+                            ),
+                          )
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width*0.45,
+                        child: RangeSlider(
+                          values: RangeValues(_selectedMinRating, _selectedMaxRating),
+                          min: _minRating,
+                          max: _maxRating,
+                          divisions: 5,
+                          labels: RangeLabels(
+                            _selectedMinRating.toString(),
+                            _selectedMaxRating.toString(),
+                          ),
+                          onChanged: (RangeValues values) {
+                            setState(() {
+                              _selectedMinRating = values.start;
+                              _selectedMaxRating = values.end;
+                              performSearch(
+                                  searchedText,
+                                  minRating: _selectedMaxRating,
+                                  minPrice: _selectedMinPrice,
+                                  maxPrice: _selectedMaxPrice
+                              );
+                            });
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                  //Price
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                          padding: EdgeInsets.only(top: 10, left: 18),
+                          child: Text(
+                            'Price',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Urbanist'
+                            ),
+                          )
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width*0.45,
+                        child: RangeSlider(
+                          values: RangeValues(_selectedMinPrice, _selectedMaxPrice),
+                          min: _minPrice,
+                          max: _maxPrice,
+                          divisions: 100,
+                          labels: RangeLabels(
+                            _selectedMinPrice.toString(),
+                            _selectedMaxPrice.toString(),
+                          ),
+                          onChanged: (RangeValues values) {
+                            setState(() {
+                              _selectedMinPrice = values.start;
+                              _selectedMaxPrice = values.end;
+                              performSearch(
+                                  searchedText,
+                                  minRating: _selectedMaxRating,
+                                  minPrice: _selectedMinPrice,
+                                  maxPrice: _selectedMaxPrice
+                              );
+                            });
+                          },
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ) : const SizedBox(),
             ),
 
             if(isTyping == false)...[
@@ -344,9 +487,9 @@ class _SearchPageState extends State<SearchPage> {
               // The search suggestions are displayed in a list view
               Expanded(
                 child: FutureBuilder(
-                  future: FirebaseFirestore
-                      .instance
-                      .collection('/Products').get(),
+                    future: FirebaseFirestore
+                        .instance
+                        .collection('/Products').get(),
                     builder: (context, snapshot) {
                       if(snapshot.hasData){
                         return Card(
@@ -377,7 +520,7 @@ class _SearchPageState extends State<SearchPage> {
                               );
                             },
                             separatorBuilder: (BuildContext context, int index) {
-                                return const Divider();
+                              return const Divider();
                             },
                           ),
                         );
