@@ -44,6 +44,8 @@ dependencies:
   flutter_slidable: ^3.0.0
   dotted_line: ^3.2.2
   google_sign_in_web: ^0.12.0+2
+  flutter_datetime_picker: ^1.5.1
+  intl: ^0.18.1
 
 
   # The following adds the Cupertino Icons font to your application.

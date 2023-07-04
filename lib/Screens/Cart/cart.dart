@@ -659,7 +659,7 @@ class _CartState extends State<Cart> {
                                       Padding(
                                         padding: const EdgeInsets.only(top: 5, left: 5),
                                         child: Text(
-                                            'Coin Discount for ${userDatasnapshot.data!.get('coins')} coins is : '
+                                            'Coin Discount for $inputCoinAmount coins is : '
                                         ),
                                       ),
                                       Padding(

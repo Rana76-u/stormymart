@@ -5,7 +5,9 @@ import 'package:stormymart/Screens/Home/horizontal_category.dart';
 import 'package:stormymart/Screens/Home/hot_deals.dart';
 import 'package:stormymart/Screens/Home/imageslider.dart';
 import 'package:stormymart/Screens/Home/recommanded_for_you.dart';
+import 'package:stormymart/utility/auth_service.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
+
 
 import '../../Components/searchfield.dart';
 
@@ -197,9 +199,14 @@ class _HomePageState extends State<HomePage> {
                     ),
                     textAlign: TextAlign.start,
                   ),
-                  Image.asset(
-                      'assets/lottie/gold-coin.gif',
-                    height: 60,
+                  GestureDetector(
+                    onTap: () {
+                      Authservice().signOut();
+                    },
+                    child: Image.asset(
+                        'assets/lottie/gold-coin.gif',
+                      height: 60,
+                    ),
                   ),
                 ],
               ),

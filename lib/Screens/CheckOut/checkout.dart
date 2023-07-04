@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +55,23 @@ class _CheckOutState extends State<CheckOut> {
         .collection('Cart')
         .get();
 
+    await FirebaseFirestore
+        .instance
+        .collection('Orders')
+        .doc(FirebaseAuth.instance.currentUser!.uid).set({
+      'enable': true
+    });
+    await FirebaseFirestore
+        .instance
+        .collection('Orders')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('Pending Orders').doc(randomID).set({
+      'usedPromoCode': widget.usedPromoCode,
+      'usedCoin': widget.usedCoins,
+      'total' : widget.itemsTotal,
+      'time' : DateFormat('EE, dd/MM/yyyy H:mm:s').format(DateTime.now()),
+    });
+
     for (var doc in cartSnapshot.docs) {
       //For every Cart item
       // add them into Order list
@@ -67,9 +84,6 @@ class _CheckOutState extends State<CheckOut> {
         'quantity' : doc['quantity'],
         'selectedSize' : doc['selectedSize'],
         'variant' : doc['variant'],
-        'usedPromoCode': widget.usedPromoCode,
-        'usedCoin': widget.usedCoins,
-        'total' : widget.itemsTotal,
       });
 
       //Then Delete added item from cart
@@ -80,13 +94,22 @@ class _CheckOutState extends State<CheckOut> {
           .doc(doc.id).delete();
     }
     //Decrease Coin Value
-    final updateCoinRef = FirebaseFirestore.instance.collection('userData').doc(FirebaseAuth.instance.currentUser!.uid);
+    double previousCoins = 0.0;
+    double remainingCoins = 0.0;
 
-    updateCoinRef.get().then((doc) {
-      int previousCoins = doc.data()?['coins'] ?? 0;
-      double newCoins = previousCoins - widget.usedCoins;
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('userData')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    previousCoins = snapshot.get('coins').toDouble();
 
-      updateCoinRef.update({'coins': newCoins});
+    remainingCoins = previousCoins - widget.usedCoins;
+
+    await FirebaseFirestore.instance
+        .collection('userData')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({
+      'coins' : remainingCoins
     });
   }
 

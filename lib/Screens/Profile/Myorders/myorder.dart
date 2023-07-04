@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stormymart/Screens/Profile/Myorders/pending_order.dart';
 
@@ -18,20 +16,50 @@ class _MyOrdersState extends State<MyOrders> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: MediaQuery.of(context).size.height*0.05,),
-              const Text(
-                'My Orders',
-                style: TextStyle(
-                    fontSize: 22,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.bold
-                ),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Icon(
+                        Icons.arrow_back_rounded
+                    ),
+                  ),
+                  const Expanded(child: SizedBox()),
+                  const Text(
+                    'My Orders',
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  const Expanded(child: SizedBox()),
+                ],
               ),
               const SizedBox(height: 5,),
 
+              //Order Items
+              const Padding(
+                padding: EdgeInsets.only(top: 10, left: 15),
+                child: Text(
+                  "• Pending Order",
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Urbanist'
+                  ),
+                ),
+              ),
+
+              //const PendingOrders(),
               const PendingOrders(),
+
+              const SizedBox(height: 200,)
             ],
           ),
         ),
