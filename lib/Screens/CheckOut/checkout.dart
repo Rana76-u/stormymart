@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,8 +28,24 @@ class CheckOut extends StatefulWidget {
 
 class _CheckOutState extends State<CheckOut> {
 
+  String randomID = "";
   String selectedAddress = '';
   bool isLoading = false;
+
+  @override
+  void initState() {
+    generateRandomID();
+    super.initState();
+  }
+
+  void generateRandomID() {
+    Random random = Random();
+    const String chars = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+    for (int i = 0; i < 20; i++) {
+      randomID += chars[random.nextInt(chars.length)];
+    }
+  }
 
   void fetchCartItemsAndPlaceOrder() async {
 
@@ -44,13 +62,14 @@ class _CheckOutState extends State<CheckOut> {
           .instance
           .collection('Orders')
           .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('Pending Orders').doc().set({
+          .collection('Pending Orders').doc(randomID).collection('orderLists').doc().set({
         'productId' : doc['id'],
         'quantity' : doc['quantity'],
         'selectedSize' : doc['selectedSize'],
         'variant' : doc['variant'],
         'usedPromoCode': widget.usedPromoCode,
         'usedCoin': widget.usedCoins,
+        'total' : widget.itemsTotal,
       });
 
       //Then Delete added item from cart
@@ -59,17 +78,16 @@ class _CheckOutState extends State<CheckOut> {
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('Cart')
           .doc(doc.id).delete();
-
-      //Decrease Coin Value
-      final updateCoinRef = FirebaseFirestore.instance.collection('userData').doc(FirebaseAuth.instance.currentUser!.uid);
-
-      updateCoinRef.get().then((doc) {
-        int previousCoins = doc.data()?['coins'] ?? 0;
-        double newCoins = previousCoins - widget.usedCoins;
-
-        updateCoinRef.update({'coins': newCoins});
-      });
     }
+    //Decrease Coin Value
+    final updateCoinRef = FirebaseFirestore.instance.collection('userData').doc(FirebaseAuth.instance.currentUser!.uid);
+
+    updateCoinRef.get().then((doc) {
+      int previousCoins = doc.data()?['coins'] ?? 0;
+      double newCoins = previousCoins - widget.usedCoins;
+
+      updateCoinRef.update({'coins': newCoins});
+    });
   }
 
   @override

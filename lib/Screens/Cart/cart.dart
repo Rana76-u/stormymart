@@ -187,6 +187,7 @@ class _CartState extends State<Cart> {
     return Scaffold(
       body: SizedBox(
         child: FirebaseAuth.instance.currentUser == null ?
+            //Login
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Column(

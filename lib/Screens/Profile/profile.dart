@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:stormymart/Screens/Profile/login.dart';
+import 'package:stormymart/Screens/Profile/Myorders/myorder.dart';
 import 'package:stormymart/Screens/Profile/profile_top.dart';
 import 'package:stormymart/utility/auth_service.dart';
 
@@ -123,42 +124,49 @@ class _ProfileState extends State<Profile> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             //My Orders
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 20, top: 10),
-                              child: Row(
-                                children: [
-                                  //Bike Icon
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.all(Radius.circular(50)),
-                                      color: Colors.amber,
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(Icons.delivery_dining_outlined, color: Colors.white, size: 22,),
-                                    ),
-                                  ),
-                                  //Blood Donation Posts
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Text(
-                                      'My Orders',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.5,
-                                          fontFamily: 'Urbanist'
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) => const MyOrders(),)
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 20, top: 10),
+                                child: Row(
+                                  children: [
+                                    //Bike Icon
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                                        color: Colors.amber,
+                                      ),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: Icon(Icons.delivery_dining_outlined, color: Colors.white, size: 22,),
                                       ),
                                     ),
-                                  ),
+                                    //Blood Donation Posts
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Text(
+                                        'My Orders',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.5,
+                                            fontFamily: 'Urbanist'
+                                        ),
+                                      ),
+                                    ),
 
-                                  const Spacer(),
-                                  //Forward button
-                                  const Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                ],
+                                    const Spacer(),
+                                    //Forward button
+                                    const Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 18,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             //Track
