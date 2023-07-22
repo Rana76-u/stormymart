@@ -7,6 +7,8 @@ import 'package:stormymart/Screens/Profile/Myorders/myorder.dart';
 import 'package:stormymart/Screens/Profile/profile_top.dart';
 import 'package:stormymart/utility/auth_service.dart';
 
+import '../../utility/bottom_nav_bar.dart';
+
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -87,9 +89,9 @@ class _ProfileState extends State<Profile> {
         'Email': FirebaseAuth.instance.currentUser?.email,
         'Phone Number': '',
         'Gender': 'not selected',
-        'Address1': ['',''],
-        'Address2': ['',''],
-        'coins': 0,
+        'Address1': ['','not selected'],
+        'Address2': ['','not selected'],
+        'coins': 1000,
         'coupons': 0,
         'wishlist': 0
       });
@@ -334,7 +336,21 @@ class _ProfileState extends State<Profile> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          Authservice().signOut();
+                          //Authservice().signOut();
+                          try{
+                            Authservice().signOut();
+                            setState(() {
+                              Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
+                              );
+                            });
+                          }catch(error){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text('Error: $error')
+                                )
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey.shade200,//MaterialStateProperty.all(Colors.grey.shade200),

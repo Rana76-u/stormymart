@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 import '../../utility/auth_service.dart';
 
@@ -59,11 +60,26 @@ class _LoginPageState extends State<LoginPage> {
                   isLoading = true;
                 });
 
-                await Authservice().signInWithGoogle();
-
-                setState(() {
-                  isLoading = false;
+               //await Authservice().signInWithGoogle();
+                Authservice().signInWithGoogle().then((_) {
+                  setState(() {
+                    isLoading = false;
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
+                    );
+                  });
+                }).catchError((error) {
+                  // Handle any error that occurred during sign-in
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text('Error: $error')
+                    )
+                  );
+                  setState(() {
+                    isLoading = false;
+                  });
                 });
+                
               },
               child: const Text(
                 'Continue usign Google',

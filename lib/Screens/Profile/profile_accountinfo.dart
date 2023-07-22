@@ -18,9 +18,9 @@ class _AccountInfoState extends State<AccountInfo> {
 
   String name = '';
   String image = '';
-  String gender = '';
-  String division1 = '';
-  String division2 = '';
+  String? gender = '';
+  String? division1 = '';
+  String? division2 = '';
   String email = '';
   String phone = '';
   String address1 = '';
@@ -61,7 +61,7 @@ class _AccountInfoState extends State<AccountInfo> {
         'Gender': 'not selected',
         'Address1': ['', 'not selected'],
         'Address2': ['', 'not selected'],
-        'coins': 0,
+        'coins': 1000,
         'coupons': 0,
         'wishlist': 0,
       });
@@ -92,7 +92,7 @@ class _AccountInfoState extends State<AccountInfo> {
 
         nameController.text = name;
         imageController.text = image;
-        genderController.text = gender;
+        genderController.text = gender!;
         emailController.text = email;
         phoneNumberController.text = phone;
         address1Controller.text = address1;
@@ -101,6 +101,7 @@ class _AccountInfoState extends State<AccountInfo> {
         setState(() {
           _isDataLoaded = true;
         });
+        print(gender);
       }
     });
   }
@@ -234,7 +235,7 @@ class _AccountInfoState extends State<AccountInfo> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: DropdownButton<String>(
-                              value: gender,
+                              value: gender ?? 'not selected',
                               icon: const Icon(Icons.arrow_drop_down),
                               iconSize: 25,
                               elevation: 16,
@@ -324,7 +325,7 @@ class _AccountInfoState extends State<AccountInfo> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 15),
                               child: DropdownButton<String>(
-                                value: division1,
+                                value: division1 ?? 'not selected',
                                 icon: const Icon(Icons.arrow_drop_down),
                                 iconSize: 25,
                                 elevation: 16,
@@ -393,7 +394,7 @@ class _AccountInfoState extends State<AccountInfo> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 15),
                               child: DropdownButton<String>(
-                                value: division2,
+                                value: division2 ?? 'not selected',
                                 icon: const Icon(Icons.arrow_drop_down),
                                 iconSize: 25,
                                 elevation: 16,
