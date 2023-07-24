@@ -61,16 +61,19 @@ class _RecommandedForYouState extends State<RecommandedForYou> {
                                   if(snapshot.hasData){
                                     String docID = snapshot.data!.docs.first.id;
                                     return FutureBuilder(
-                                      future: product.reference.collection('/Variations').doc(docID).get(),
-                                      builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                                        if(snapshot.hasData){
+                                      future: FirebaseFirestore
+                                          .instance
+                                          .collection('/Products/${product.id}/Variations').doc(docID).get(),
+                                      builder: (context, imageSnapshot) {
+                                        if(imageSnapshot.hasData){
+                                          print(imageSnapshot.data?['images'][0]);
                                           return CustomImage(
-                                            snapshot.data?['images'][0],
+                                            imageSnapshot.data?['images'][0],
                                             radius: 10,
                                             width: 200,
                                             height: 210,//210
                                           );
-                                        }else if(snapshot.connectionState == ConnectionState.waiting){
+                                        }else if(imageSnapshot.connectionState == ConnectionState.waiting){
                                           return const Center(
                                             child: LinearProgressIndicator(),
                                           );
