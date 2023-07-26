@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stormymart/Screens/Cart/cart.dart';
+import 'package:stormymart/Screens/Profile/profile_accountinfo.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 class CheckOut extends StatefulWidget {
@@ -29,8 +31,10 @@ class CheckOut extends StatefulWidget {
 class _CheckOutState extends State<CheckOut> {
 
   String randomID = "";
-  String selectedAddress = '';
+  String? selectedAddress = '';
   bool isLoading = false;
+  Random random = Random();
+  int randomNumber = 0;
 
   @override
   void initState() {
@@ -126,7 +130,9 @@ class _CheckOutState extends State<CheckOut> {
         ),
         leading: GestureDetector(
           onTap: (){
-            Navigator.of(context).pop();
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const Cart(),)
+            );
           },
           child: const Icon(
               Icons.arrow_back_ios_new_rounded
@@ -212,14 +218,16 @@ class _CheckOutState extends State<CheckOut> {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 15),
                                 child: DropdownButton<String>(
-                                  value: selectedAddress,
+                                  value: selectedAddress ?? 'no address found',
                                   icon: const Icon(Icons.arrow_drop_down),
                                   iconSize: 25,
                                   elevation: 16,
                                   isExpanded: true,
                                   autofocus: true,
-                                  style: const TextStyle(
-                                    color: Colors.black,
+                                  style: TextStyle(
+                                    color: selectedAddress == 'Address1 Not Found' || selectedAddress == 'Address2 Not Found'
+                                        ? Colors.red
+                                        : Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   underline: const SizedBox(),
@@ -229,8 +237,8 @@ class _CheckOutState extends State<CheckOut> {
                                     });
                                   },
                                   items: <String>[
-                                    snapshot.data!.get('Address1')[0],
-                                    snapshot.data!.get('Address2')[0],
+                                    snapshot.data!.get('Address1')[0] ?? 'Address1 Not Found',
+                                    snapshot.data!.get('Address2')[0] ?? 'Address2 Not Found',
                                   ].map<DropdownMenuItem<String>>((String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
@@ -241,21 +249,28 @@ class _CheckOutState extends State<CheckOut> {
                               ),
                               const SizedBox(height: 10,),
                               
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.greenAccent.withOpacity(0.15)
-                                ),
-                                width: double.infinity,
-                                child: const Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child: Text(
-                                    'Click Here To Edit Details',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Urbanist',
-                                        overflow: TextOverflow.ellipsis,
-                                      color: Colors.blueGrey,
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => const AccountInfo(),)
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.greenAccent.withOpacity(0.15)
+                                  ),
+                                  width: double.infinity,
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Text(
+                                      'Click Here To Edit Details',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Urbanist',
+                                          overflow: TextOverflow.ellipsis,
+                                        color: Colors.blueGrey,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -362,24 +377,34 @@ class _CheckOutState extends State<CheckOut> {
                                       isLoading = true;
                                     });
 
-                                    fetchCartItemsAndPlaceOrder();
+                                    if(selectedAddress == 'Address1 Not Found' || selectedAddress == 'Address2 Not Found'){
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                              content: Text('Please add at least 1 address')
+                                          )
+                                      );
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                    }else{
+                                      fetchCartItemsAndPlaceOrder();
 
-                                    setState(() {
-                                      isLoading = false;
+                                      setState(() {
+                                        isLoading = false;
 
-                                      if(isLoading == false){
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                                content: Text('Congratulations 🎉, Your Order has been Placed.')
-                                            )
-                                        );
+                                        if(isLoading == false){
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(
+                                                  content: Text('Congratulations 🎉, Your Order has been Placed.')
+                                              )
+                                          );
 
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 0),)
-                                        );
-                                      }
-                                    });
-
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 0),)
+                                          );
+                                        }
+                                      });
+                                    }
                                   },
                                   style: const ButtonStyle(
                                       backgroundColor: MaterialStatePropertyAll(Colors.green)
