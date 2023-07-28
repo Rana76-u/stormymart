@@ -66,7 +66,6 @@ class _RecommandedForYouState extends State<RecommandedForYou> {
                                           .collection('/Products/${product.id}/Variations').doc(docID).get(),
                                       builder: (context, imageSnapshot) {
                                         if(imageSnapshot.hasData){
-                                          print(imageSnapshot.data?['images'][0]);
                                           return CustomImage(
                                             imageSnapshot.data?['images'][0],
                                             radius: 10,

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,6 +26,9 @@ class _ProductScreenState extends State<ProductScreen> {
   int clickedIndex = 0;
   List<dynamic> sizes = [];
 
+  bool variationWarning = false;
+  bool sizeWarning = false;
+
   void checkLength() async {
     String id = widget.productId.toString().trim();
     final QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -44,7 +49,8 @@ class _ProductScreenState extends State<ProductScreen> {
   Color _cardColor(int i) {
     if (sizeSelected == i) {
       return Colors.green;
-    } else {
+    }
+    else {
       return Colors.white;
     }
   }
@@ -53,7 +59,8 @@ class _ProductScreenState extends State<ProductScreen> {
   Color _variationCardColor(int i) {
     if (variationSelected == i) {
       return Colors.green;
-    } else {
+    }
+    else {
       return Colors.blueGrey;
     }
   }
@@ -102,16 +109,17 @@ class _ProductScreenState extends State<ProductScreen> {
                                 onTap: () {
                                   setState(() {
                                     sizeSelected = i;
+                                    sizeWarning = false;
                                   });
                                 },
                                 child: Card(
-                                  color: _cardColor(i),
+                                  color: sizeWarning == false ? _cardColor(i) : Colors.red,
                                   shape: const CircleBorder(),
                                   child: Center(
                                     child: Text(
                                       sizes[i],
                                       style: TextStyle(
-                                        color: sizeSelected == i
+                                        color: sizeSelected == i || sizeWarning
                                             ? Colors.white
                                             : Colors.black,
                                         fontWeight: FontWeight.bold,
@@ -253,6 +261,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                               setState(() {
                                                 variationSelected = index;
                                                 imageSliderDocID = snapshot.data!.docs[index].id;
+                                                variationWarning = false;
                                               });
                                             },
                                             child: Container(
@@ -262,7 +271,8 @@ class _ProductScreenState extends State<ProductScreen> {
 
                                               decoration: BoxDecoration(
                                                   border: Border.all(
-                                                    color: _variationCardColor(index),
+                                                    color: variationWarning == false ?
+                                                    _variationCardColor(index) : Colors.red,
                                                     width: 2,//5
                                                   ),
                                                 borderRadius: BorderRadius.circular(10)
@@ -293,8 +303,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                                         }));
                                                   } else {
                                                     return const Center(
-                                                      child:
-                                                      CircularProgressIndicator(),
+                                                      child: CircularProgressIndicator(),
                                                     );
                                                   }
                                                 },
@@ -315,23 +324,64 @@ class _ProductScreenState extends State<ProductScreen> {
                             ),
                           ),
 
-                          //Discount
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.red.shade800,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Padding(
-                              padding:   const EdgeInsets.all(10),
-                              child: Text(
-                                'Discount: $discount%',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              //Discount
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.red.shade800,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Padding(
+                                  padding:   const EdgeInsets.all(10),
+                                  child: Text(
+                                    'Discount: $discount%',
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              const SizedBox(width: 10,),
+                              //wishlist
+                              GestureDetector(
+                                onTap: () async {
+                                  final messenger = ScaffoldMessenger.of(context);
+                                  await FirebaseFirestore
+                                      .instance
+                                      .collection('/userData')
+                                      .doc(FirebaseAuth.instance.currentUser!.uid).update({
+                                    'wishlist': FieldValue.arrayUnion([id])
+                                  });
+
+                                  messenger.showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Item added to Wishlist')
+                                    )
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.blueGrey,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: const Padding(
+                                    padding:   EdgeInsets.all(7),
+                                    child: Text(
+                                      '+ wishlist',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
 
                           //Title
@@ -485,9 +535,14 @@ class _ProductScreenState extends State<ProductScreen> {
                         ],
                       );
                     } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                      return Center(
+                      child: Column(
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height*0.45,),
+                          const CircularProgressIndicator(),
+                        ],
+                      ),
+                    );
                     }
                   },
                 ),
@@ -547,25 +602,36 @@ class _ProductScreenState extends State<ProductScreen> {
                               final messenger = ScaffoldMessenger.of(context);
                               final mediaQuery = MediaQuery.of(context);
 
-                              if(sizeSelected == -1 && sizeWidget.isNotEmpty){
-                                ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Size')));
-                              }else if(variationSelected == -1){
-                                ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Variant')));
-                              }else{
-                                String uid = FirebaseAuth.instance.currentUser!.uid;
-
-                                await FirebaseFirestore.instance.collection('userData/$uid/Cart/')
-                                .doc()
-                                .set({
-                                  //'1': FieldValue.arrayUnion(valuesToAdd)
-                                  'id': id,
-                                  'selectedSize': sizeSelected == -1 ? 'not applicable' : sizes[sizeSelected].toString(),
-                                  'variant': imageSliderDocID,
-                                  'quantity': quantity
+                              if(FirebaseAuth.instance.currentUser != null){
+                                setState(() {
+                                  sizeWarning = false;
+                                  variationWarning = false;
                                 });
+                                if(sizeSelected == -1 && sizeWidget.isNotEmpty){
+                                  setState(() {
+                                    sizeWarning = true;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Size')));
+                                }else if(variationSelected == -1){
+                                  setState(() {
+                                    variationWarning = true;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Variant')));
+                                }else{
+                                  String uid = FirebaseAuth.instance.currentUser!.uid;
 
-                                messenger.showSnackBar(
-                                    SnackBar(
+                                  await FirebaseFirestore.instance.collection('userData/$uid/Cart/')
+                                      .doc()
+                                      .set({
+                                    //'1': FieldValue.arrayUnion(valuesToAdd)
+                                    'id': id,
+                                    'selectedSize': sizeSelected == -1 ? 'not applicable' : sizes[sizeSelected].toString(),
+                                    'variant': imageSliderDocID,
+                                    'quantity': quantity
+                                  });
+
+                                  messenger.showSnackBar(
+                                      SnackBar(
                                         content: GestureDetector(
                                           onTap: (){
                                             Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),));
@@ -608,6 +674,55 @@ class _ProductScreenState extends State<ProductScreen> {
                                             ],
                                           ),
                                         ),
+                                        duration: const Duration(seconds: 3),
+                                      )
+                                  );
+                                }
+                              }else{
+                                messenger.showSnackBar(
+                                    SnackBar(
+                                      content: GestureDetector(
+                                        onTap: (){
+                                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),));
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SizedBox(
+                                              width: mediaQuery.size.width*0.4,
+                                              child: const Text(
+                                                'You\'re not logged in',
+                                                style: TextStyle(
+                                                    overflow: TextOverflow.clip
+                                                ),
+                                              ),
+                                            ),
+                                            if(mounted)...[
+                                              SizedBox(
+                                                width: mediaQuery.size.width*0.4,
+                                                child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(20)
+                                                    ),
+                                                  ),
+                                                  onPressed: (){
+                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),));
+                                                  },
+                                                  child: const Text(
+                                                    'Log In',
+                                                    style: TextStyle(
+                                                        fontFamily: 'Urbanist',
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 14.5
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ]
+                                          ],
+                                        ),
+                                      ),
                                       duration: const Duration(seconds: 3),
                                     )
                                 );
@@ -629,7 +744,10 @@ class _ProductScreenState extends State<ProductScreen> {
                 );
               }
               else if(snapshot.connectionState == ConnectionState.waiting){
-                return const LinearProgressIndicator();
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width*0.4,
+                  child: const LinearProgressIndicator(),
+                );
              }
               else{
                 return const Text('Error Loading');

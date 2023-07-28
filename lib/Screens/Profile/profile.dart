@@ -147,7 +147,7 @@ class _ProfileState extends State<Profile> {
                                         child: Icon(Icons.delivery_dining_outlined, color: Colors.white, size: 22,),
                                       ),
                                     ),
-                                    //Blood Donation Posts
+                                    //Text
                                     const Padding(
                                       padding: EdgeInsets.only(left: 15),
                                       child: Text(

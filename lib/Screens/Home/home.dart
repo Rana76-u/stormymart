@@ -5,7 +5,7 @@ import 'package:stormymart/Screens/Home/horizontal_category.dart';
 import 'package:stormymart/Screens/Home/hot_deals.dart';
 import 'package:stormymart/Screens/Home/imageslider.dart';
 import 'package:stormymart/Screens/Home/recommanded_for_you.dart';
-import 'package:stormymart/utility/auth_service.dart';
+import 'package:stormymart/Screens/Profile/Coins/coins.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 
@@ -19,6 +19,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  Future<void> _handleRefresh() async {
+    final navigator = Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => BottomBar(bottomIndex: 0),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return child;
+        },
+      ),
+    );
+
+    // Simulate a delay for the refresh indicator
+    await Future.delayed(const Duration(seconds: 1));
+
+    // Reload the same page by pushing a new instance onto the stack
+    navigator;
+  }
+
   @override
   Widget build(BuildContext context) {
     const padding = EdgeInsets.fromLTRB(24, 0, 24, 0);
@@ -176,53 +195,58 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverPadding(
-            padding: const EdgeInsets.all(0),
-            sliver: SliverAppBar(
-              iconTheme: const IconThemeData(
-                color: Colors.black,
-              ),
-              backgroundColor: Colors.white,
-              pinned: true,
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'StormyMart',
-                    style: TextStyle(
-                        color: Color(0xFF212121),
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Urbanist'
+      body: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverPadding(
+              padding: const EdgeInsets.all(0),
+              sliver: SliverAppBar(
+                iconTheme: const IconThemeData(
+                  color: Colors.black,
+                ),
+                backgroundColor: Colors.white,
+                pinned: true,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'StormyMart',
+                      style: TextStyle(
+                          color: Color(0xFF212121),
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Urbanist'
+                      ),
+                      textAlign: TextAlign.start,
                     ),
-                    textAlign: TextAlign.start,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Authservice().signOut();
-                    },
-                    child: Image.asset(
-                        'assets/lottie/gold-coin.gif',
-                      height: 60,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => const Coins(),)
+                        );
+                      },
+                      child: Image.asset(
+                          'assets/lottie/gold-coin.gif',
+                        height: 60,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              //flexibleSpace: HomePageHeader(),
-            ),
-          ),
-          SliverPadding(
-            padding: padding,
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                ((context, index) => _buildBody(context)),
-                childCount: 1,
+                  ],
+                ),
+                //flexibleSpace: HomePageHeader(),
               ),
             ),
-          ),
-        ],
+            SliverPadding(
+              padding: padding,
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  ((context, index) => _buildBody(context)),
+                  childCount: 1,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

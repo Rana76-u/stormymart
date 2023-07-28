@@ -43,7 +43,7 @@ class _MyOrdersState extends State<MyOrders> {
               ),
               const SizedBox(height: 5,),
 
-              //Order Items
+              //Pending Order
               const Padding(
                 padding: EdgeInsets.only(top: 10, left: 15),
                 child: Text(
@@ -56,10 +56,10 @@ class _MyOrdersState extends State<MyOrders> {
                 ),
               ),
 
-              //const PendingOrders(),
+              //PendingOrders,
               const PendingOrders(),
 
-              const SizedBox(height: 200,)
+              const SizedBox(height: 200,),
             ],
           ),
         ),

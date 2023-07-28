@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stormymart/Screens/Profile/Coins/coins.dart';
+import 'package:stormymart/Screens/Profile/Wishlists/wishlist.dart';
 import 'package:stormymart/Screens/Profile/profile_accountinfo.dart';
 
 class ProfileTop extends StatefulWidget {
@@ -88,9 +90,14 @@ class _ProfileTopState extends State<ProfileTop> {
         ),
         //Three items
         FutureBuilder(
-          future:  FirebaseFirestore.instance.collection('userData').doc(FirebaseAuth.instance.currentUser!.uid).get(),
+          future:  FirebaseFirestore
+              .instance
+              .collection('userData')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .get(),
           builder: (context, snapshot) {
             if(snapshot.hasData){
+              List wishlist = snapshot.data!.get('wishlist');
               return Positioned(
                 top: MediaQuery.of(context).size.height*0.21,
                 left: MediaQuery.of(context).size.height*0.07,
@@ -100,25 +107,32 @@ class _ProfileTopState extends State<ProfileTop> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     //wishlist
-                    Column(
-                      children: [
-                        Text(
-                          snapshot.data!.get('wishlist').toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const Text(
-                          'Wishlist',
-                          style: TextStyle(
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => const WishList(),)
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Text(
+                            wishlist.length.toString(),
+                            style: const TextStyle(
                               color: Colors.white,
+                              fontWeight: FontWeight.bold,
                               overflow: TextOverflow.ellipsis,
-                              fontFamily: 'Urbanist'
+                            ),
                           ),
-                        )
-                      ],
+                          const Text(
+                            'Wishlist',
+                            style: TextStyle(
+                                color: Colors.white,
+                                overflow: TextOverflow.ellipsis,
+                                fontFamily: 'Urbanist'
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                     //Coupons
                     Column(
@@ -142,25 +156,32 @@ class _ProfileTopState extends State<ProfileTop> {
                       ],
                     ),
                     //Points
-                    Column(
-                      children: [
-                        Text(
-                          snapshot.data!.get('coins').toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const Text(
-                          'Coins',
-                          style: TextStyle(
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => const Coins(),)
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Text(
+                            snapshot.data!.get('coins').toString(),
+                            style: const TextStyle(
                               color: Colors.white,
+                              fontWeight: FontWeight.bold,
                               overflow: TextOverflow.ellipsis,
-                              fontFamily: 'Urbanist'
+                            ),
                           ),
-                        )
-                      ],
+                          const Text(
+                            'Coins',
+                            style: TextStyle(
+                                color: Colors.white,
+                                overflow: TextOverflow.ellipsis,
+                                fontFamily: 'Urbanist'
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),
