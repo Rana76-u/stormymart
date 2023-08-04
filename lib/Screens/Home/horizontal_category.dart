@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:slide_countdown/slide_countdown.dart';
+import 'package:stormymart/Components/custom_image.dart';
 
 class MostPupularCategory extends StatefulWidget {
   const MostPupularCategory({super.key});
@@ -102,9 +103,9 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
                 ) :
                 ClipRRect(
                   borderRadius: BorderRadius.circular(9),
-                  child: Image.network(
+                  child: CustomImage(
                     data[1],
-                    fit: BoxFit.cover,
+                    radius: 10,
                   ),
                 ),
               ),

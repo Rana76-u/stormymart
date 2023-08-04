@@ -35,14 +35,13 @@ class _CartState extends State<Cart> {
 
   List<dynamic> productTitles = [];
   List<dynamic> productPrices = [];
-  List<dynamic> productQuantities = [];
 
   List<String> cartItemIds = [];
   List<String> cartDocumentIds = [];
   List<String> cartItemSizes = [];
   List<String> cartItemVariants = [];
   List<int> cartItemQuantities = [];
-  List<int> productDiscounts = [];
+  List<dynamic> productDiscounts = []; //was Int
   List<String> productImages = [];
   List<double> priceAfterDiscount = [];
 
@@ -101,11 +100,10 @@ class _CartState extends State<Cart> {
           .doc(cartItemIds[i].trim())
           .get();
 
-      productTitles.add(productSnapshot.get('title'));
-      productPrices.add(productSnapshot.get('price'));
-      productDiscounts.add(productSnapshot.get('discount'));
-      priceAfterDiscount.add((productSnapshot.get('price') / 100) * (100 - productSnapshot.get('discount')));
-
+      productTitles.add(productSnapshot.get('title')); //productSnapshot.get('title')
+      productPrices.add(productSnapshot.get('price')); //productSnapshot.get('price')
+      productDiscounts.add(productSnapshot.get('discount')); //double.parse(productSnapshot.get('discount'))
+      priceAfterDiscount.add((productSnapshot.get('price') / 100) * (100 - productSnapshot.get('discount'))); //(productSnapshot.get('price') / 100) * (100 - productSnapshot.get('discount'))
     }
   }
 
@@ -238,12 +236,12 @@ class _CartState extends State<Cart> {
           ),
         )
             :
-        isLoading ? Center(
+        /*isLoading ? Center(
           child: SizedBox(
             width: MediaQuery.of(context).size.width*0.5,
             child: const LinearProgressIndicator(),
           ),
-        ) :
+        ) :*/
         SingleChildScrollView(
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),

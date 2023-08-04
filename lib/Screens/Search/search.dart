@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:stormymart/utility/globalvariable.dart';
 import '../../Components/custom_image.dart';
 import '../../theme/color.dart';
 import '../Product Screen/product_screen.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  String? keyword;
+
+  SearchPage({super.key, this.keyword});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -30,9 +33,13 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(_focusNode);
-    });
+    if(widget.keyword != null){
+      filterProductsByKeyword();
+    }else{
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        FocusScope.of(context).requestFocus(_focusNode);
+      });
+    }
   }
 
   @override
@@ -81,6 +88,34 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
+  // Function to filter the products based on selected option
+  void filterProductsByKeyword({double? minPrice, double? maxPrice, double? minRating}) async {
+    setState(() {
+      _isSearching = true;
+    });
+    // Filter the Firestore collection by 'keywords' field
+    var keywordQuery = FirebaseFirestore.instance
+        .collection('/Products')
+        .where('keywords', arrayContains: widget.keyword?.toLowerCase());
+
+    var keywordSnapshot = await keywordQuery.get();
+    var keywordDocs = keywordSnapshot.docs;
+
+    var filteredDocs = keywordDocs.where((doc) {
+      var data = doc.data();
+      var price = data['price'].toDouble();
+      var rating = data['rating'].toDouble();
+      return (minPrice == null || price >= minPrice) &&
+          (maxPrice == null || price <= maxPrice) &&
+          (minRating == null || rating >= minRating);
+    }).toList();
+
+    setState(() {
+      _searchResults = filteredDocs;
+      _isSearching = false;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +127,7 @@ class _SearchPageState extends State<SearchPage> {
           children: [
             //Space From Top
             SizedBox(
-              height: MediaQuery.of(context).size.height*0.04,
+              height: MediaQuery.of(context).size.height*0.045,
             ),
             //Page title
             const Row(
@@ -159,6 +194,8 @@ class _SearchPageState extends State<SearchPage> {
                       onChanged: (value) {
                         // Start the search when the user enters a value in the text field
                         setState(() {
+                          widget.keyword = null;
+                          keyword = null;
                           isTyping = true;
                           searchedText = _searchController.text;
                           isFilterOpen = false;
@@ -193,6 +230,7 @@ class _SearchPageState extends State<SearchPage> {
                 ],
               ),
             ),
+
             // A loading indicator while the search is in progress
             _isSearching ? const LinearProgressIndicator()
                 : const SizedBox(
@@ -292,7 +330,49 @@ class _SearchPageState extends State<SearchPage> {
               ) : const SizedBox(),
             ),
 
-            if(isTyping == false)...[
+            //Keyword
+            if(widget.keyword != null)...[
+              Padding(
+                padding: const EdgeInsets.only(top: 10, left: 10, bottom: 5),
+                child: Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.blueGrey,
+                          borderRadius: BorderRadius.circular(5)
+                      ),
+                      padding: const EdgeInsets.only(top: 5, bottom: 6, left: 10, right: 10),
+                      child: Text(
+                        widget.keyword!.isNotEmpty ? '${widget.keyword}' : '',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Urbanist',
+                            fontSize: 20,
+                            color: Colors.white
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 5,),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          widget.keyword = null;
+                          keyword = null;
+                        });
+
+                        performSearch('');
+                      },
+                      child: const Icon(
+                          Icons.cancel_outlined,
+                        color: Colors.grey,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+
+            if(isTyping == false || widget.keyword != null)...[
               // The search results are displayed in a list view
               Expanded(
                 child: GridView.builder(

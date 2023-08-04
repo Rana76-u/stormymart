@@ -1,6 +1,7 @@
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
 import 'package:stormymart/Screens/Search/search.dart';
+import 'package:stormymart/utility/globalvariable.dart';
 import '../Screens/Cart/cart.dart';
 import '../Screens/Home/home.dart';
 import '../Screens/Profile/profile.dart';
@@ -23,7 +24,7 @@ class _BottomBarState extends State<BottomBar> {
       return const HomePage();
     }else if(widget.bottomIndex == 1){
       previousIndex = 1;
-      return const SearchPage(); //ShopHomePage
+      return SearchPage(keyword: keyword,); //ShopHomePage
     }else if(widget.bottomIndex == 2){
       previousIndex = 2;
       return const Cart(); //Main screen Buy & Sell will be here

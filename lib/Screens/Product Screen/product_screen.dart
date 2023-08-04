@@ -103,8 +103,6 @@ class _ProductScreenState extends State<ProductScreen> {
                         for (int i = 0; i < sizes.length; i++) {
                           sizeWidget.add(
                             SizedBox(
-                              height: 45,
-                              width: 45,
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -114,16 +112,21 @@ class _ProductScreenState extends State<ProductScreen> {
                                 },
                                 child: Card(
                                   color: sizeWarning == false ? _cardColor(i) : Colors.red,
-                                  shape: const CircleBorder(),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100)
+                                  ),
                                   child: Center(
-                                    child: Text(
-                                      sizes[i],
-                                      style: TextStyle(
-                                        color: sizeSelected == i || sizeWarning
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 10, bottom: 10, right: 15, left: 15),
+                                      child: Text(
+                                        sizes[i],
+                                        style: TextStyle(
+                                          color: sizeSelected == i || sizeWarning
+                                              ? Colors.white
+                                              : Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -223,7 +226,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
                           //Variation Name & Images
                           SizedBox(
-                            height: 112,
+                            height: 115,
                             width: double.infinity,
                             child: ListView.builder(
                               controller: scrollController,

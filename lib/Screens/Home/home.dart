@@ -6,7 +6,9 @@ import 'package:stormymart/Screens/Home/hot_deals.dart';
 import 'package:stormymart/Screens/Home/imageslider.dart';
 import 'package:stormymart/Screens/Home/recommanded_for_you.dart';
 import 'package:stormymart/Screens/Profile/Coins/coins.dart';
+import 'package:stormymart/Screens/Search/search.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
+import 'package:stormymart/utility/globalvariable.dart';
 
 
 import '../../Components/searchfield.dart';
@@ -132,39 +134,45 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             //Electronics
-            const ExpansionTile(
+            ExpansionTile(
               iconColor: Colors.amber,
               textColor: Colors.amber,
-              title: Text('Electronics'),
-              leading: Icon(Icons.electric_bolt),
-              childrenPadding: EdgeInsets.only(left: 40),
+              title: const Text('Electronics'),
+              leading: const Icon(Icons.electric_bolt),
+              childrenPadding: const EdgeInsets.only(left: 40),
               children: [
                 ExpansionTile(
                   iconColor: Colors.grey,
                   textColor: Colors.grey,
-                  title: Text("Laptop"),
-                  leading: Icon(Icons.laptop),
-                  childrenPadding: EdgeInsets.only(left: 40),
+                  title: const Text("Laptop"),
+                  leading: const Icon(Icons.laptop),
+                  childrenPadding: const EdgeInsets.only(left: 40),
                   children: [
-                    ListTile(
+                    const ListTile(
                       title: Text("Asus"),
                     ),
                     ListTile(
-                      title: Text("Apple"),
+                      title: const Text("Apple"),
+                      onTap: () {
+                        keyword = 'Apple';
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+                        );
+                      },
                     ),
-                    ListTile(
+                    const ListTile(
                       title: Text("Hp"),
                     ),
-                    ListTile(
+                    const ListTile(
                       title: Text("Samsung"),
                     ),
                   ],
                 ),
-                ListTile(
+                const ListTile(
                   title: Text("Phone"),
                   leading: Icon(Icons.phone_iphone_outlined),
                 ),
-                ListTile(
+                const ListTile(
                   title: Text("Headphones"),
                   leading: Icon(Icons.headphones),
                 ),

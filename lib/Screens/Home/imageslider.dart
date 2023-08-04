@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:stormymart/Components/custom_image.dart';
 
 class ImageSlider extends StatelessWidget {
   const ImageSlider({super.key});
@@ -40,9 +41,11 @@ class ImageSlider extends StatelessWidget {
                     autoPlayInterval: 3500,
                     isLoop: true,
                     children: List.generate(images.length, (index) {
-                      return Image.network(
+                      return CustomImage(
                         images[index],
-                        fit: BoxFit.cover,
+                        radius: 10,
+                        height: 200,
+                        //fit: BoxFit.cover,
                       );
                     })
                 ),

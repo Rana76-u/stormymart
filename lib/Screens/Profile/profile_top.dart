@@ -98,6 +98,7 @@ class _ProfileTopState extends State<ProfileTop> {
           builder: (context, snapshot) {
             if(snapshot.hasData){
               List wishlist = snapshot.data!.get('wishlist');
+              List coupons = snapshot.data!.get('coupons');
               return Positioned(
                 top: MediaQuery.of(context).size.height*0.21,
                 left: MediaQuery.of(context).size.height*0.07,
@@ -138,7 +139,7 @@ class _ProfileTopState extends State<ProfileTop> {
                     Column(
                       children: [
                         Text(
-                          snapshot.data!.get('coupons').toString(),
+                          coupons.length.toString(),
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

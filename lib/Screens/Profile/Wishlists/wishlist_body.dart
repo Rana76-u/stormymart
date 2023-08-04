@@ -136,10 +136,22 @@ class _WishListBodyState extends State<WishListBody> {
                           foregroundColor: Colors.redAccent,
                           padding: const EdgeInsets.all(10),
                           onPressed: (context) async {
-                            /*deleteDocument(index);
-                            Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
-                            );*/
+
+                            setState(() {
+                              isLoading = true;
+                            });
+
+                            await FirebaseFirestore
+                                .instance
+                                .collection('/userData')
+                                .doc(FirebaseAuth.instance.currentUser!.uid).update({
+                              'wishlist': FieldValue.arrayRemove([wishListItemIds[index]])
+                            });
+
+                            setState(() {
+                              wishListItemIds.removeAt(index);
+                              isLoading = false;
+                            });
                           },
                         ),
                       ],
