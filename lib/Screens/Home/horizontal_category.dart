@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 import 'package:stormymart/Components/custom_image.dart';
 
+import '../../utility/bottom_nav_bar.dart';
+import '../../utility/globalvariable.dart';
+
 class MostPupularCategory extends StatefulWidget {
   const MostPupularCategory({super.key});
 
@@ -101,21 +104,37 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
                     Icons.select_all_rounded,
                   color: isActive ? Colors.white : Colors.grey,
                 ) :
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(9),
-                  child: CustomImage(
-                    data[1],
-                    radius: 10,
+                GestureDetector(
+                  onTap: () {
+                    keyword = data[0];
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(9),
+                    child: CustomImage(
+                      data[1],
+                      radius: 10,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 7,),
-              Text(
-                data[0],
-                style: TextStyle(
-                  color: isActive ? const Color(0xFFFFFFFF) : Colors.grey,
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
+              GestureDetector(
+                onTap: () {
+                  keyword = data[0];
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+                  );
+                },
+                child: Text(
+                  data[0],
+                  style: TextStyle(
+                    color: isActive ? const Color(0xFFFFFFFF) : Colors.grey,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],

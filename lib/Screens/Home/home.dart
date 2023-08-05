@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stormymart/Screens/Home/gridview.dart';
@@ -6,7 +7,6 @@ import 'package:stormymart/Screens/Home/hot_deals.dart';
 import 'package:stormymart/Screens/Home/imageslider.dart';
 import 'package:stormymart/Screens/Home/recommanded_for_you.dart';
 import 'package:stormymart/Screens/Profile/Coins/coins.dart';
-import 'package:stormymart/Screens/Search/search.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
 import 'package:stormymart/utility/globalvariable.dart';
 
@@ -133,72 +133,55 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            //Electronics
-            ExpansionTile(
-              iconColor: Colors.amber,
-              textColor: Colors.amber,
-              title: const Text('Electronics'),
-              leading: const Icon(Icons.electric_bolt),
-              childrenPadding: const EdgeInsets.only(left: 40),
-              children: [
-                ExpansionTile(
-                  iconColor: Colors.grey,
-                  textColor: Colors.grey,
-                  title: const Text("Laptop"),
-                  leading: const Icon(Icons.laptop),
-                  childrenPadding: const EdgeInsets.only(left: 40),
-                  children: [
-                    const ListTile(
-                      title: Text("Asus"),
-                    ),
-                    ListTile(
-                      title: const Text("Apple"),
-                      onTap: () {
-                        keyword = 'Apple';
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
-                        );
-                      },
-                    ),
-                    const ListTile(
-                      title: Text("Hp"),
-                    ),
-                    const ListTile(
-                      title: Text("Samsung"),
-                    ),
-                  ],
-                ),
-                const ListTile(
-                  title: Text("Phone"),
-                  leading: Icon(Icons.phone_iphone_outlined),
-                ),
-                const ListTile(
-                  title: Text("Headphones"),
-                  leading: Icon(Icons.headphones),
-                ),
-              ],
-            ),
-            //Home Appliances
-            const ExpansionTile(
-              iconColor: Colors.amber,
-              textColor: Colors.amber,
-              title: Text('Home Appliances'),
-              leading: Icon(Icons.home_work_outlined),
-              childrenPadding: EdgeInsets.only(left: 60),
-              children: [
-                ListTile(
-                  title: Text("Kitchen"),
-                  leading: Icon(Icons.kitchen),
-                ),
-                ListTile(
-                  title: Text("Bedroom"),
-                  leading: Icon(Icons.bed),
-                ),
-                ListTile(
-                  title: Text("Interior"),
-                  leading: Icon(Icons.interests),
-                ),
-              ],
+
+            //Drawer items
+            FutureBuilder(
+              future: FirebaseFirestore.instance.collection('/Category').doc('/Drawer').get(),
+              builder: (context, snapshot) {
+                if(snapshot.hasData){
+                  int length = snapshot.data!.data()!.keys.length;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: length,
+                    itemBuilder: (context, index) {
+                      String title = snapshot.data!.data()!.keys.elementAt(index);
+                      List<dynamic> subCategories = snapshot.data!.get(title);
+                      return ExpansionTile(
+                        iconColor: Colors.amber,
+                        textColor: Colors.amber,
+                        title: Text(title),
+                        childrenPadding: const EdgeInsets.only(left: 60),
+                        children: List.generate(
+                            subCategories.length,
+                                (index) {
+                                  return ListTile(
+                                    title: Text(subCategories[index]),
+                                    //leading: const Icon(Icons.kitchen),
+                                      onTap: () {
+                                        keyword = subCategories[index];
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+                                        );
+                                      },
+                                  );
+                                },
+                        ),
+                      );
+                    },
+                  );
+                }
+                else if(snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(
+                    child: LinearProgressIndicator(),
+                  );
+                }
+                else{
+                  return const Center(
+                    child: Text('Nothings Here'),
+                  );
+                }
+              },
             ),
           ],
         ),
