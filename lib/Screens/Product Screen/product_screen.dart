@@ -69,7 +69,7 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     String id = widget.productId.toString().trim();
-    List<SizedBox> sizeWidget = [];
+
     return Scaffold(
       backgroundColor: appBgColor,
       body: Column(
@@ -98,44 +98,6 @@ class _ProductScreenState extends State<ProductScreen> {
 
                       //SIZE LIST
                       sizes = snapshot.data!.get('size');
-                      //List<SizedBox> sizeWidget = [];
-                      if(sizeWidget.isEmpty){
-                        for (int i = 0; i < sizes.length; i++) {
-                          sizeWidget.add(
-                            SizedBox(
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    sizeSelected = i;
-                                    sizeWarning = false;
-                                  });
-                                },
-                                child: Card(
-                                  color: sizeWarning == false ? _cardColor(i) : Colors.red,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100)
-                                  ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 10, bottom: 10, right: 15, left: 15),
-                                      child: Text(
-                                        sizes[i],
-                                        style: TextStyle(
-                                          color: sizeSelected == i || sizeWarning
-                                              ? Colors.white
-                                              : Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 17,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                      }
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -473,14 +435,48 @@ class _ProductScreenState extends State<ProductScreen> {
                             ),
                           ),
 
-                          //SIZES
-                          if(sizeWidget.isNotEmpty)...[
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10, bottom: 10),
-                              child: Row(
-                                children: sizeWidget,
+                          //Show Sizes
+                          if(sizes.isEmpty)...[const SizedBox()]
+                          else...[
+                            SizedBox(
+                              height: 50,
+                              width: double.infinity,
+                              child: ListView.builder(
+                                itemCount: sizes.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        sizeSelected = index;
+                                        sizeWarning = false;
+                                      });
+                                    },
+                                    child: Card(
+                                      color: sizeWarning == false ? _cardColor(index) : Colors.red,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(100)
+                                      ),//CircleBorder()
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 10, bottom: 10, right: 15, left: 15),
+                                          child: Text(
+                                            sizes[index],
+                                            style: TextStyle(
+                                              color: sizeSelected == index || sizeWarning
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            ),
+                            )
                           ],
 
                           // Quantity
@@ -610,7 +606,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                   sizeWarning = false;
                                   variationWarning = false;
                                 });
-                                if(sizeSelected == -1 && sizeWidget.isNotEmpty){
+                                if(sizeSelected == -1 && sizes.isNotEmpty){
                                   setState(() {
                                     sizeWarning = true;
                                   });
