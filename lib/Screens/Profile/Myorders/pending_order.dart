@@ -12,20 +12,36 @@ class PendingOrders extends StatefulWidget {
 
 class _PendingOrdersState extends State<PendingOrders> {
 
-  Future<bool> isDocumentExists(String collectionID,String docID) async {
-    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-        await FirebaseFirestore.instance.collection(collectionID).doc(docID).get();
+  bool isLoading = false;
+  List<String> docIds = [];
 
-    if(documentSnapshot.exists) {
-      return true;
-    } else {
-      return false;
-    }
+  @override
+  void initState() {
+    isLoading = true;
+    fetchDocIds();
+    super.initState();
   }
+
+  Future<void> fetchDocIds() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('/Products').get();
+
+    for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      docIds.add(documentSnapshot.id);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return isLoading ?
+    const Center(
+      child: CircularProgressIndicator(),
+    ) :
+    FutureBuilder(
       future: FirebaseFirestore
           .instance
           .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Pending Orders')
@@ -40,7 +56,7 @@ class _PendingOrdersState extends State<PendingOrders> {
             itemBuilder: (context, index) {
               return Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.5)
+                    borderRadius: BorderRadius.circular(12.5)
                 ),
                 child: FutureBuilder(
                   future: FirebaseFirestore
@@ -74,12 +90,12 @@ class _PendingOrdersState extends State<PendingOrders> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 0, left: 15),
                                 child: SelectableText(
-                                      "sku: ${pendingOrderSnapshot.data!.docs[index].id}",
+                                  "sku: ${pendingOrderSnapshot.data!.docs[index].id}",
                                   style: const TextStyle(
                                       fontSize: 12.5,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: 'Urbanist',
-                                    color: Colors.grey
+                                      color: Colors.grey
                                   ),
                                 ),
                               ),
@@ -87,12 +103,12 @@ class _PendingOrdersState extends State<PendingOrders> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 0, left: 15),
                                 child: Text(
-                                      "Placed on : ${pendingOrderSnapshot.data!.docs[index].get('time')}",
+                                  "Placed on : ${pendingOrderSnapshot.data!.docs[index].get('time')}",
                                   style: const TextStyle(
                                       fontSize: 12.5,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: 'Urbanist',
-                                    color: Colors.grey
+                                      color: Colors.grey
                                   ),
                                 ),
                               )
@@ -134,25 +150,17 @@ class _PendingOrdersState extends State<PendingOrders> {
                                   child: SizedBox(
                                     height: 170,
                                     width: double.infinity,
-                                    child: FutureBuilder(
-                                      future: FirebaseFirestore.instance
-                                        .collection('/Products')
-                                      .get(),
-                                      builder: (context, checkIdSnapshot) {
-                                        if(checkIdSnapshot.hasData){
-                                          List<String> documentIds = checkIdSnapshot.data!.docs.map((doc) => doc.id).toList();
-                                          if(!documentIds.contains(orderListSnapshot.data!.docs[index].get('productId'))){
-                                            return const Center(
+                                    child: (!docIds.contains(orderListSnapshot.data!.docs[index].get('productId'))) ?
+                                            const Center(
                                               child: Text(
                                                 'Item Got Deleted',
                                                 style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.grey
                                                 ),
                                               ),
-                                            );
-                                          }else{
-                                            return Row(
+                                            )
+                                          : Row(
                                               children: [
 
                                                 //Image
@@ -314,12 +322,7 @@ class _PendingOrdersState extends State<PendingOrders> {
                                                 ),
 
                                               ],
-                                            );
-                                          }
-                                        }
-                                        return const SizedBox();
-                                      },
-                                    ),
+                                            )
                                   ),
                                 );
                               },
@@ -350,18 +353,18 @@ class _PendingOrdersState extends State<PendingOrders> {
                                 const Text(
                                   'Total Payable Amount : ',
                                   style: TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Urbanist'
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Urbanist'
                                   ),
                                 ),
 
                                 Text(
                                   '${pendingOrderSnapshot.data!.docs[index].get('total')}',
                                   style: const TextStyle(
-                                      //color: Colors.orange,
-                                      fontWeight: FontWeight.w800,
-                                      //fontFamily: 'Urbanist'
+                                    //color: Colors.orange,
+                                    fontWeight: FontWeight.w800,
+                                    //fontFamily: 'Urbanist'
                                   ),
                                 ),
                               ],

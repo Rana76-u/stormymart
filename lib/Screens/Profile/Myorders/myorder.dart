@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stormymart/Screens/Profile/Myorders/pending_order.dart';
+import 'package:stormymart/Screens/Profile/profile.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 class MyOrders extends StatefulWidget {
   const MyOrders({super.key});
@@ -21,14 +23,18 @@ class _MyOrdersState extends State<MyOrders> {
               SizedBox(height: MediaQuery.of(context).size.height*0.05,),
               Row(
                 children: [
+                  //Arrow
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
+                      );
                     },
                     child: const Icon(
                         Icons.arrow_back_rounded
                     ),
                   ),
+
                   const Expanded(child: SizedBox()),
                   const Text(
                     'My Orders',

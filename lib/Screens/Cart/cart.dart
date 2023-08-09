@@ -48,31 +48,28 @@ class _CartState extends State<Cart> {
   bool isLoading = true;
   bool isDeleting = false;
 
+  List<String> allProductDocIds = [];
+
   @override
   void initState() {
     super.initState();
     if(FirebaseAuth.instance.currentUser != null){
-      fetchCartItems();
+      fetchAllProductDocIds();
     }else{
       isLoading = false;
     }
   }
 
-  void fetchUserData() async {
-    final userDataSnapshot = await FirebaseFirestore.instance
-        .collection('userData')
-        .doc(uid)
-        .get();
+  Future<void> fetchAllProductDocIds() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('/Products').get();
 
-    availableCoins = userDataSnapshot.get('coins');
-    if( userDataSnapshot.get('Address1')[1] == 'Dhaka' ||
-        userDataSnapshot.get('Address2')[1] == 'Dhaka'){
-      deliveryCharge = 50;
-    }else{
-      deliveryCharge = 100;
+    for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      allProductDocIds.add(documentSnapshot.id);
     }
+    fetchCartItems();
   }
-  
+
   void fetchCartItems() async {
     final cartSnapshot = await FirebaseFirestore.instance
         .collection('userData')
@@ -95,15 +92,30 @@ class _CartState extends State<Cart> {
 
   Future<void> fetchProductDetails() async {
     for (int i = 0; i < cartItemIds.length; i++) {
-      final productSnapshot = await FirebaseFirestore.instance
-          .collection('/Products')
-          .doc(cartItemIds[i].trim())
-          .get();
 
-      productTitles.add(productSnapshot.get('title')); //productSnapshot.get('title')
-      productPrices.add(productSnapshot.get('price')); //productSnapshot.get('price')
-      productDiscounts.add(productSnapshot.get('discount')); //double.parse(productSnapshot.get('discount'))
-      priceAfterDiscount.add((productSnapshot.get('price') / 100) * (100 - productSnapshot.get('discount'))); //(productSnapshot.get('price') / 100) * (100 - productSnapshot.get('discount'))
+      if(allProductDocIds.contains(cartItemIds[i].trim())){
+        final productSnapshot = await FirebaseFirestore.instance
+            .collection('/Products')
+            .doc(cartItemIds[i].trim())
+            .get();
+
+        productTitles.add(productSnapshot.get('title')); //productSnapshot.get('title')
+        productPrices.add(productSnapshot.get('price')); //productSnapshot.get('price')
+        productDiscounts.add(productSnapshot.get('discount')); //double.parse(productSnapshot.get('discount'))
+        priceAfterDiscount.add((productSnapshot.get('price') / 100) * (100 - productSnapshot.get('discount')));
+      }
+      else{
+        setState(() {
+
+          FirebaseFirestore.instance
+              .collection('userData')
+              .doc(uid)
+              .collection('Cart').doc(cartDocumentIds[i].trim()).delete();
+
+          cartItemIds.removeAt(i);
+          cartDocumentIds.removeAt(i);
+        });
+      }
     }
   }
 
@@ -116,6 +128,21 @@ class _CartState extends State<Cart> {
 
       productImages.add(productSnapshot.get('images')[0]);
 
+    }
+  }
+
+  void fetchUserData() async {
+    final userDataSnapshot = await FirebaseFirestore.instance
+        .collection('userData')
+        .doc(uid)
+        .get();
+
+    availableCoins = userDataSnapshot.get('coins');
+    if( userDataSnapshot.get('Address1')[1] == 'Dhaka' ||
+        userDataSnapshot.get('Address2')[1] == 'Dhaka'){
+      deliveryCharge = 50;
+    }else{
+      deliveryCharge = 100;
     }
   }
 

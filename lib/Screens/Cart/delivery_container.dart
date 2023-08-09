@@ -21,11 +21,11 @@ class DeliveryContainer extends StatelessWidget {
                 width: 80
             ),
             const SizedBox(width: 10,),
-            const Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: SizedBox()),
-                Text(
+                const Expanded(child: SizedBox()),
+                const Text(
                   'Cash on Delivery',
                   style: TextStyle(
                       fontSize: 17,
@@ -33,16 +33,20 @@ class DeliveryContainer extends StatelessWidget {
                       fontWeight: FontWeight.bold
                   ),
                 ),
-                SizedBox(height: 5,),
-                Text(
-                  'Tentative Arrival, Jun, 22 - Jun, 23',
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.bold
+                const SizedBox(height: 5,),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width*0.55,
+                  child: const Text(
+                    'Within Dhaka 1 Week, Outside Dhaka 7 to 10 Days',
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.bold,
+                      overflow: TextOverflow.clip
+                    ),
                   ),
                 ),
-                Expanded(child: SizedBox()),
+                const Expanded(child: SizedBox()),
               ],
             )
           ],
