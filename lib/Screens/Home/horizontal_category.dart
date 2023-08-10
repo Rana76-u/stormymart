@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 import 'package:stormymart/Components/custom_image.dart';
-
+import 'package:http/http.dart' as http;
 import '../../utility/bottom_nav_bar.dart';
 import '../../utility/globalvariable.dart';
+
+DateTime now = DateTime.now();
+DateTime offerEndDate = DateTime(now.year, now.month, now.day+2);
+Duration remainingDuration = offerEndDate.difference(now);
 
 class MostPupularCategory extends StatefulWidget {
   const MostPupularCategory({super.key});
@@ -18,6 +24,50 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
   List<List<dynamic>> dataSets = [];
   int lengthOfFields = 0;
   int _selectIndex = 0;
+
+  @override
+  void initState() {
+    fetchDateTimes();
+    super.initState();
+  }
+
+  Future<void> fetchDateTimes() async {
+    final response = await http.get(Uri.parse('http://worldtimeapi.org/api/timezone/Asia/Dhaka'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final dateTimeString = data['datetime'];
+      print(DateTime.parse(dateTimeString));
+
+      setState(() {
+        now = DateTime.parse(dateTimeString);
+      });
+    }
+
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Category')
+          .doc('Offer Time')
+          .get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        dynamic endTime = data['endTime'];
+
+        setState(() {
+          offerEndDate = DateTime.parse(endTime);
+          remainingDuration = offerEndDate.difference(now);
+          print('endTime: $endTime');
+          print(remainingDuration);
+        });
+      } else {
+        print('Document does not exist');
+      }
+    } catch (error) {
+      print('Error retrieving data: $error');
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +208,6 @@ class HotDealsTitle extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -175,11 +224,11 @@ class HotDealsTitle extends StatelessWidget {
 
         const Expanded(child: SizedBox()),
 
-        const SlideCountdownSeparated(
-          duration: Duration(days: 2),
+        SlideCountdownSeparated(
+          duration: remainingDuration,//Duration(days: 2),
           height: 20,
           width: 20,
-          textStyle: TextStyle(
+          textStyle: const TextStyle(
             fontSize: 11,
             color: Colors.white,
             fontWeight: FontWeight.bold
@@ -188,7 +237,8 @@ class HotDealsTitle extends StatelessWidget {
         const SizedBox(width: 10,),
         TextButton(
           //onPressed: () => onTapseeAll(),
-          onPressed: () {  },
+          onPressed: () {
+          },
           child: const Text(
             'See All',
             style: TextStyle(

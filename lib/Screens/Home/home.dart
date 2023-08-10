@@ -254,10 +254,10 @@ class _HomePageState extends State<HomePage> {
         SizedBox(height: 10,),
         HotDealsTitle(),
         HotDeals(),
-        RecommandedForYouTitle(),
+        RecommendedForYouTitle(),
         SizedBox(height: 10,),
         MostPupularCategory(),
-        RecommandedForYou(),
+        RecommendedForYou(),
         SizedBox(height: 100,)
       ],
     );

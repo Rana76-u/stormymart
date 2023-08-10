@@ -74,9 +74,12 @@ class _ProductScreenState extends State<ProductScreen> {
       backgroundColor: appBgColor,
       body: Column(
         children: [
+          //Space
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.002,
           ),
+
+          //Screen
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.928,
             child: SingleChildScrollView(
@@ -95,6 +98,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       double discountCal = (price / 100) * (100 - discount);
                       var rating = snapshot.data!.get('rating');
                       var sold = snapshot.data!.get('sold');
+                      var quantityAvailable = snapshot.data!.get('quantityAvailable');
 
                       //SIZE LIST
                       sizes = snapshot.data!.get('size');
@@ -186,9 +190,12 @@ class _ProductScreenState extends State<ProductScreen> {
                             },
                           ),
 
+                          //Space
+                          const SizedBox(height: 5,),
+
                           //Variation Name & Images
                           SizedBox(
-                            height: 115,
+                            height: 114,
                             width: double.infinity,
                             child: ListView.builder(
                               controller: scrollController,
@@ -216,8 +223,10 @@ class _ProductScreenState extends State<ProductScreen> {
                                               variationDocID,
                                               style: const TextStyle(
                                                   color: Colors.black54,
-                                                  fontWeight: FontWeight.bold
+                                                  fontWeight: FontWeight.bold,
+                                                overflow: TextOverflow.ellipsis
                                               ),
+                                              maxLines: 1,
                                             ),
                                           ),
                                           //image
@@ -253,8 +262,6 @@ class _ProductScreenState extends State<ProductScreen> {
                                                     List<dynamic> images =
                                                     snapshot.data!.get('images');
                                                     return ImageSlideshow(
-                                                        width: 200, //double.infinity,
-                                                        height: 300, //MediaQuery.of(context).size.height * 0.45,
                                                         initialPage: 0,
                                                         indicatorColor: Colors.amber,
                                                         indicatorBackgroundColor: Colors.grey,
@@ -262,8 +269,12 @@ class _ProductScreenState extends State<ProductScreen> {
                                                         autoPlayInterval: 3500,
                                                         isLoop: true,
                                                         children: List.generate(images.length, (index) {
-                                                          return Image.network(
-                                                            images[index],
+                                                          return ClipRRect(
+                                                            borderRadius: BorderRadius.circular(8),
+                                                            child: Image.network(
+                                                              images[index],
+                                                              fit: BoxFit.cover,
+                                                            ),
                                                           );
                                                         }));
                                                   } else {
@@ -480,52 +491,68 @@ class _ProductScreenState extends State<ProductScreen> {
                           ],
 
                           // Quantity
-                          const Padding(
-                            padding: EdgeInsets.only(top: 10, bottom: 5),
-                            child: Text(
+                          if(quantityAvailable == 0)...[
+                            const Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                '*Sold Out',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontFamily: 'Urbanist',
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.amber
+                                ),
+                              ),
+                            ),
+                          ]
+                          else...[
+                            const Padding(
+                              padding: EdgeInsets.only(top: 10, bottom: 5),
+                              child: Text(
                                 'Select Quantity',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 39,//42
-                            width: MediaQuery.of(context).size.width * 0.41,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.remove),
-                                    onPressed: () {
-                                      // Decrement quantity
-                                      setState(() {
-                                        if (quantity != 1) {
-                                          quantity--;
-                                        }
-                                      });
-                                    },
-                                  ),
-                                  Text(quantity.toString()),
-                                  IconButton(
-                                    icon: const Icon(Icons.add),
-                                    onPressed: () {
-                                      // Increment quantity
-                                      setState(() {
-                                        quantity++;
-                                      });
-                                    },
-                                  ),
-                                ],
+                            SizedBox(
+                              height: 39,//42
+                              width: MediaQuery.of(context).size.width * 0.41,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade300,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.remove),
+                                      onPressed: () {
+                                        // Decrement quantity
+                                        setState(() {
+                                          if (quantity != 1) {
+                                            quantity--;
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    Text(quantity.toString()),
+                                    IconButton(
+                                      icon: const Icon(Icons.add),
+                                      onPressed: () {
+                                        // Increment quantity
+                                        setState(() {
+                                          quantity++;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
+                          ],
 
                           //Space At the BOTTOM
                           const SizedBox(
@@ -561,6 +588,8 @@ class _ProductScreenState extends State<ProductScreen> {
                 var price = snapshot.data!.get('price');
                 var discount = snapshot.data!.get('discount');
                 double discountCal = (price / 100) * (100 - discount);
+                var quantityAvailable = snapshot.data!.get('quantityAvailable');
+
                 return SizedBox(
                   height: MediaQuery.of(context).size.height * 0.070,
                   child: Padding(
@@ -606,76 +635,85 @@ class _ProductScreenState extends State<ProductScreen> {
                                   sizeWarning = false;
                                   variationWarning = false;
                                 });
-                                if(sizeSelected == -1 && sizes.isNotEmpty){
-                                  setState(() {
-                                    sizeWarning = true;
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Size')));
-                                }else if(variationSelected == -1){
-                                  setState(() {
-                                    variationWarning = true;
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Variant')));
-                                }else{
-                                  String uid = FirebaseAuth.instance.currentUser!.uid;
-
-                                  await FirebaseFirestore.instance.collection('userData/$uid/Cart/')
-                                      .doc()
-                                      .set({
-                                    //'1': FieldValue.arrayUnion(valuesToAdd)
-                                    'id': id,
-                                    'selectedSize': sizeSelected == -1 ? 'not applicable' : sizes[sizeSelected].toString(),
-                                    'variant': imageSliderDocID,
-                                    'quantity': quantity
-                                  });
-
+                                if(quantityAvailable == 0){
                                   messenger.showSnackBar(
-                                      SnackBar(
-                                        content: GestureDetector(
-                                          onTap: (){
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),));
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              SizedBox(
-                                                width: mediaQuery.size.width*0.4,
-                                                child: const Text(
-                                                  'Congratulations 🎉, Your Product added to the cart.',
-                                                  style: TextStyle(
-                                                      overflow: TextOverflow.clip
-                                                  ),
-                                                ),
-                                              ),
-                                              if(mounted)...[
+                                    const SnackBar(content: Text('Product Got Sold Out'))
+                                  );
+                                }
+                                else{
+                                  if(sizeSelected == -1 && sizes.isNotEmpty){
+                                    setState(() {
+                                      sizeWarning = true;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Size')));
+                                  }
+                                  else if(variationSelected == -1){
+                                    setState(() {
+                                      variationWarning = true;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Variant')));
+                                  }
+                                  else{
+                                    String uid = FirebaseAuth.instance.currentUser!.uid;
+
+                                    await FirebaseFirestore.instance.collection('userData/$uid/Cart/')
+                                        .doc()
+                                        .set({
+                                      //'1': FieldValue.arrayUnion(valuesToAdd)
+                                      'id': id,
+                                      'selectedSize': sizeSelected == -1 ? 'not applicable' : sizes[sizeSelected].toString(),
+                                      'variant': imageSliderDocID,
+                                      'quantity': quantity
+                                    });
+
+                                    messenger.showSnackBar(
+                                        SnackBar(
+                                          content: GestureDetector(
+                                            onTap: (){
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),));
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
                                                 SizedBox(
                                                   width: mediaQuery.size.width*0.4,
-                                                  child: ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(20)
-                                                      ),
-                                                    ),
-                                                    onPressed: (){
-                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),));
-                                                    },
-                                                    child: const Text(
-                                                      'Open Cart',
-                                                      style: TextStyle(
-                                                          fontFamily: 'Urbanist',
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: 14.5
-                                                      ),
+                                                  child: const Text(
+                                                    'Congratulations 🎉, Your Product added to the cart.',
+                                                    style: TextStyle(
+                                                        overflow: TextOverflow.clip
                                                     ),
                                                   ),
-                                                )
-                                              ]
-                                            ],
+                                                ),
+                                                if(mounted)...[
+                                                  SizedBox(
+                                                    width: mediaQuery.size.width*0.4,
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(20)
+                                                        ),
+                                                      ),
+                                                      onPressed: (){
+                                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),));
+                                                      },
+                                                      child: const Text(
+                                                        'Open Cart',
+                                                        style: TextStyle(
+                                                            fontFamily: 'Urbanist',
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 14.5
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ]
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        duration: const Duration(seconds: 3),
-                                      )
-                                  );
+                                          duration: const Duration(seconds: 3),
+                                        )
+                                    );
+                                  }
                                 }
                               }else{
                                 messenger.showSnackBar(

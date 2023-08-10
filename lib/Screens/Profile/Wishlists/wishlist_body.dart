@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:stormymart/Screens/Profile/Wishlists/wishlist.dart';
 
 class WishListBody extends StatefulWidget {
   const WishListBody({super.key});
@@ -22,11 +23,22 @@ class _WishListBodyState extends State<WishListBody> {
   List<dynamic> productImages = [];
 
   List<dynamic> wishListItemIds = [];
+  List<String> allProductDocIds = [];
 
   @override
   void initState() {
     super.initState();
     isLoading = true;
+    fetchAllProductDocIds();
+  }
+
+  Future<void> fetchAllProductDocIds() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('/Products').get();
+
+    for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      allProductDocIds.add(documentSnapshot.id);
+    }
     fetchWishListItems();
   }
 
@@ -44,17 +56,33 @@ class _WishListBodyState extends State<WishListBody> {
 
   Future<void> fetchProductDetails() async {
     for (int i = 0; i < wishListItemIds.length; i++) {
-      final productSnapshot = await FirebaseFirestore.instance
-          .collection('/Products')
-          .doc(wishListItemIds[i].trim())
-          .get();
+      if(allProductDocIds.contains(wishListItemIds[i])){
+        final productSnapshot = await FirebaseFirestore.instance
+            .collection('/Products')
+            .doc(wishListItemIds[i].trim())
+            .get();
 
-      productTitles.add(productSnapshot.get('title'));
-      productPrices.add(productSnapshot.get('price'));
-      productDiscounts.add(productSnapshot.get('discount'));
-      productRatings.add(productSnapshot.get('rating'));
+        productTitles.add(productSnapshot.get('title'));
+        productPrices.add(productSnapshot.get('price'));
+        productDiscounts.add(productSnapshot.get('discount'));
+        productRatings.add(productSnapshot.get('rating'));
+      }
+      else{
+        await FirebaseFirestore
+            .instance
+            .collection('/userData')
+            .doc(FirebaseAuth.instance.currentUser!.uid).update({
+          'wishlist': FieldValue.arrayRemove([wishListItemIds[i]])
+        });
+
+        setState(() {
+          wishListItemIds.removeAt(i);
+          _handleRefresh();
+        });
+      }
 
     }
+
   }
 
   Future<void> fetchProductImages() async {
@@ -78,6 +106,24 @@ class _WishListBodyState extends State<WishListBody> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future<void> _handleRefresh() async {
+    final navigator = Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const WishList(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return child;
+        },
+      ),
+    );
+
+    // Simulate a delay for the refresh indicator
+    await Future.delayed(const Duration(seconds: 1));
+
+    // Reload the same page by pushing a new instance onto the stack
+    navigator;
   }
 
 

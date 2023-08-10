@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../utility/bottom_nav_bar.dart';
 import '../CheckOut/checkout.dart';
@@ -35,6 +34,7 @@ class _CartState extends State<Cart> {
 
   List<dynamic> productTitles = [];
   List<dynamic> productPrices = [];
+  List<int> productQuantityAvailable = [];
 
   List<String> cartItemIds = [];
   List<String> cartDocumentIds = [];
@@ -91,6 +91,7 @@ class _CartState extends State<Cart> {
   }
 
   Future<void> fetchProductDetails() async {
+    final navigator = Navigator.of(context);
     for (int i = 0; i < cartItemIds.length; i++) {
 
       if(allProductDocIds.contains(cartItemIds[i].trim())){
@@ -101,8 +102,16 @@ class _CartState extends State<Cart> {
 
         productTitles.add(productSnapshot.get('title')); //productSnapshot.get('title')
         productPrices.add(productSnapshot.get('price')); //productSnapshot.get('price')
+        productQuantityAvailable.add(productSnapshot.get('quantityAvailable')); //productSnapshot.get('price')
         productDiscounts.add(productSnapshot.get('discount')); //double.parse(productSnapshot.get('discount'))
         priceAfterDiscount.add((productSnapshot.get('price') / 100) * (100 - productSnapshot.get('discount')));
+
+        if(productQuantityAvailable[i] == 0){
+          await deleteDocument(i);
+          navigator.push(
+              MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
+          );
+        }
       }
       else{
         setState(() {
@@ -319,134 +328,151 @@ class _CartState extends State<Cart> {
                                       physics: const NeverScrollableScrollPhysics(),
                                       itemCount: cartItemIds.length,
                                       itemBuilder: (context, index) {
-                                        return Slidable(
-                                          endActionPane: ActionPane(
-                                            motion: const BehindMotion(),
-                                            children: [
-                                              SlidableAction(
-                                                backgroundColor: Colors.redAccent.withAlpha(60),
-                                                icon: Icons.delete,
-                                                label: 'Delete',
-                                                autoClose: true,
-                                                borderRadius: BorderRadius.circular(15),
-                                                spacing: 5,
-                                                foregroundColor: Colors.redAccent,
-                                                padding: const EdgeInsets.all(10),
-                                                onPressed: (context) async {
-                                                  deleteDocument(index);
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
-                                                  );
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                          child: SizedBox(
-                                            height: 170,
-                                            width: double.infinity,
-                                            child: Card(
-                                              elevation: 0,
-                                              child: Row(
-                                                children: [
-                                                  //Image
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(right: 12),
-                                                    child: Container(
-                                                      width: MediaQuery.of(context).size.width*0.40 - 25,//150,
-                                                      height: 137,
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              width: 4,
-                                                              color: Colors.transparent
-                                                          ),
-                                                          borderRadius: BorderRadius.circular(20)
-                                                      ),
-                                                      child: ClipRRect(
-                                                        borderRadius: BorderRadius.circular(15),
-                                                        child:  Image.network(
-                                                          productImages[index],
-                                                          fit: BoxFit.cover,
-                                                        ),
+                                        return SizedBox(
+                                          height: 170,
+                                          width: double.infinity,
+                                          child: Card(
+                                            elevation: 0,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                //Image
+                                                Padding(
+                                                  padding: const EdgeInsets.only(right: 10),
+                                                  child: Container(
+                                                    width: MediaQuery.of(context).size.width*0.38 - 25,//0.40,
+                                                    height: 127, //137
+                                                    decoration: BoxDecoration(
+                                                        /*border: Border.all(
+                                                            width: 0, //4
+                                                            color: Colors.transparent
+                                                        ),*/
+                                                        borderRadius: BorderRadius.circular(20)
+                                                    ),
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(15),
+                                                      child:  Image.network(
+                                                        productImages[index],
+                                                        fit: BoxFit.cover,
                                                       ),
                                                     ),
                                                   ),
+                                                ),
 
-                                                  //Texts
-                                                  SizedBox(
-                                                    width: MediaQuery.of(context).size.width*0.48,//200,
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        //Title
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(top: 25),
-                                                          child: Text(
-                                                            productTitles[index],
-                                                            maxLines: 2,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: const TextStyle(
-                                                              fontSize: 17,
-                                                              fontWeight: FontWeight.bold,
-                                                            ),
+                                                //Texts
+                                                SizedBox(
+                                                  width: MediaQuery.of(context).size.width*0.44,//200,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      //Title
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 23),
+                                                        child: Text(
+                                                          productTitles[index],
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: const TextStyle(
+                                                            fontSize: 17,
+                                                            fontWeight: FontWeight.bold,
                                                           ),
                                                         ),
+                                                      ),
 
-                                                        //Price
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(top: 5),
-                                                          child: Text(
-                                                            'Price: ${priceAfterDiscount[index]} BDT',
-                                                            style: const TextStyle(
-                                                                fontSize: 15,
-                                                                color: Colors.black54,
-                                                                fontWeight: FontWeight.bold
-                                                            ),
+                                                      //Price
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 5),
+                                                        child: Text(
+                                                          'Price: ${priceAfterDiscount[index]} BDT',
+                                                          style: const TextStyle(
+                                                              fontSize: 15,
+                                                              color: Colors.black54,
+                                                              fontWeight: FontWeight.bold
                                                           ),
                                                         ),
+                                                      ),
 
-                                                        //Size
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(top: 5),
-                                                          child: Text(
-                                                            'Size: ${cartItemSizes[index]}',
-                                                            style: const TextStyle(
-                                                                fontSize: 14,
-                                                                color: Colors.black54
-                                                            ),
+                                                      //Size
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 5),
+                                                        child: Text(
+                                                          'Size: ${cartItemSizes[index]}',
+                                                          style: const TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors.black54
                                                           ),
                                                         ),
+                                                      ),
 
-                                                        //Variant
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(top: 2),
-                                                          child: Text(
-                                                            'Variant: ${cartItemVariants[index]}',
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: const TextStyle(
-                                                                fontSize: 14,
-                                                                color: Colors.black54
-                                                            ),
+                                                      //Variant
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 2),
+                                                        child: Text(
+                                                          'Variant: ${cartItemVariants[index]}',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: const TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors.black54
                                                           ),
                                                         ),
+                                                      ),
 
-                                                        //Quantity
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(top: 2),
-                                                          child: Text(
-                                                            'Quantity: ${cartItemQuantities[index]}',
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: const TextStyle(
-                                                                fontSize: 14,
-                                                                color: Colors.black54
-                                                            ),
+                                                      //Quantity
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 2),
+                                                        child: Text(
+                                                          'Quantity: ${cartItemQuantities[index]}',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: const TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors.black54
                                                           ),
                                                         ),
-                                                      ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                //Delete
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return  AlertDialog(
+                                                          title: const Text('Please Confirm'),
+                                                          content: const Text('Are you sure you want to delete this item?'),
+                                                          actions: [
+                                                            // The "Yes" button
+                                                            TextButton(
+                                                                onPressed: () {
+                                                                  deleteDocument(index);
+                                                                  Navigator.of(context).push(
+                                                                      MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
+                                                                  );
+                                                                },
+                                                                child: const Text('Yes')
+                                                            ),
+                                                            TextButton(
+                                                                onPressed: () {
+                                                                  // Close the dialog
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                                child: const Text('No'))
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  child: const SizedBox(
+                                                    child: Icon(
+                                                        Icons.delete_forever,
+                                                      color: Colors.red,
                                                     ),
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         );
@@ -904,7 +930,11 @@ class _CartState extends State<Cart> {
                                 style: const ButtonStyle(
                                     backgroundColor: MaterialStatePropertyAll(Colors.green)
                                 ),
-                                child: isLoading ? const LinearProgressIndicator() : const Text(
+                                child: isLoading ? LinearProgressIndicator(
+                                  color: Colors.green.shade300,
+                                  backgroundColor: Colors.green.shade100,
+                                )
+                                    : const Text(
                                   'Proceed to Check Out',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,

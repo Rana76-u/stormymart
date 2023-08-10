@@ -5,14 +5,14 @@ import '../../Components/custom_image.dart';
 import '../../theme/color.dart';
 import '../Product Screen/product_screen.dart';
 
-class RecommandedForYou extends StatefulWidget {
-  const RecommandedForYou({super.key});
+class RecommendedForYou extends StatefulWidget {
+  const RecommendedForYou({super.key});
 
   @override
-  State<RecommandedForYou> createState() => _RecommandedForYouState();
+  State<RecommendedForYou> createState() => _RecommendedForYouState();
 }
 
-class _RecommandedForYouState extends State<RecommandedForYou> {
+class _RecommendedForYouState extends State<RecommendedForYou> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -27,8 +27,8 @@ class _RecommandedForYouState extends State<RecommandedForYou> {
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 0.59,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+                crossAxisSpacing: 2,//10
+                mainAxisSpacing: 5,
               ),
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -230,8 +230,8 @@ class _RecommandedForYouState extends State<RecommandedForYou> {
   }
 }
 
-class RecommandedForYouTitle extends StatelessWidget {
-  const RecommandedForYouTitle({super.key});
+class RecommendedForYouTitle extends StatelessWidget {
+  const RecommendedForYouTitle({super.key});
 
   @override
   Widget build(BuildContext context) {
