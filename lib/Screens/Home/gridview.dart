@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
+import 'package:stormymart/utility/globalvariable.dart';
 
 import 'category.dart';
 
@@ -26,7 +28,12 @@ class GridViewPart extends StatelessWidget {
         itemBuilder: ((context, index) {
           final data = categories[index];
           return GestureDetector(
-            //onTap: () => Navigator.pushNamed(context, MostPopularScreen.route()),
+            onTap: () {
+              keyword = data.title;
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+              );
+            },
             child: Column(
               children: [
                 Container(

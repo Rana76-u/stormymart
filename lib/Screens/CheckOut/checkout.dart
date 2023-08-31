@@ -31,6 +31,7 @@ class CheckOut extends StatefulWidget {
 class _CheckOutState extends State<CheckOut> {
 
   String randomID = "";
+  String randomOrderListDocID = '';
   String? selectedAddress = '';
   bool isLoading = false;
   Random random = Random();
@@ -51,6 +52,15 @@ class _CheckOutState extends State<CheckOut> {
     }
   }
 
+  void generateRandomOrderListDocID() {
+    Random random = Random();
+    const String chars = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+    for (int i = 0; i < 20; i++) {
+      randomOrderListDocID += chars[random.nextInt(chars.length)];
+    }
+  }
+
   void fetchCartItemsAndPlaceOrder() async {
 
     final cartSnapshot = await FirebaseFirestore.instance
@@ -59,12 +69,15 @@ class _CheckOutState extends State<CheckOut> {
         .collection('Cart')
         .get();
 
+    //Enable Order Collection
     await FirebaseFirestore
         .instance
         .collection('Orders')
         .doc(FirebaseAuth.instance.currentUser!.uid).set({
       'enable': true
     });
+
+    //Order necessary details
     await FirebaseFirestore
         .instance
         .collection('Orders')
@@ -76,19 +89,39 @@ class _CheckOutState extends State<CheckOut> {
       'time' : DateFormat('EE, dd/MM/yyyy H:mm:s').format(DateTime.now()),
     });
 
+    //Each Order Details
     for (var doc in cartSnapshot.docs) {
       //For every Cart item
+      generateRandomOrderListDocID();
       // add them into Order list
       await FirebaseFirestore
           .instance
           .collection('Orders')
           .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('Pending Orders').doc(randomID).collection('orderLists').doc().set({
+          .collection('Pending Orders').doc(randomID).collection('orderLists').doc(randomOrderListDocID).set({
         'productId' : doc['id'],
         'quantity' : doc['quantity'],
         'selectedSize' : doc['selectedSize'],
         'variant' : doc['variant'],
       });
+
+      //At shop location save the reference
+      // Reference to the orderLists document
+      DocumentReference orderListsReference = FirebaseFirestore.instance
+          .collection('Orders')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('Pending Orders')
+          .doc(randomID)
+          .collection('orderLists')
+          .doc(randomOrderListDocID);
+
+      // Update the '/Admin Panel' document with the reference value
+      await FirebaseFirestore.instance
+          .collection('/Admin Panel')
+          .doc(doc['Shop ID'])
+          .set({
+        'Pending Orders': FieldValue.arrayUnion([orderListsReference])
+      }, SetOptions(merge: true));
 
       //Then Delete added item from cart
       await FirebaseFirestore.instance
@@ -97,6 +130,7 @@ class _CheckOutState extends State<CheckOut> {
           .collection('Cart')
           .doc(doc.id).delete();
     }
+
     //Decrease Coin Value
     double previousCoins = 0.0;
     double remainingCoins = 0.0;
@@ -115,7 +149,7 @@ class _CheckOutState extends State<CheckOut> {
         .update({
       'coins' : remainingCoins
     });
-  }
+  }  ///////
 
   @override
   Widget build(BuildContext context) {

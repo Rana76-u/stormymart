@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
+import 'package:stormymart/utility/globalvariable.dart';
 
 import '../../Components/custom_image.dart';
 import '../../theme/color.dart';
@@ -235,10 +237,10 @@ class RecommendedForYouTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
+          const Text(
             'Recommanded For You',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -246,12 +248,21 @@ class RecommendedForYouTitle extends StatelessWidget {
                 fontFamily: 'Urbanist'
             ),
           ),
-          Text(
-            'See All',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
-                fontFamily: 'Urbanist'
+
+          GestureDetector(
+            onTap: () {
+              keyword = null;
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+              );
+            },
+            child: const Text(
+              'See All',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                  fontFamily: 'Urbanist'
+              ),
             ),
           ),
         ],

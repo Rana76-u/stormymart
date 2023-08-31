@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
 import 'package:stormymart/utility/globalvariable.dart';
 import '../../Components/custom_image.dart';
 import '../../theme/color.dart';
@@ -36,6 +37,7 @@ class _SearchPageState extends State<SearchPage> {
     if(widget.keyword != null){
       filterProductsByKeyword();
     }else{
+      performSearch('');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         FocusScope.of(context).requestFocus(_focusNode);
       });
@@ -171,6 +173,9 @@ class _SearchPageState extends State<SearchPage> {
                                 _searchController.clear();
                                 isTyping = false;
                                 isFilterOpen = false;
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 0),)
+                                );
                               });
                             },
                             child: const Icon(Icons.arrow_back_rounded)
@@ -380,8 +385,8 @@ class _SearchPageState extends State<SearchPage> {
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 0.58,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 5,
+                    mainAxisSpacing: 0,
                   ),
                   itemBuilder: (context, index) {
                     // Get the document snapshot for the current item

@@ -34,7 +34,7 @@ class Authservice {
         if (snapShot.hasData) {
           return SearchPage(); // Modify  1 to 0 (Do it later)
         } else {
-          return CartLoginPage();
+          return const CartLoginPage();
         }
       },
     );

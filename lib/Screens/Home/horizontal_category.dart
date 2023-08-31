@@ -37,7 +37,6 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final dateTimeString = data['datetime'];
-      print(DateTime.parse(dateTimeString));
 
       setState(() {
         now = DateTime.parse(dateTimeString);
@@ -57,8 +56,6 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
         setState(() {
           offerEndDate = DateTime.parse(endTime);
           remainingDuration = offerEndDate.difference(now);
-          print('endTime: $endTime');
-          print(remainingDuration);
         });
       } else {
         print('Document does not exist');
@@ -235,9 +232,12 @@ class HotDealsTitle extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10,),
-        TextButton(
-          //onPressed: () => onTapseeAll(),
-          onPressed: () {
+        /*GestureDetector(
+          onTap: () {
+            keyword = 'hot';
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+            );
           },
           child: const Text(
             'See All',
@@ -248,7 +248,7 @@ class HotDealsTitle extends StatelessWidget {
               color: Color(0xFF212121),
             ),
           ),
-        ),
+        ),*/
       ],
     );
   }

@@ -19,6 +19,7 @@ class _HotDealsState extends State<HotDeals> {
       child: FutureBuilder(
         future: FirebaseFirestore.instance
             .collection('/Products')
+            .where('keywords', arrayContains: 'Hot Deals')
             .get(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if(snapshot.hasData){
@@ -224,7 +225,8 @@ class _HotDealsState extends State<HotDeals> {
                 },
               ),
             );
-          }else if(snapshot.connectionState == ConnectionState.waiting){
+          }
+          else if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(
               child: LinearProgressIndicator(),
             );

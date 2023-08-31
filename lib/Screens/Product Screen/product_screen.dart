@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -99,6 +97,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       var rating = snapshot.data!.get('rating');
                       var sold = snapshot.data!.get('sold');
                       var quantityAvailable = snapshot.data!.get('quantityAvailable');
+                      var shopID = snapshot.data!.get('Shop ID');
 
                       //SIZE LIST
                       sizes = snapshot.data!.get('size');
@@ -194,9 +193,13 @@ class _ProductScreenState extends State<ProductScreen> {
                           const SizedBox(height: 5,),
 
                           //Variation Name & Images
-                          SizedBox(
-                            height: 114,
+                          Container(
+                            height: variationWarning ? 140 : 114,
                             width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: variationWarning ? Colors.red.withOpacity(0.25) : appBgColor,
+                            ),
                             child: ListView.builder(
                               controller: scrollController,
                               scrollDirection: Axis.horizontal,
@@ -285,7 +288,27 @@ class _ProductScreenState extends State<ProductScreen> {
                                                 },
                                               ),
                                             ),
-                                          )
+                                          ),
+                                          if (variationWarning == true)
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 15),
+                                              child: Container(
+                                                color: Colors.red,
+                                                alignment: Alignment.center,
+                                                child: const Padding(
+                                                  padding: EdgeInsets.only(left: 4, right: 4),
+                                                  child: Text(
+                                                    'Please select a variation',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                      fontSize: 12,
+                                                      fontFamily: 'Urbanist',
+                                                      fontWeight: FontWeight.bold
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                         ],
                                       );
                                     } else {
@@ -300,259 +323,486 @@ class _ProductScreenState extends State<ProductScreen> {
                             ),
                           ),
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              //Discount
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.red.shade800,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Padding(
-                                  padding:   const EdgeInsets.all(10),
-                                  child: Text(
-                                    'Discount: $discount%',
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10,),
-                              //wishlist
-                              GestureDetector(
-                                onTap: () async {
-                                  final messenger = ScaffoldMessenger.of(context);
-                                  await FirebaseFirestore
-                                      .instance
-                                      .collection('/userData')
-                                      .doc(FirebaseAuth.instance.currentUser!.uid).update({
-                                    'wishlist': FieldValue.arrayUnion([id])
-                                  });
+                          if (variationWarning == true)
+                            const SizedBox(height: 7,),
 
-                                  messenger.showSnackBar(
-                                    const SnackBar(
-                                        content: Text('Item added to Wishlist')
-                                    )
-                                  );
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.blueGrey,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: const Padding(
-                                    padding:   EdgeInsets.all(7),
-                                    child: Text(
-                                      '+ wishlist',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          //Title
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 10, bottom: 5, left: 0, right: 5),
-                            child: Text(
-                              snapshot.data!.get('title'),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.grey.shade700
-                              ),
+                          //Product Info Card
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)
                             ),
-                          ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
 
-                          //Price
-                          Row(
-                            children: [
-                              Text(
-                                "BDT ${discountCal.toStringAsFixed(0)}/-",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 21.5,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "of ${price.toString()}/-",
-                                style: const TextStyle(
-                                  //fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.lineThrough
-                                ),
-                              ),
-                            ],
-                          ),
+                                  //Discount
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      //Discount
+                                      if(discount == 0.0)...[
+                                        const SizedBox(),
+                                      ]
+                                      else...[
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.red.shade800,
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          child: Padding(
+                                            padding:   const EdgeInsets.all(10),
+                                            child: Text(
+                                              'Discount: $discount%',
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
 
-                          //Rating & Sold
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                  size: 15,
-                                ),
-                                const SizedBox(width: 3,),
-                                //Rating
-                                Text(
-                                  rating.toString(),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                      color: Colors.grey.shade600//darker
-                                  ),
-                                ),
-                                const SizedBox(width: 20,),
-                                //Sold
-                                Text(
-                                  "${sold.toString()} Sold",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                      color: Colors.grey.shade600//darker
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                                      //wishlist
+                                      GestureDetector(
+                                        onTap: () async {
+                                          final messenger = ScaffoldMessenger.of(context);
+                                          await FirebaseFirestore
+                                              .instance
+                                              .collection('/userData')
+                                              .doc(FirebaseAuth.instance.currentUser!.uid).update({
+                                            'wishlist': FieldValue.arrayUnion([id])
+                                          });
 
-                          // Description
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(
-                              snapshot.data!.get('description'),
-                              style: const TextStyle(
-                                  color: Colors.grey,
-                                fontWeight: FontWeight.w600
-                              ),
-                            ),
-                          ),
-
-                          //Show Sizes
-                          if(sizes.isEmpty)...[const SizedBox()]
-                          else...[
-                            SizedBox(
-                              height: 50,
-                              width: double.infinity,
-                              child: ListView.builder(
-                                itemCount: sizes.length,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        sizeSelected = index;
-                                        sizeWarning = false;
-                                      });
-                                    },
-                                    child: Card(
-                                      color: sizeWarning == false ? _cardColor(index) : Colors.red,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(100)
-                                      ),//CircleBorder()
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(top: 10, bottom: 10, right: 15, left: 15),
-                                          child: Text(
-                                            sizes[index],
-                                            style: TextStyle(
-                                              color: sizeSelected == index || sizeWarning
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 17,
+                                          messenger.showSnackBar(
+                                              const SnackBar(
+                                                  content: Text('Item added to Wishlist')
+                                              )
+                                          );
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.blueGrey,
+                                            borderRadius: BorderRadius.circular(5),
+                                          ),
+                                          child: const Padding(
+                                            padding:   EdgeInsets.all(7),
+                                            child: Text(
+                                              '+ wishlist',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-                          ],
+                                    ],
+                                  ),
 
-                          // Quantity
-                          if(quantityAvailable == 0)...[
-                            const Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Text(
-                                '*Sold Out',
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontFamily: 'Urbanist',
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.amber
-                                ),
-                              ),
-                            ),
-                          ]
-                          else...[
-                            const Padding(
-                              padding: EdgeInsets.only(top: 10, bottom: 5),
-                              child: Text(
-                                'Select Quantity',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 39,//42
-                              width: MediaQuery.of(context).size.width * 0.41,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade300,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.remove),
-                                      onPressed: () {
-                                        // Decrement quantity
-                                        setState(() {
-                                          if (quantity != 1) {
-                                            quantity--;
-                                          }
-                                        });
-                                      },
+                                  //Title
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 10, bottom: 5, left: 0, right: 5),
+                                    child: Text(
+                                      snapshot.data!.get('title'),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: Colors.grey.shade700
+                                      ),
                                     ),
-                                    Text(quantity.toString()),
-                                    IconButton(
-                                      icon: const Icon(Icons.add),
-                                      onPressed: () {
-                                        // Increment quantity
-                                        setState(() {
-                                          quantity++;
-                                        });
-                                      },
+                                  ),
+
+                                  //Price
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "BDT ${discountCal.toStringAsFixed(0)}/-",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 21.5,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      if(discount == 0.0)...[
+                                        const SizedBox(),
+                                      ]
+                                      else...[
+                                        Text(
+                                          "of ${price.toString()}/-",
+                                          style: const TextStyle(
+                                            //fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.bold,
+                                              decoration: TextDecoration.lineThrough
+                                          ),
+                                        ),
+                                      ]
+                                    ],
+                                  ),
+
+                                  //Rating & Sold
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                          size: 15,
+                                        ),
+                                        const SizedBox(width: 3,),
+                                        //Rating
+                                        Text(
+                                          rating.toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13,
+                                              color: Colors.grey.shade600//darker
+                                          ),
+                                        ),
+                                        const SizedBox(width: 20,),
+                                        //Sold
+                                        Text(
+                                          "${sold.toString()} Sold",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13,
+                                              color: Colors.grey.shade600//darker
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // Description
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Text(
+                                      snapshot.data!.get('description'),
+                                      style: const TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w600
+                                      ),
+                                    ),
+                                  ),
+
+                                  //Show Sizes
+                                  if(sizes.isEmpty)...[const SizedBox()]
+                                  else...[
+                                    SizedBox(
+                                      height: 50,
+                                      width: double.infinity,
+                                      child: ListView.builder(
+                                        itemCount: sizes.length,
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                sizeSelected = index;
+                                                sizeWarning = false;
+                                              });
+                                            },
+                                            child: Card(
+                                              color: sizeWarning == false ? _cardColor(index) : Colors.red,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(100)
+                                              ),//CircleBorder()
+                                              child: Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(top: 10, bottom: 10, right: 15, left: 15),
+                                                  child: Text(
+                                                    sizes[index],
+                                                    style: TextStyle(
+                                                      color: sizeSelected == index || sizeWarning
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 17,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  ],
+
+                                  // Quantity
+                                  if(quantityAvailable == 0)...[
+                                    const Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Text(
+                                        '*Sold Out',
+                                        style: TextStyle(
+                                            fontSize: 22,
+                                            fontFamily: 'Urbanist',
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.amber
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                  else...[
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: 10, bottom: 5),
+                                      child: Text(
+                                        'Select Quantity',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 39,//42
+                                      width: MediaQuery.of(context).size.width * 0.41,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade300,
+                                          borderRadius: BorderRadius.circular(15),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons.remove),
+                                              onPressed: () {
+                                                // Decrement quantity
+                                                setState(() {
+                                                  if (quantity != 1) {
+                                                    quantity--;
+                                                  }
+                                                });
+                                              },
+                                            ),
+                                            Text(quantity.toString()),
+                                            IconButton(
+                                              icon: const Icon(Icons.add),
+                                              onPressed: () {
+                                                // Increment quantity
+                                                setState(() {
+                                                  quantity++;
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ],
-                                ),
+                                ],
                               ),
                             ),
-                          ],
+                          ),
+
+                          //Store info Card
+                          FutureBuilder(
+                            future: FirebaseFirestore
+                                .instance
+                                .collection('/Admin Panel')
+                                .doc(shopID)
+                                .get(),
+                            builder: (context, shopSnapshot) {
+                              if(shopSnapshot.hasData){
+                                String shopName = shopSnapshot.data!.get('Shop Name');
+                                int followerNumber = shopSnapshot.data!.get('Follower Number');
+                                String shopLogo = shopSnapshot.data!.get('Shop Logo');
+                                String email = shopSnapshot.data!.get('Email');
+                                String phoneNumber = shopSnapshot.data!.get('Phone Number');
+                                return Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 10, bottom: 10, left: 5, right: 5),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            //Logo
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                                              child: SizedBox(
+                                                height: 60,
+                                                width: 60,
+                                                child: Card(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(10)
+                                                  ),
+                                                  child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(15),
+                                                      child: Image.network(
+                                                          shopLogo == '' ? 'https://www.senbagcollege.gov.bd/midea/featuredimage/featuredimage2017-06-09-18-13-52_593ac940872ee.jpg' : shopLogo
+                                                      )
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            //Shop Info
+                                            SizedBox(
+                                              width: MediaQuery.of(context).size.width - 150,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      //Shop Name
+                                                      Text(
+                                                        shopName == '' ? 'Not Yet Set' : shopName,
+                                                        style: const TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontFamily: 'Urbanist',
+                                                        ),
+                                                      ),
+
+                                                      //Followers
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(right: 20),
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(5),
+                                                            color: Colors.grey.shade50
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(top: 3, bottom: 3, left: 5, right: 5),
+                                                            child: Row(
+                                                              children: [
+                                                                Icon(
+                                                                    Icons.person_outlined,
+                                                                  size: 12.5,
+                                                                  color: Colors.grey.shade600,
+                                                                ),
+                                                                Text(
+                                                                  ' $followerNumber',
+                                                                  style: const TextStyle(
+                                                                    fontFamily: 'Urbanist',
+                                                                    fontSize: 9,
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  //Email
+                                                  SelectableText(
+                                                    email,
+                                                    style: const TextStyle(
+                                                        fontFamily: 'Urbanist',
+                                                        fontSize: 11
+                                                    ),
+                                                  ),
+                                                  //Phone Number
+                                                  SelectableText(
+                                                    phoneNumber == '' ? 'Phone Number Not Yet Set' : phoneNumber,
+                                                    style: const TextStyle(
+                                                        fontFamily: 'Urbanist',
+                                                        fontSize: 11
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+
+                                        //Space
+                                        const SizedBox(height: 10,),
+
+                                        //Follow Button
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            //Visit Shop Button
+                                            SizedBox(
+                                              height: 31,
+                                              width: MediaQuery.of(context).size.width*0.5,
+                                              child: OutlinedButton(
+                                                style: OutlinedButton.styleFrom(
+                                                  //foregroundColor: Colors.white,
+                                                  //backgroundColor: Colors.teal,
+                                                    side: const BorderSide(
+                                                        width: 1,
+                                                        color: Colors.amber
+                                                    ),
+                                                ), onPressed: () {  },
+                                                child: const Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.store_mall_directory_rounded,
+                                                      size: 17,
+                                                      color: Colors.amber,
+                                                    ),
+                                                    SizedBox(width: 5,),
+                                                    Text(
+                                                      'Visit Shop',
+                                                      style: TextStyle(
+                                                        color: Colors.amber,
+                                                        fontFamily: 'Urbanist',
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+
+                                            const SizedBox(width: 8,),
+                                            //Follow Button
+                                            SizedBox(
+                                              height: 31,
+                                              child: ElevatedButton(
+                                                  onPressed: () {
+
+                                                  },
+                                                  style: ButtonStyle(
+                                                      backgroundColor: MaterialStateProperty.all(Colors.orange)
+                                                  ),
+                                                  child: const Text(
+                                                    '+ Follow',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Urbanist',
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 12,
+                                                    ),
+                                                  )
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }
+                              else if(shopSnapshot.connectionState == ConnectionState.waiting){
+                                return const Center(
+                                  child: LinearProgressIndicator(),
+                                );
+                              }
+                              else{
+                                return const Center(
+                                  child: Text('Error While Loading'),
+                                );
+                              }
+                            },
+                          ),
 
                           //Space At the BOTTOM
                           const SizedBox(
@@ -560,7 +810,8 @@ class _ProductScreenState extends State<ProductScreen> {
                           ),
                         ],
                       );
-                    } else {
+                    }
+                    else {
                       return Center(
                       child: Column(
                         children: [
@@ -589,6 +840,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 var discount = snapshot.data!.get('discount');
                 double discountCal = (price / 100) * (100 - discount);
                 var quantityAvailable = snapshot.data!.get('quantityAvailable');
+                var shopID = snapshot.data!.get('Shop ID');
 
                 return SizedBox(
                   height: MediaQuery.of(context).size.height * 0.070,
@@ -660,6 +912,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                         .doc()
                                         .set({
                                       //'1': FieldValue.arrayUnion(valuesToAdd)
+                                      'Shop ID': shopID,
                                       'id': id,
                                       'selectedSize': sizeSelected == -1 ? 'not applicable' : sizes[sizeSelected].toString(),
                                       'variant': imageSliderDocID,
