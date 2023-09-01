@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:stormymart/Screens/Chat%20Screen/chat_screen.dart';
 import 'package:stormymart/theme/color.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
 
@@ -67,9 +68,26 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     String id = widget.productId.toString().trim();
+    var shopID = '';
+    String userID = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
       backgroundColor: appBgColor,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ChatScreen(sellerId: shopID, userId: userID, productId: widget.productId),
+            )
+          );
+        },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100.0),
+        ),
+        child: const Icon(
+            Icons.messenger
+        ),
+      ),
       body: Column(
         children: [
           //Space
@@ -97,7 +115,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       var rating = snapshot.data!.get('rating');
                       var sold = snapshot.data!.get('sold');
                       var quantityAvailable = snapshot.data!.get('quantityAvailable');
-                      var shopID = snapshot.data!.get('Shop ID');
+                      shopID = snapshot.data!.get('Shop ID');
 
                       //SIZE LIST
                       sizes = snapshot.data!.get('size');
