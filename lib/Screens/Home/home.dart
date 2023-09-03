@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stormymart/Screens/Chat%20Screen/chat_screen.dart';
 import 'package:stormymart/Screens/Home/gridview.dart';
 import 'package:stormymart/Screens/Home/horizontal_category.dart';
 import 'package:stormymart/Screens/Home/hot_deals.dart';
@@ -199,8 +200,8 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: Colors.white,
                 pinned: true,
                 title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    //StormyMart
                     const Text(
                       'StormyMart',
                       style: TextStyle(
@@ -211,6 +212,25 @@ class _HomePageState extends State<HomePage> {
                       ),
                       textAlign: TextAlign.start,
                     ),
+
+                    const Expanded(child: SizedBox()),
+
+                    //chat icon
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ChatScreen(),
+                          )
+                        );
+                      },
+                      child: Icon(
+                          Icons.chat_bubble_rounded,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+
+                    //coin icon
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(

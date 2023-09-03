@@ -284,7 +284,10 @@ class _CartState extends State<Cart> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    //Space
                     SizedBox(height: MediaQuery.of(context).size.height*0.05,),
+
+                    //Cart text
                     const Text(
                       'My Cart',
                       style: TextStyle(
@@ -293,7 +296,11 @@ class _CartState extends State<Cart> {
                           fontWeight: FontWeight.bold
                       ),
                     ),
+
+                    //Space
                     const SizedBox(height: 30,),
+
+                    //Cart
                     Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15)
@@ -302,12 +309,17 @@ class _CartState extends State<Cart> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const DeliveryContainer(),
+
+                          //Space
                           const SizedBox(height: 10,),
+
+                          //Cart items
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                //number of items
                                 Text(
                                   '${cartItemIds.length.toString()} items',
                                   style: TextStyle(
@@ -316,6 +328,8 @@ class _CartState extends State<Cart> {
                                       fontWeight: FontWeight.w400
                                   ),
                                 ),
+
+                                //items
                                 if(cartItemIds.isNotEmpty)...[
                                   AnimatedSwitcher(
                                     duration: const Duration(milliseconds: 300),
@@ -479,7 +493,8 @@ class _CartState extends State<Cart> {
                                       },
                                     ),
                                   ),
-                                ]else...[
+                                ]
+                                else...[
                                   const Center(
                                     child: Padding(
                                       padding: EdgeInsets.only(bottom: 10),

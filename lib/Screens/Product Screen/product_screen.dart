@@ -69,23 +69,25 @@ class _ProductScreenState extends State<ProductScreen> {
     final ScrollController scrollController = ScrollController();
     String id = widget.productId.toString().trim();
     var shopID = '';
-    String userID = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
       backgroundColor: appBgColor,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => ChatScreen(sellerId: shopID, userId: userID, productId: widget.productId),
-            )
-          );
-        },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(100.0),
-        ),
-        child: const Icon(
-            Icons.messenger
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 55, right: 10),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ChatScreen(productId: widget.productId),
+              )
+            );
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100.0),
+          ),
+          child: const Icon(
+              Icons.messenger
+          ),
         ),
       ),
       body: Column(
