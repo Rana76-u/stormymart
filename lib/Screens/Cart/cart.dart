@@ -49,6 +49,8 @@ class _CartState extends State<Cart> {
   bool isDeleting = false;
 
   List<String> allProductDocIds = [];
+  List<bool?> selectedItems = [];
+  bool isAllSelected = true;
 
   @override
   void initState() {
@@ -137,6 +139,9 @@ class _CartState extends State<Cart> {
 
       productImages.add(productSnapshot.get('images')[0]);
 
+    }
+    for (int i = 0; i < cartItemIds.length; i++) {
+      selectedItems.add(true);
     }
   }
 
@@ -329,6 +334,25 @@ class _CartState extends State<Cart> {
                                   ),
                                 ),
 
+                                //Select All
+                                /*Padding(
+                                  padding: const EdgeInsets.only(right: 11),
+                                  child: SizedBox(
+                                    width: 10,
+                                    child: Checkbox(
+                                      value: isAllSelected,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          for (int i = 0; i < cartItemIds.length; i++) {
+                                            selectedItems[i] = !isAllSelected;
+                                          }
+                                          isAllSelected = !isAllSelected;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),*/
+
                                 //items
                                 if(cartItemIds.isNotEmpty)...[
                                   AnimatedSwitcher(
@@ -350,12 +374,27 @@ class _CartState extends State<Cart> {
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
+                                                //CheckBox
+                                                /*Padding(
+                                                  padding: const EdgeInsets.only(right: 11),
+                                                  child: SizedBox(
+                                                    width: 10,
+                                                    child: Checkbox(
+                                                      value: selectedItems[index],
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          selectedItems[index] = !selectedItems[index]!;
+                                                        });
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),*/
                                                 //Image
                                                 Padding(
                                                   padding: const EdgeInsets.only(right: 10),
                                                   child: Container(
-                                                    width: MediaQuery.of(context).size.width*0.38 - 25,//0.40,
-                                                    height: 127, //137
+                                                    width: MediaQuery.of(context).size.width*0.38 - 25,//0.40, 0.38 - 25 0.32 - 10
+                                                    height: 124, //137 127 120
                                                     decoration: BoxDecoration(
                                                         /*border: Border.all(
                                                             width: 0, //4
@@ -375,7 +414,7 @@ class _CartState extends State<Cart> {
 
                                                 //Texts
                                                 SizedBox(
-                                                  width: MediaQuery.of(context).size.width*0.44,//200,
+                                                  width: MediaQuery.of(context).size.width*0.45 - 10,//200,
                                                   child: Column(
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     crossAxisAlignment: CrossAxisAlignment.start,

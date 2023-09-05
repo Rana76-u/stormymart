@@ -48,6 +48,8 @@ dependencies:
   flutter_datetime_picker: ^1.5.1
   intl: ^0.18.1
   animated_text_kit: ^4.2.2
+  roundcheckbox: ^2.0.5
+  easy_splash_screen: ^1.0.4
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -81,6 +83,7 @@ flutter:
      - assets/lottie/gold-coin.gif
      - assets/lottie/google-logo.json
      - assets/images/orange_abstract_bg.jpg
+     - assets/images/splash_screen.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

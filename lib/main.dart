@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:stormymart/firebase_options.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
+import 'package:stormymart/utility/splash_screen.dart';
 
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async{
@@ -38,7 +39,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: BottomBar(bottomIndex: 0),
+      //home: BottomBar(bottomIndex: 0),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => SplashFuturePage(),
+        // '/': (context) => SplashFuturePage(),
+        '/home': (context) => BottomBar(bottomIndex: 0),
+      },
       debugShowCheckedModeBanner: false,
     );
   }

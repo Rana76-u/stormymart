@@ -3,14 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class PendingOrders extends StatefulWidget {
-  const PendingOrders({super.key});
+class ProcessingOrders extends StatefulWidget {
+  const ProcessingOrders({super.key});
 
   @override
-  State<PendingOrders> createState() => _PendingOrdersState();
+  State<ProcessingOrders> createState() => _ProcessingOrdersState();
 }
 
-class _PendingOrdersState extends State<PendingOrders> {
+class _ProcessingOrdersState extends State<ProcessingOrders> {
 
   bool isLoading = false;
   List<String> docIds = [];
@@ -45,7 +45,7 @@ class _PendingOrdersState extends State<PendingOrders> {
     FutureBuilder(
       future: FirebaseFirestore
           .instance
-          .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Pending Orders')
+          .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Processing Orders')
           .get(),
       builder: (context, pendingOrderSnapshot) {
         if(pendingOrderSnapshot.hasData){
@@ -62,7 +62,7 @@ class _PendingOrdersState extends State<PendingOrders> {
                 child: FutureBuilder(
                   future: FirebaseFirestore
                       .instance
-                      .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Pending Orders')
+                      .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Processing Orders')
                       .doc(pendingOrderSnapshot.data!.docs[index].id)
                       .collection('/orderLists')
                       .get(),
@@ -149,181 +149,181 @@ class _PendingOrdersState extends State<PendingOrders> {
                                     ],
                                   ),
                                   child: SizedBox(
-                                    height: 170,
-                                    width: double.infinity,
-                                    child: (!docIds.contains(orderListSnapshot.data!.docs[index].get('productId'))) ?
-                                            const Center(
-                                              child: Text(
-                                                'Item Got Deleted',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.grey
-                                                ),
-                                              ),
-                                            )
+                                      height: 170,
+                                      width: double.infinity,
+                                      child: (!docIds.contains(orderListSnapshot.data!.docs[index].get('productId'))) ?
+                                      const Center(
+                                        child: Text(
+                                          'Item Got Deleted',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey
+                                          ),
+                                        ),
+                                      )
                                           : Row(
-                                              children: [
+                                        children: [
 
-                                                //Image
-                                                FutureBuilder(
-                                                  future: FirebaseFirestore.instance
-                                                      .collection('/Products/${orderListSnapshot.data!.docs[index].get('productId')}/Variations')
-                                                      .doc(orderListSnapshot.data!.docs[index].get('variant'))
-                                                      .get(),
-                                                  builder: (context, imageSnapshot) {
-                                                    if(imageSnapshot.hasData){
-                                                      return Padding(
-                                                        padding: const EdgeInsets.only(right: 12, left: 12),
-                                                        child: Container(
-                                                          width: MediaQuery.of(context).size.width*0.40 - 25,//150,
-                                                          height: 137,
-                                                          decoration: BoxDecoration(
-                                                              border: Border.all(
-                                                                  width: 4,
-                                                                  color: Colors.transparent
-                                                              ),
-                                                              borderRadius: BorderRadius.circular(20)
-                                                          ),
-                                                          child: ClipRRect(
-                                                            borderRadius: BorderRadius.circular(15),
-                                                            child:  Image.network(
-                                                              imageSnapshot.data!.get('images')[0],
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          ),
+                                          //Image
+                                          FutureBuilder(
+                                            future: FirebaseFirestore.instance
+                                                .collection('/Products/${orderListSnapshot.data!.docs[index].get('productId')}/Variations')
+                                                .doc(orderListSnapshot.data!.docs[index].get('variant'))
+                                                .get(),
+                                            builder: (context, imageSnapshot) {
+                                              if(imageSnapshot.hasData){
+                                                return Padding(
+                                                  padding: const EdgeInsets.only(right: 12, left: 12),
+                                                  child: Container(
+                                                    width: MediaQuery.of(context).size.width*0.40 - 25,//150,
+                                                    height: 137,
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            width: 4,
+                                                            color: Colors.transparent
                                                         ),
-                                                      );
-                                                    }
-                                                    else if(imageSnapshot.connectionState == ConnectionState.waiting){
-                                                      return Center(
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(context).size.width*0.4,
-                                                          child: const LinearProgressIndicator(),
-                                                        ),
-                                                      );
-                                                    }
-                                                    else if(!imageSnapshot.data!.exists){
-                                                      print('not exists');
-                                                      return Text('Data not Found');
-                                                    }
-                                                    else {
-                                                      return const Center(
+                                                        borderRadius: BorderRadius.circular(20)
+                                                    ),
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(15),
+                                                      child:  Image.network(
+                                                        imageSnapshot.data!.get('images')[0],
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                              else if(imageSnapshot.connectionState == ConnectionState.waiting){
+                                                return Center(
+                                                  child: SizedBox(
+                                                    width: MediaQuery.of(context).size.width*0.4,
+                                                    child: const LinearProgressIndicator(),
+                                                  ),
+                                                );
+                                              }
+                                              else if(!imageSnapshot.data!.exists){
+                                                print('not exists');
+                                                return Text('Data not Found');
+                                              }
+                                              else {
+                                                return const Center(
+                                                  child: Text(
+                                                    'Error Loading Image',
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          ),
+
+                                          //Texts
+                                          FutureBuilder(
+                                            future: FirebaseFirestore.instance
+                                                .collection('/Products')
+                                                .doc(orderListSnapshot.data!.docs[index].get('productId'))
+                                                .get(),
+                                            builder: (context, titleSnapshot) {
+                                              if(titleSnapshot.hasData){
+                                                return SizedBox(
+                                                  width: MediaQuery.of(context).size.width*0.48,//200,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      //Title
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 25),
                                                         child: Text(
-                                                          'Error Loading Image',
-                                                          style: TextStyle(
+                                                          titleSnapshot.data!.get('title'),
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: const TextStyle(
+                                                            fontSize: 17,
                                                             fontWeight: FontWeight.bold,
-                                                            color: Colors.grey,
                                                           ),
                                                         ),
-                                                      );
-                                                    }
-                                                  },
-                                                ),
+                                                      ),
 
-                                                //Texts
-                                                FutureBuilder(
-                                                  future: FirebaseFirestore.instance
-                                                      .collection('/Products')
-                                                      .doc(orderListSnapshot.data!.docs[index].get('productId'))
-                                                      .get(),
-                                                  builder: (context, titleSnapshot) {
-                                                    if(titleSnapshot.hasData){
-                                                      return SizedBox(
-                                                        width: MediaQuery.of(context).size.width*0.48,//200,
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            //Title
-                                                            Padding(
-                                                              padding: const EdgeInsets.only(top: 25),
-                                                              child: Text(
-                                                                titleSnapshot.data!.get('title'),
-                                                                maxLines: 2,
-                                                                overflow: TextOverflow.ellipsis,
-                                                                style: const TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
-                                                              ),
-                                                            ),
-
-                                                            //Price
-                                                            Padding(
-                                                              padding: const EdgeInsets.only(top: 5),
-                                                              child: Text(
-                                                                'Price: ${titleSnapshot.data!.get('price')} BDT',
-                                                                style: const TextStyle(
-                                                                    fontSize: 15,
-                                                                    color: Colors.black54,
-                                                                    fontWeight: FontWeight.bold
-                                                                ),
-                                                              ),
-                                                            ),
-
-                                                            //Size
-                                                            Padding(
-                                                              padding: const EdgeInsets.only(top: 5),
-                                                              child: Text(
-                                                                'Size: ${orderListSnapshot.data!.docs[index].get('selectedSize')}',
-                                                                style: const TextStyle(
-                                                                    fontSize: 14,
-                                                                    color: Colors.black54
-                                                                ),
-                                                              ),
-                                                            ),
-
-                                                            //Variant
-                                                            Padding(
-                                                              padding: const EdgeInsets.only(top: 2),
-                                                              child: Text(
-                                                                'Variant: ${orderListSnapshot.data!.docs[index].get('variant')}',
-                                                                overflow: TextOverflow.ellipsis,
-                                                                style: const TextStyle(
-                                                                    fontSize: 14,
-                                                                    color: Colors.black54
-                                                                ),
-                                                              ),
-                                                            ),
-
-                                                            //Quantity
-                                                            Padding(
-                                                              padding: const EdgeInsets.only(top: 2),
-                                                              child: Text(
-                                                                'Quantity: ${orderListSnapshot.data!.docs[index].get('quantity')}',
-                                                                overflow: TextOverflow.ellipsis,
-                                                                style: const TextStyle(
-                                                                    fontSize: 14,
-                                                                    color: Colors.black54
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    }else if(titleSnapshot.connectionState == ConnectionState.waiting){
-                                                      return Center(
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(context).size.width*0.4,
-                                                          child: const LinearProgressIndicator(),
-                                                        ),
-                                                      );
-                                                    }else {
-                                                      return const Center(
+                                                      //Price
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 5),
                                                         child: Text(
-                                                          'Error Loading Data',
-                                                          style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Colors.grey,
+                                                          'Price: ${titleSnapshot.data!.get('price')} BDT',
+                                                          style: const TextStyle(
+                                                              fontSize: 15,
+                                                              color: Colors.black54,
+                                                              fontWeight: FontWeight.bold
                                                           ),
                                                         ),
-                                                      );
-                                                    }
-                                                  },
-                                                ),
+                                                      ),
 
-                                              ],
-                                            )
+                                                      //Size
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 5),
+                                                        child: Text(
+                                                          'Size: ${orderListSnapshot.data!.docs[index].get('selectedSize')}',
+                                                          style: const TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors.black54
+                                                          ),
+                                                        ),
+                                                      ),
+
+                                                      //Variant
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 2),
+                                                        child: Text(
+                                                          'Variant: ${orderListSnapshot.data!.docs[index].get('variant')}',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: const TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors.black54
+                                                          ),
+                                                        ),
+                                                      ),
+
+                                                      //Quantity
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 2),
+                                                        child: Text(
+                                                          'Quantity: ${orderListSnapshot.data!.docs[index].get('quantity')}',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: const TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors.black54
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }else if(titleSnapshot.connectionState == ConnectionState.waiting){
+                                                return Center(
+                                                  child: SizedBox(
+                                                    width: MediaQuery.of(context).size.width*0.4,
+                                                    child: const LinearProgressIndicator(),
+                                                  ),
+                                                );
+                                              }else {
+                                                return const Center(
+                                                  child: Text(
+                                                    'Error Loading Data',
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          ),
+
+                                        ],
+                                      )
                                   ),
                                 );
                               },
