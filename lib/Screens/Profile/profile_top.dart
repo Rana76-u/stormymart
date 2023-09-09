@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stormymart/Screens/Chat%20Screen/chat_screen.dart';
 import 'package:stormymart/Screens/Profile/Coins/coins.dart';
 import 'package:stormymart/Screens/Profile/Wishlists/wishlist.dart';
 import 'package:stormymart/Screens/Profile/profile_accountinfo.dart';
@@ -98,7 +99,7 @@ class _ProfileTopState extends State<ProfileTop> {
           builder: (context, snapshot) {
             if(snapshot.hasData){
               List wishlist = snapshot.data!.get('wishlist');
-              List coupons = snapshot.data!.get('coupons');
+              //List coupons = snapshot.data!.get('coupons');
               return Positioned(
                 top: MediaQuery.of(context).size.height*0.21,
                 left: MediaQuery.of(context).size.height*0.07,
@@ -136,7 +137,7 @@ class _ProfileTopState extends State<ProfileTop> {
                       ),
                     ),
                     //Coupons
-                    Column(
+                    /*Column(
                       children: [
                         Text(
                           coupons.length.toString(),
@@ -155,7 +156,34 @@ class _ProfileTopState extends State<ProfileTop> {
                           ),
                         )
                       ],
+                    ),*/
+
+                    //Chats
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => ChatScreen(),)
+                        );
+                      },
+                      child: const Column(
+                        children: [
+                          Icon(
+                              Icons.chat_outlined,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                          Text(
+                            'Chats',
+                            style: TextStyle(
+                                color: Colors.white,
+                                overflow: TextOverflow.ellipsis,
+                                fontFamily: 'Urbanist'
+                            ),
+                          )
+                        ],
+                      ),
                     ),
+
                     //Points
                     GestureDetector(
                       onTap: () {

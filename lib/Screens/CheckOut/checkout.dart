@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +85,7 @@ class _CheckOutState extends State<CheckOut> {
       'usedPromoCode': widget.usedPromoCode,
       'usedCoin': widget.usedCoins,
       'total' : widget.itemsTotal,
-      'time' : DateFormat('EE, dd/MM/yyyy H:mm:s').format(DateTime.now()),
+      'time' : FieldValue.serverTimestamp(),
     });
 
     //Each Order Details

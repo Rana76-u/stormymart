@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:stormymart/Screens/Profile/About%20Us/about_us.dart';
+import 'package:stormymart/Screens/Profile/Contacts/contacts.dart';
+import 'package:stormymart/Screens/Profile/FeedBack/feedback.dart';
 import 'package:stormymart/Screens/Profile/login.dart';
 import 'package:stormymart/Screens/Profile/Myorders/myorder.dart';
 import 'package:stormymart/Screens/Profile/profile_top.dart';
@@ -171,47 +174,8 @@ class _ProfileState extends State<Profile> {
                                 ),
                               ),
                             ),
-                            //Track
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 20),
-                              child: Row(
-                                children: [
-                                  //Bike Icon
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.all(Radius.circular(50)),
-                                      color: Color(0xFFFB8500),
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(Icons.track_changes_outlined, color: Colors.white, size: 22,),
-                                    ),
-                                  ),
-                                  //Blood Donation Posts
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Text(
-                                      'Track Order',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.5,
-                                          fontFamily: 'Urbanist'
-                                      ),
-                                    ),
-                                  ),
-
-                                  const Spacer(),
-                                  //Forward button
-                                  const Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                ],
-                              ),
-                            ),
                             //Returns
-                            Padding(
+                            /*Padding(
                               padding: const EdgeInsets.only(bottom: 20),
                               child: Row(
                                 children: [
@@ -248,83 +212,143 @@ class _ProfileState extends State<Profile> {
                                   ),
                                 ],
                               ),
-                            ),
-                            //About Us
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 20),
-                              child: Row(
-                                children: [
-                                  //Bike Icon
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.all(Radius.circular(50)),
-                                      color: Color(0xff219ebc),
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(Icons.people, color: Colors.white, size: 22,),
-                                    ),
-                                  ),
-                                  //Blood Donation Posts
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Text(
-                                      'About Us',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.5,
-                                          fontFamily: 'Urbanist'
+                            ),*/
+                            //Contacts, Track
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) => const Contacts(),)
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                child: Row(
+                                  children: [
+                                    //Icon
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                                        color: Color(0xFFFB8500),
+                                      ),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: Icon(Icons.track_changes_outlined, color: Colors.white, size: 22,),
                                       ),
                                     ),
-                                  ),
+                                    //Blood Donation Posts
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Text(
+                                        'Contacts', //Track
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.5,
+                                            fontFamily: 'Urbanist'
+                                        ),
+                                      ),
+                                    ),
 
-                                  const Spacer(),
-                                  //Forward button
-                                  const Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                ],
+                                    const Spacer(),
+                                    //Forward button
+                                    const Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 18,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            //About Us
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) => const AboutUs(),)
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                child: Row(
+                                  children: [
+                                    //Bike Icon
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                                        color: Color(0xff219ebc),
+                                      ),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: Icon(Icons.people, color: Colors.white, size: 22,),
+                                      ),
+                                    ),
+                                    //Blood Donation Posts
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Text(
+                                        'About Us',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.5,
+                                            fontFamily: 'Urbanist'
+                                        ),
+                                      ),
+                                    ),
+
+                                    const Spacer(),
+                                    //Forward button
+                                    const Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 18,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             //FeedBack
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 11),
-                              child: Row(
-                                children: [
-                                  //Bike Icon
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.all(Radius.circular(50)),
-                                      color: Colors.green,
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(Icons.feedback_rounded, color: Colors.white, size: 22,),
-                                    ),
-                                  ),
-                                  //Blood Donation Posts
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Text(
-                                      'Feedback',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.5,
-                                          fontFamily: 'Urbanist'
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => const FeedBackScreen(),)
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 11),
+                                child: Row(
+                                  children: [
+                                    //Bike Icon
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                                        color: Colors.green,
+                                      ),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: Icon(Icons.feedback_rounded, color: Colors.white, size: 22,),
                                       ),
                                     ),
-                                  ),
+                                    //Blood Donation Posts
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Text(
+                                        'Feedback',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.5,
+                                            fontFamily: 'Urbanist'
+                                        ),
+                                      ),
+                                    ),
 
-                                  const Spacer(),
-                                  //Forward button
-                                  const Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                ],
+                                    const Spacer(),
+                                    //Forward button
+                                    const Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 18,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],

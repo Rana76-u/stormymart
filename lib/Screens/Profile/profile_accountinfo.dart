@@ -184,7 +184,6 @@ class _AccountInfoState extends State<AccountInfo> {
                             height: 50,
                             child: TextField(
                               controller: nameController,
-                              keyboardType: TextInputType.number,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -210,7 +209,6 @@ class _AccountInfoState extends State<AccountInfo> {
                             height: 50,
                             child: TextField(
                               controller: emailController,
-                              keyboardType: TextInputType.number,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -297,7 +295,6 @@ class _AccountInfoState extends State<AccountInfo> {
                             width: MediaQuery.of(context).size.width*0.7,
                             child: TextField(
                               controller: address1Controller,
-                              keyboardType: TextInputType.number,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -366,7 +363,6 @@ class _AccountInfoState extends State<AccountInfo> {
                             height: 50,
                             child: TextField(
                               controller: address2Controller,
-                              keyboardType: TextInputType.number,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 
 class CompletedOrders extends StatefulWidget {
   const CompletedOrders({super.key});
@@ -104,7 +105,17 @@ class _CompletedOrdersState extends State<CompletedOrders> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 0, left: 15),
                                 child: Text(
-                                  "Placed on : ${pendingOrderSnapshot.data!.docs[index].get('time')}",
+                                  "Placed on : "
+                                      "${
+                                      DateFormat('EE, dd/MM H:mm')
+                                          .format(
+                                          pendingOrderSnapshot
+                                              .data!
+                                              .docs[index]
+                                              .get('time')
+                                              .toDate()
+                                      )
+                                  }",
                                   style: const TextStyle(
                                       fontSize: 12.5,
                                       fontWeight: FontWeight.bold,
