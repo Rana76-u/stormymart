@@ -1,12 +1,12 @@
 import 'dart:convert';
-
+import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 import 'package:stormymart/Components/custom_image.dart';
 import 'package:http/http.dart' as http;
-import '../../utility/bottom_nav_bar.dart';
 import '../../utility/globalvariable.dart';
+import '../Search/search.dart';
 
 DateTime now = DateTime.now();
 DateTime offerEndDate = DateTime(now.year, now.month, now.day+2);
@@ -154,8 +154,12 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
                 GestureDetector(
                   onTap: () {
                     keyword = data[0];
-                    Navigator.of(context).push(
+                    /*Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+                    );*/
+                    Get.to(
+                      SearchPage(keyword: keyword),
+                      transition: Transition.fade,
                     );
                   },
                   child: ClipRRect(
@@ -171,8 +175,12 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
               GestureDetector(
                 onTap: () {
                   keyword = data[0];
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+                  /*Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+                    );*/
+                  Get.to(
+                    SearchPage(keyword: keyword),
+                    transition: Transition.fade,
                   );
                 },
                 child: Text(

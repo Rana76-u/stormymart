@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
 import '../../Components/custom_image.dart';
 import '../../theme/color.dart';
 import '../Product Screen/product_screen.dart';
@@ -35,8 +35,12 @@ class _HotDealsState extends State<HotDeals> {
                     double discountCal = (product.get('price') / 100) * (100 - product.get('discount'));
                     return GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(
+                        /*Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) => ProductScreen(productId: product.id))
+                        );*/
+                        Get.to(
+                          ProductScreen(productId: product.id),
+                          transition: Transition.fade,
                         );
                       },
                       child: Padding(

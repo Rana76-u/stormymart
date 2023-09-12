@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:stormymart/utility/bottom_nav_bar.dart';
 import 'package:stormymart/utility/globalvariable.dart';
-
+import 'package:get/get.dart';
 import '../../Components/custom_image.dart';
 import '../../theme/color.dart';
 import '../Product Screen/product_screen.dart';
+import '../Search/search.dart';
 
 class RecommendedForYou extends StatefulWidget {
   const RecommendedForYou({super.key});
@@ -44,8 +44,12 @@ class _RecommendedForYouState extends State<RecommendedForYou> {
                       padding: const EdgeInsets.only(right: 10),
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(
+                          /*Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => ProductScreen(productId: product.id))
+                          );*/
+                          Get.to(
+                            ProductScreen(productId: product.id),
+                            transition: Transition.fade,
                           );
                         },
                         child: SizedBox(
@@ -252,8 +256,12 @@ class RecommendedForYouTitle extends StatelessWidget {
           GestureDetector(
             onTap: () {
               keyword = null;
-              Navigator.of(context).push(
+              /*Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+              );*/
+              Get.to(
+                SearchPage(keyword: keyword),
+                transition: Transition.fade,
               );
             },
             child: const Text(

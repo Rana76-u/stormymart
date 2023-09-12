@@ -10,9 +10,10 @@ import 'package:stormymart/Screens/Home/recommanded_for_you.dart';
 import 'package:stormymart/Screens/Profile/Coins/coins.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
 import 'package:stormymart/utility/globalvariable.dart';
-
+import 'package:get/get.dart';
 
 import '../../Components/searchfield.dart';
+import '../Search/search.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -161,8 +162,12 @@ class _HomePageState extends State<HomePage> {
                                     //leading: const Icon(Icons.kitchen),
                                       onTap: () {
                                         keyword = subCategories[index];
-                                        Navigator.of(context).push(
+                                        /*Navigator.of(context).push(
                                             MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+                                        );*/
+                                        Get.to(
+                                          SearchPage(keyword: keyword),
+                                          transition: Transition.fade,
                                         );
                                       },
                                   );
@@ -218,10 +223,14 @@ class _HomePageState extends State<HomePage> {
                     //chat icon
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(
+                        /*Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => ChatScreen(),
                           )
+                        );*/
+                        Get.to(
+                          ChatScreen(),
+                          transition: Transition.fade,
                         );
                       },
                       child: Icon(
@@ -233,8 +242,12 @@ class _HomePageState extends State<HomePage> {
                     //coin icon
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(
+                        /*Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => const Coins(),)
+                        );*/
+                        Get.to(
+                          const Coins(),
+                          transition: Transition.fade,
                         );
                       },
                       child: Image.asset(

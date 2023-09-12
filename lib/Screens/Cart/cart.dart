@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../../utility/bottom_nav_bar.dart';
 import '../CheckOut/checkout.dart';
 import 'delivery_container.dart';
+import 'package:get/get.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -223,378 +223,724 @@ class _CartState extends State<Cart> {
     TextEditingController promoController = TextEditingController();
     TextEditingController coinController = TextEditingController();
 
-    return Scaffold(
-      body: SizedBox(
-        child: FirebaseAuth.instance.currentUser == null ?
-            //Login
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Expanded(child: SizedBox()),
-              const Text(
-                'StormyMart',
-                style: TextStyle(
-                  fontSize: 25,
-                  fontFamily: 'Urbanist',
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const Text(
-                'Login to access the cart',
-                style: TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w800,
-                    fontFamily: 'Urbanist'
-                ),
-              ),
-              const SizedBox(height: 10,),
-
-              SizedBox(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),));
-                  },
-                  child: const Text(
-                    'Go to Login Page',
-                    style: TextStyle(
-                        fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13
-                    ),
+    return WillPopScope(
+      onWillPop: () async {
+        Get.to(
+          BottomBar(bottomIndex: 0),
+          transition: Transition.fade,
+        );
+        return false;
+      },
+      child: Scaffold(
+        body: SizedBox(
+          child: FirebaseAuth.instance.currentUser == null ?
+              //Login
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Expanded(child: SizedBox()),
+                const Text(
+                  'StormyMart',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-              ),
-              const Expanded(child: SizedBox()),
-            ],
-          ),
-        )
-            :
-        /*isLoading ? Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width*0.5,
-            child: const LinearProgressIndicator(),
-          ),
-        ) :*/
-        SingleChildScrollView(
-          child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    //Space
-                    SizedBox(height: MediaQuery.of(context).size.height*0.05,),
+                const Text(
+                  'Login to access the cart',
+                  style: TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'Urbanist'
+                  ),
+                ),
+                const SizedBox(height: 10,),
 
-                    //Cart text
-                    const Text(
-                      'My Cart',
-                      style: TextStyle(
-                          fontSize: 22,
-                          fontFamily: 'Urbanist',
-                          fontWeight: FontWeight.bold
-                      ),
-                    ),
-
-                    //Space
-                    const SizedBox(height: 30,),
-
-                    //Cart
-                    Card(
+                SizedBox(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)
+                          borderRadius: BorderRadius.circular(20)
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const DeliveryContainer(),
+                    ),
+                    onPressed: () {
+                      /*Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
+                      );*/
+                      Get.to(
+                        BottomBar(bottomIndex: 3),
+                        transition: Transition.rightToLeft,
+                      );
+                    },
+                    child: const Text(
+                      'Go to Login Page',
+                      style: TextStyle(
+                          fontFamily: 'Urbanist',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13
+                      ),
+                    ),
+                  ),
+                ),
+                const Expanded(child: SizedBox()),
+              ],
+            ),
+          )
+              :
+          /*isLoading ? Center(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width*0.5,
+              child: const LinearProgressIndicator(),
+            ),
+          ) :*/
+          SingleChildScrollView(
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      //Space
+                      SizedBox(height: MediaQuery.of(context).size.height*0.05,),
 
-                          //Space
-                          const SizedBox(height: 10,),
+                      //Cart text
+                      const Text(
+                        'My Cart',
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontFamily: 'Urbanist',
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
 
-                          //Cart items
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                //number of items
-                                Text(
-                                  '${cartItemIds.length.toString()} items',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey.shade700,
-                                      fontWeight: FontWeight.w400
-                                  ),
-                                ),
+                      //Space
+                      const SizedBox(height: 30,),
 
-                                //Select All
-                                /*Padding(
-                                  padding: const EdgeInsets.only(right: 11),
-                                  child: SizedBox(
-                                    width: 10,
-                                    child: Checkbox(
-                                      value: isAllSelected,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          for (int i = 0; i < cartItemIds.length; i++) {
-                                            selectedItems[i] = !isAllSelected;
-                                          }
-                                          isAllSelected = !isAllSelected;
-                                        });
-                                      },
+                      //Cart
+                      Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const DeliveryContainer(),
+
+                            //Space
+                            const SizedBox(height: 10,),
+
+                            //Cart items
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //number of items
+                                  Text(
+                                    '${cartItemIds.length.toString()} items',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey.shade700,
+                                        fontWeight: FontWeight.w400
                                     ),
                                   ),
-                                ),*/
 
-                                //items
-                                if(cartItemIds.isNotEmpty)...[
-                                  AnimatedSwitcher(
-                                    duration: const Duration(milliseconds: 300),
-                                    child: isDeleting ?
-                                    const Center(
-                                      child: LinearProgressIndicator(),
-                                    ) :
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: cartItemIds.length,
-                                      itemBuilder: (context, index) {
-                                        return SizedBox(
-                                          height: 170,
-                                          width: double.infinity,
-                                          child: Card(
-                                            elevation: 0,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                //CheckBox
-                                                /*Padding(
-                                                  padding: const EdgeInsets.only(right: 11),
-                                                  child: SizedBox(
-                                                    width: 10,
-                                                    child: Checkbox(
-                                                      value: selectedItems[index],
-                                                      onChanged: (value) {
-                                                        setState(() {
-                                                          selectedItems[index] = !selectedItems[index]!;
-                                                        });
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),*/
-                                                //Image
-                                                Padding(
-                                                  padding: const EdgeInsets.only(right: 10),
-                                                  child: Container(
-                                                    width: MediaQuery.of(context).size.width*0.38 - 25,//0.40, 0.38 - 25 0.32 - 10
-                                                    height: 124, //137 127 120
-                                                    decoration: BoxDecoration(
-                                                        /*border: Border.all(
-                                                            width: 0, //4
-                                                            color: Colors.transparent
-                                                        ),*/
-                                                        borderRadius: BorderRadius.circular(20)
-                                                    ),
-                                                    child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(15),
-                                                      child:  Image.network(
-                                                        productImages[index],
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-
-                                                //Texts
-                                                SizedBox(
-                                                  width: MediaQuery.of(context).size.width*0.45 - 10,//200,
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      //Title
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 23),
-                                                        child: Text(
-                                                          productTitles[index],
-                                                          maxLines: 2,
-                                                          overflow: TextOverflow.ellipsis,
-                                                          style: const TextStyle(
-                                                            fontSize: 17,
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                      //Price
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 5),
-                                                        child: Text(
-                                                          'Price: ${priceAfterDiscount[index]} BDT',
-                                                          style: const TextStyle(
-                                                              fontSize: 15,
-                                                              color: Colors.black54,
-                                                              fontWeight: FontWeight.bold
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                      //Size
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 5),
-                                                        child: Text(
-                                                          'Size: ${cartItemSizes[index]}',
-                                                          style: const TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors.black54
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                      //Variant
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 2),
-                                                        child: Text(
-                                                          'Variant: ${cartItemVariants[index]}',
-                                                          overflow: TextOverflow.ellipsis,
-                                                          style: const TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors.black54
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                      //Quantity
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 2),
-                                                        child: Text(
-                                                          'Quantity: ${cartItemQuantities[index]}',
-                                                          overflow: TextOverflow.ellipsis,
-                                                          style: const TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors.black54
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-
-                                                //Delete
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return  AlertDialog(
-                                                          title: const Text('Please Confirm'),
-                                                          content: const Text('Are you sure you want to delete this item?'),
-                                                          actions: [
-                                                            // The "Yes" button
-                                                            TextButton(
-                                                                onPressed: () {
-                                                                  deleteDocument(index);
-                                                                  Navigator.of(context).push(
-                                                                      MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
-                                                                  );
-                                                                },
-                                                                child: const Text('Yes')
-                                                            ),
-                                                            TextButton(
-                                                                onPressed: () {
-                                                                  // Close the dialog
-                                                                  Navigator.of(context).pop();
-                                                                },
-                                                                child: const Text('No'))
-                                                          ],
-                                                        );
-                                                      },
-                                                    );
-                                                  },
-                                                  child: const SizedBox(
-                                                    child: Icon(
-                                                        Icons.delete_forever,
-                                                      color: Colors.red,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ]
-                                else...[
-                                  const Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(bottom: 10),
-                                      child: Text(
-                                        'Nothing to Show',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey,
-                                          fontFamily: 'Urbanist'
-                                        ),
+                                  //Select All
+                                  /*Padding(
+                                    padding: const EdgeInsets.only(right: 11),
+                                    child: SizedBox(
+                                      width: 10,
+                                      child: Checkbox(
+                                        value: isAllSelected,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            for (int i = 0; i < cartItemIds.length; i++) {
+                                              selectedItems[i] = !isAllSelected;
+                                            }
+                                            isAllSelected = !isAllSelected;
+                                          });
+                                        },
                                       ),
                                     ),
-                                  )
+                                  ),*/
+
+                                  //items
+                                  if(cartItemIds.isNotEmpty)...[
+                                    AnimatedSwitcher(
+                                      duration: const Duration(milliseconds: 300),
+                                      child: isDeleting ?
+                                      const Center(
+                                        child: LinearProgressIndicator(),
+                                      ) :
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: cartItemIds.length,
+                                        itemBuilder: (context, index) {
+                                          return SizedBox(
+                                            height: 170,
+                                            width: double.infinity,
+                                            child: Card(
+                                              elevation: 0,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  //CheckBox
+                                                  /*Padding(
+                                                    padding: const EdgeInsets.only(right: 11),
+                                                    child: SizedBox(
+                                                      width: 10,
+                                                      child: Checkbox(
+                                                        value: selectedItems[index],
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            selectedItems[index] = !selectedItems[index]!;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ),*/
+                                                  //Image
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(right: 10),
+                                                    child: Container(
+                                                      width: MediaQuery.of(context).size.width*0.38 - 25,//0.40, 0.38 - 25 0.32 - 10
+                                                      height: 124, //137 127 120
+                                                      decoration: BoxDecoration(
+                                                          /*border: Border.all(
+                                                              width: 0, //4
+                                                              color: Colors.transparent
+                                                          ),*/
+                                                          borderRadius: BorderRadius.circular(20)
+                                                      ),
+                                                      child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(15),
+                                                        child:  Image.network(
+                                                          productImages[index],
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  //Texts
+                                                  SizedBox(
+                                                    width: MediaQuery.of(context).size.width*0.45 - 10,//200,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        //Title
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 23),
+                                                          child: Text(
+                                                            productTitles[index],
+                                                            maxLines: 2,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: const TextStyle(
+                                                              fontSize: 17,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+
+                                                        //Price
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 5),
+                                                          child: Text(
+                                                            'Price: ${priceAfterDiscount[index]} BDT',
+                                                            style: const TextStyle(
+                                                                fontSize: 15,
+                                                                color: Colors.black54,
+                                                                fontWeight: FontWeight.bold
+                                                            ),
+                                                          ),
+                                                        ),
+
+                                                        //Size
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 5),
+                                                          child: Text(
+                                                            'Size: ${cartItemSizes[index]}',
+                                                            style: const TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors.black54
+                                                            ),
+                                                          ),
+                                                        ),
+
+                                                        //Variant
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 2),
+                                                          child: Text(
+                                                            'Variant: ${cartItemVariants[index]}',
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: const TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors.black54
+                                                            ),
+                                                          ),
+                                                        ),
+
+                                                        //Quantity
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 2),
+                                                          child: Text(
+                                                            'Quantity: ${cartItemQuantities[index]}',
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: const TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors.black54
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+
+                                                  //Delete
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return  AlertDialog(
+                                                            title: const Text('Please Confirm'),
+                                                            content: const Text('Are you sure you want to delete this item?'),
+                                                            actions: [
+                                                              // The "Yes" button
+                                                              TextButton(
+                                                                  onPressed: () {
+                                                                    deleteDocument(index);
+                                                                    Navigator.of(context).push(
+                                                                        MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
+                                                                    );
+                                                                  },
+                                                                  child: const Text('Yes')
+                                                              ),
+                                                              TextButton(
+                                                                  onPressed: () {
+                                                                    // Close the dialog
+                                                                    Navigator.of(context).pop();
+                                                                  },
+                                                                  child: const Text('No'))
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                    child: const SizedBox(
+                                                      child: Icon(
+                                                          Icons.delete_forever,
+                                                        color: Colors.red,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ]
+                                  else...[
+                                    const Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(bottom: 10),
+                                        child: Text(
+                                          'Nothing to Show',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                            fontFamily: 'Urbanist'
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      //Calculation
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: cartItemIds.length,
+                        itemBuilder: (context, index) {
+
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 15, left: 5, right: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                //Title * Quantity
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width*0.45 - 20,
+                                  child: Text(
+                                    productTitles[index],
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Text('${priceAfterDiscount[index].toStringAsFixed(0)}× ${cartItemQuantities[index]}'),
+                                // = Price
+                                Text('${priceAfterDiscount[index] * cartItemQuantities[index]}')
+                                //Discount
                               ],
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    ),
 
-                    //Calculation
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: cartItemIds.length,
-                      itemBuilder: (context, index) {
+                      //Dotted Divider Line
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 15),
+                        child: DottedLine(
+                          direction: Axis.horizontal,
+                          lineLength: double.infinity,
+                          lineThickness: 1.0,
+                          dashLength: 4.0,
+                          dashColor: Colors.grey,
+                          //dashGradient: [Colors.red, Colors.blue],
+                          dashRadius: 0.0,
+                          dashGapLength: 4.0,
+                          dashGapColor: Colors.transparent,
+                          //dashGapGradient: [Colors.red, Colors.blue],
+                          dashGapRadius: 0.0,
+                        ),
+                      ),
 
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 15, left: 5, right: 10),
+                      //Subtotal Line
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                                'Subtotal'
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: Text(
+                                subTotal.toStringAsFixed(1),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      //DeliveryCharge + coin
+                      FutureBuilder(
+                        future: FirebaseFirestore.instance
+                            .collection('userData')
+                            .doc(uid)
+                            .get(),
+                        builder: (context, userDatasnapshot) {
+                          if(userDatasnapshot.hasData){
+                            return Column(
+                              children: [
+                                //Delivery Charge Line
+                                if( userDatasnapshot.data!.get('Address1')[1] == 'Dhaka' ||
+                                    userDatasnapshot.data!.get('Address2')[1] == 'Dhaka')...[
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 5, top: 5),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text('Delivery Charge'),
+                                        Padding(
+                                            padding: EdgeInsets.only(right: 10),
+                                            child: Text(
+                                              '50',
+                                            )
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ]else...[
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 5, top: 5),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text('Delivery Charge'),
+                                        Padding(
+                                            padding: EdgeInsets.only(right: 10),
+                                            child: Text(
+                                              '100',
+                                            )
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                                
+                                //Coins Line
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5,left: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const Text('You Have ',),
+                                      Text(
+                                        '${userDatasnapshot.data!.get('coins')}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.amber,
+                                        ),
+                                      ),
+                                      const Text(' available COINS to use',)
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Row(
+                                    children: [
+                                      //TextBox
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width*0.6,
+                                        height: 50,
+                                        child: TextField(
+                                          onChanged: (value) {
+                                            inputCoinAmount = double.parse(value);
+                                          },
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold
+                                          ),
+                                          decoration: InputDecoration(
+                                            hintText: "INPUT COIN AMOUNT",
+                                            hintStyle: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey.shade500,
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(5),
+                                              borderSide: const BorderSide(color: Colors.grey),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(5),
+                                              borderSide: const BorderSide(color: Colors.grey),
+                                            ),
+                                            prefixIcon: const Icon(Icons.money, color: Colors.amber,),
+                                          ),
+                                          keyboardType: TextInputType.number,
+                                          controller: coinController,
+                                        ),
+                                      ),
+                                      //Space
+                                      const SizedBox(width: 10,),
+                                      //Button
+                                      SizedBox(
+                                        height: 50,
+                                        width: MediaQuery.of(context).size.width*0.30,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            if(inputCoinAmount <= userDatasnapshot.data!.get('coins')){
+                                              setState(() {
+                                                coinDiscount = inputCoinAmount / 25;
+                                                total = total - coinDiscount;
+                                              });
+                                            }else{
+                                              ScaffoldMessenger
+                                                  .of(context)
+                                                  .showSnackBar(
+                                                  const SnackBar(
+                                                      content: Text('More than available coins')
+                                                  )
+                                              );
+                                            }
+                                          },
+                                          style: const ButtonStyle(
+                                              backgroundColor: MaterialStatePropertyAll(Colors.amber)
+                                          ),
+                                          child: const Text('Redeem Coin'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if(coinDiscount != 0.0)...[
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 5, left: 5),
+                                          child: Text(
+                                              'Coin Discount for $inputCoinAmount coins is : '
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 5, right: 5),
+                                          child: Text(
+                                              '- $coinDiscount',
+                                            style: const TextStyle(
+                                              color: Colors.red
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ]
+                              ],
+                            );
+                          }else if(userDatasnapshot.connectionState == ConnectionState.waiting){
+                            return const Center(child: LinearProgressIndicator(),);
+                          }else{
+                            return const Center(child: Text('Error Loading, Try again'),);
+                          }
+                        },
+                      ),
+
+                      //Promo Text
+                      const Padding(
+                        padding: EdgeInsets.only(top: 5,left: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                                'Use Promo Code to get extra discount',
+                              style: TextStyle(
+                                overflow: TextOverflow.ellipsis
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      //Promo Code
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Row(
+                          children: [
+                            //TextBox
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width*0.6,
+                              height: 50,
+                              child: TextField(
+                                onChanged: (value) {
+                                  promoCode = value;
+                                },
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: "PROMO CODE",
+                                  hintStyle: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: const BorderSide(color: Colors.grey),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: const BorderSide(color: Colors.grey),
+                                  ),
+                                  prefixIcon: const Icon(
+                                    Icons.discount,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                controller: promoController,
+                              ),
+                            ),
+                            //Space
+                            const SizedBox(width: 10,),
+                            //Button
+                            SizedBox(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width*0.30,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  await FirebaseFirestore.instance
+                                      .collection('Promo Codes')
+                                      .where(FieldPath.documentId, isEqualTo: promoCode)
+                                      .get()
+                                      .then((querySnapshot) async {
+                                    if (querySnapshot.size > 0) {
+                                      getPromoDiscountMoney();
+                                      setState(() {
+                                        isPromoCodeFound = true;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        isPromoCodeFound = false;
+                                      });
+                                    }
+                                  });
+                                },
+                                style: const ButtonStyle(
+                                    backgroundColor: MaterialStatePropertyAll(Colors.green)
+                                ),
+                                child: const Text('Apply Code'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      //Promo Discount Money
+                      if(isPromoCodeFound == true)...[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, bottom: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              //Title * Quantity
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width*0.45 - 20,
+                              Text(
+                                  'Promo Discount ${promoDiscount.toString()}%'
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
                                 child: Text(
-                                  productTitles[index],
-                                  overflow: TextOverflow.ellipsis,
+                                  '- ${promoDiscountMoney.toStringAsFixed(1)}',
+                                  style: const TextStyle(
+                                      color: Colors.red
+                                  ),
                                 ),
                               ),
-                              Text('${priceAfterDiscount[index].toStringAsFixed(0)}× ${cartItemQuantities[index]}'),
-                              // = Price
-                              Text('${priceAfterDiscount[index] * cartItemQuantities[index]}')
-                              //Discount
                             ],
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      ]
+                      else...[
+                        const Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 15),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Promo Code Not Found',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Expanded(child: SizedBox())
+                            ],
+                          ),
+                        ),
+                      ],
 
-                    //Dotted Divider Line
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 15),
-                      child: DottedLine(
+                      //Dotted Divider Line
+                      const DottedLine(
                         direction: Axis.horizontal,
                         lineLength: double.infinity,
                         lineThickness: 1.0,
                         dashLength: 4.0,
-                        dashColor: Colors.grey,
+                        dashColor: Colors.black54,
                         //dashGradient: [Colors.red, Colors.blue],
                         dashRadius: 0.0,
                         dashGapLength: 4.0,
@@ -602,410 +948,89 @@ class _CartState extends State<Cart> {
                         //dashGapGradient: [Colors.red, Colors.blue],
                         dashGapRadius: 0.0,
                       ),
-                    ),
 
-                    //Subtotal Line
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                              'Subtotal'
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Text(
-                              subTotal.toStringAsFixed(1),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    //DeliveryCharge + coin
-                    FutureBuilder(
-                      future: FirebaseFirestore.instance
-                          .collection('userData')
-                          .doc(uid)
-                          .get(),
-                      builder: (context, userDatasnapshot) {
-                        if(userDatasnapshot.hasData){
-                          return Column(
-                            children: [
-                              //Delivery Charge Line
-                              if( userDatasnapshot.data!.get('Address1')[1] == 'Dhaka' ||
-                                  userDatasnapshot.data!.get('Address2')[1] == 'Dhaka')...[
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 5, top: 5),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('Delivery Charge'),
-                                      Padding(
-                                          padding: EdgeInsets.only(right: 10),
-                                          child: Text(
-                                            '50',
-                                          )
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ]else...[
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 5, top: 5),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('Delivery Charge'),
-                                      Padding(
-                                          padding: EdgeInsets.only(right: 10),
-                                          child: Text(
-                                            '100',
-                                          )
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                              
-                              //Coins Line
-                              Padding(
-                                padding: const EdgeInsets.only(top: 5,left: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const Text('You Have ',),
-                                    Text(
-                                      '${userDatasnapshot.data!.get('coins')}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w800,
-                                        color: Colors.amber,
-                                      ),
-                                    ),
-                                    const Text(' available COINS to use',)
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Row(
-                                  children: [
-                                    //TextBox
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width*0.6,
-                                      height: 50,
-                                      child: TextField(
-                                        onChanged: (value) {
-                                          inputCoinAmount = double.parse(value);
-                                        },
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold
-                                        ),
-                                        decoration: InputDecoration(
-                                          hintText: "INPUT COIN AMOUNT",
-                                          hintStyle: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey.shade500,
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(5),
-                                            borderSide: const BorderSide(color: Colors.grey),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(5),
-                                            borderSide: const BorderSide(color: Colors.grey),
-                                          ),
-                                          prefixIcon: const Icon(Icons.money, color: Colors.amber,),
-                                        ),
-                                        keyboardType: TextInputType.number,
-                                        controller: coinController,
-                                      ),
-                                    ),
-                                    //Space
-                                    const SizedBox(width: 10,),
-                                    //Button
-                                    SizedBox(
-                                      height: 50,
-                                      width: MediaQuery.of(context).size.width*0.30,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          if(inputCoinAmount <= userDatasnapshot.data!.get('coins')){
-                                            setState(() {
-                                              coinDiscount = inputCoinAmount / 25;
-                                              total = total - coinDiscount;
-                                            });
-                                          }else{
-                                            ScaffoldMessenger
-                                                .of(context)
-                                                .showSnackBar(
-                                                const SnackBar(
-                                                    content: Text('More than available coins')
-                                                )
-                                            );
-                                          }
-                                        },
-                                        style: const ButtonStyle(
-                                            backgroundColor: MaterialStatePropertyAll(Colors.amber)
-                                        ),
-                                        child: const Text('Redeem Coin'),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if(coinDiscount != 0.0)...[
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 5, left: 5),
-                                        child: Text(
-                                            'Coin Discount for $inputCoinAmount coins is : '
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 5, right: 5),
-                                        child: Text(
-                                            '- $coinDiscount',
-                                          style: const TextStyle(
-                                            color: Colors.red
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ]
-                            ],
-                          );
-                        }else if(userDatasnapshot.connectionState == ConnectionState.waiting){
-                          return const Center(child: LinearProgressIndicator(),);
-                        }else{
-                          return const Center(child: Text('Error Loading, Try again'),);
-                        }
-                      },
-                    ),
-
-                    //Promo Text
-                    const Padding(
-                      padding: EdgeInsets.only(top: 5,left: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                              'Use Promo Code to get extra discount',
-                            style: TextStyle(
-                              overflow: TextOverflow.ellipsis
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    //Promo Code
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Row(
-                        children: [
-                          //TextBox
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width*0.6,
-                            height: 50,
-                            child: TextField(
-                              onChanged: (value) {
-                                promoCode = value;
-                              },
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold
-                              ),
-                              decoration: InputDecoration(
-                                hintText: "PROMO CODE",
-                                hintStyle: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey.shade500,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(color: Colors.grey),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(color: Colors.grey),
-                                ),
-                                prefixIcon: const Icon(
-                                  Icons.discount,
-                                  color: Colors.green,
-                                ),
-                              ),
-                              controller: promoController,
-                            ),
-                          ),
-                          //Space
-                          const SizedBox(width: 10,),
-                          //Button
-                          SizedBox(
-                            height: 50,
-                            width: MediaQuery.of(context).size.width*0.30,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                await FirebaseFirestore.instance
-                                    .collection('Promo Codes')
-                                    .where(FieldPath.documentId, isEqualTo: promoCode)
-                                    .get()
-                                    .then((querySnapshot) async {
-                                  if (querySnapshot.size > 0) {
-                                    getPromoDiscountMoney();
-                                    setState(() {
-                                      isPromoCodeFound = true;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      isPromoCodeFound = false;
-                                    });
-                                  }
-                                });
-                              },
-                              style: const ButtonStyle(
-                                  backgroundColor: MaterialStatePropertyAll(Colors.green)
-                              ),
-                              child: const Text('Apply Code'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    //Promo Discount Money
-                    if(isPromoCodeFound == true)...[
+                      //Total
                       Padding(
-                        padding: const EdgeInsets.only(top: 10, bottom: 15),
+                        padding: const EdgeInsets.only(top: 15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                                'Promo Discount ${promoDiscount.toString()}%'
+                            const Text(
+                                'Total'
                             ),
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
                               child: Text(
-                                '- ${promoDiscountMoney.toStringAsFixed(1)}',
+                                total.toStringAsFixed(1),
                                 style: const TextStyle(
-                                    color: Colors.red
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.5
                                 ),
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ),
-                    ]
-                    else...[
-                      const Padding(
-                        padding: EdgeInsets.only(top: 10, bottom: 15),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Promo Code Not Found',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Expanded(child: SizedBox())
-                          ],
-                        ),
-                      ),
-                    ],
 
-                    //Dotted Divider Line
-                    const DottedLine(
-                      direction: Axis.horizontal,
-                      lineLength: double.infinity,
-                      lineThickness: 1.0,
-                      dashLength: 4.0,
-                      dashColor: Colors.black54,
-                      //dashGradient: [Colors.red, Colors.blue],
-                      dashRadius: 0.0,
-                      dashGapLength: 4.0,
-                      dashGapColor: Colors.transparent,
-                      //dashGapGradient: [Colors.red, Colors.blue],
-                      dashGapRadius: 0.0,
-                    ),
-
-                    //Total
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                              'Total'
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Text(
-                              total.toStringAsFixed(1),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.5
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-
-                    //Check Out Button
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15),
-                      child: SizedBox(
-                          width: double.infinity,
-                          child: Center(
-                            child: SizedBox(
-                              height: 50,
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: (){
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => CheckOut(
-                                          usedCoins: inputCoinAmount,
-                                          coinDiscount: coinDiscount,
-                                          usedPromoCode: promoCode,
+                      //Check Out Button
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15),
+                        child: SizedBox(
+                            width: double.infinity,
+                            child: Center(
+                              child: SizedBox(
+                                height: 50,
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: (){
+                                    /*Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => CheckOut(
+                                            usedCoins: inputCoinAmount,
+                                            coinDiscount: coinDiscount,
+                                            usedPromoCode: promoCode,
+                                          itemsTotal: total,
+                                          promoDiscount: promoDiscountMoney,
+                                        ),
+                                      )
+                                    );*/
+                                    Get.to(
+                                      CheckOut(
+                                        usedCoins: inputCoinAmount,
+                                        coinDiscount: coinDiscount,
+                                        usedPromoCode: promoCode,
                                         itemsTotal: total,
                                         promoDiscount: promoDiscountMoney,
                                       ),
-                                    )
-                                  );
-                                },
-                                style: const ButtonStyle(
-                                    backgroundColor: MaterialStatePropertyAll(Colors.green)
-                                ),
-                                child: isLoading ? LinearProgressIndicator(
-                                  color: Colors.green.shade300,
-                                  backgroundColor: Colors.green.shade100,
-                                )
-                                    : const Text(
-                                  'Proceed to Check Out',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
+                                      transition: Transition.rightToLeft,
+                                    );
+                                  },
+                                  style: const ButtonStyle(
+                                      backgroundColor: MaterialStatePropertyAll(Colors.green)
+                                  ),
+                                  child: isLoading ? LinearProgressIndicator(
+                                    color: Colors.green.shade300,
+                                    backgroundColor: Colors.green.shade100,
+                                  )
+                                      : const Text(
+                                    'Proceed to Check Out',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          )
+                            )
+                        ),
                       ),
-                    ),
 
-                    const  SizedBox(
-                      height: 100,
-                    )
-                  ]
-              )
+                      const  SizedBox(
+                        height: 100,
+                      )
+                    ]
+                )
+            ),
           ),
         ),
       ),

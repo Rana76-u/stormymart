@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../Components/custom_image.dart';
 
+// ignore: must_be_immutable
 class ChatScreen extends StatefulWidget {
   //final String sellerId;
   //final String userId;

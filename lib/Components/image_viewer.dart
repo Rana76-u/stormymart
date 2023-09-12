@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
+// ignore: must_be_immutable
 class ImageViewerScreen extends StatefulWidget {
   String imageUrl;
   ImageViewerScreen({Key? key, required this.imageUrl}) : super(key: key);

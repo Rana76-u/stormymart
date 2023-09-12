@@ -2,10 +2,11 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stormymart/Screens/Cart/cart.dart';
 import 'package:stormymart/Screens/Profile/profile_accountinfo.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
+import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class CheckOut extends StatefulWidget {
 
   double usedCoins = 0.0;
@@ -163,9 +164,10 @@ class _CheckOutState extends State<CheckOut> {
         ),
         leading: GestureDetector(
           onTap: (){
-            Navigator.of(context).push(
+            /*Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const Cart(),)
-            );
+            );*/
+            Navigator.of(context).pop();
           },
           child: const Icon(
               Icons.arrow_back_ios_new_rounded
@@ -284,8 +286,12 @@ class _CheckOutState extends State<CheckOut> {
                               
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.of(context).push(
+                                  /*Navigator.of(context).push(
                                     MaterialPageRoute(builder: (context) => const AccountInfo(),)
+                                  );*/
+                                  Get.to(
+                                    const AccountInfo(),
+                                    transition: Transition.fade,
                                   );
                                 },
                                 child: Container(

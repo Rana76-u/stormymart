@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:stormymart/firebase_options.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
 import 'package:stormymart/utility/splash_screen.dart';
+import 'package:get/get.dart';
 
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async{
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'StormyMart - an universal ecommerce application',
       theme: ThemeData(
         primarySwatch: Colors.blue,

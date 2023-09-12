@@ -6,6 +6,7 @@ import '../Screens/Cart/cart.dart';
 import '../Screens/Home/home.dart';
 import '../Screens/Profile/profile.dart';
 
+// ignore: must_be_immutable
 class BottomBar extends StatefulWidget {
   int bottomIndex = 0;
   BottomBar({Key? key, required this.bottomIndex}) : super(key: key);

@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../utility/bottom_nav_bar.dart';
-
 class AccountInfo extends StatefulWidget {
   const AccountInfo({super.key});
 
@@ -148,9 +146,10 @@ class _AccountInfoState extends State<AccountInfo> {
                     children: [
                       GestureDetector(
                         onTap: (){
-                          Navigator.of(context).push(
+                          /*Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
-                          );
+                          );*/
+                          Navigator.of(context).pop();
                         },
                         child: const Icon(
                           Icons.arrow_back_ios,

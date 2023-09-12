@@ -5,7 +5,7 @@ import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:stormymart/Screens/Chat%20Screen/chat_screen.dart';
 import 'package:stormymart/theme/color.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
-
+import 'package:get/get.dart';
 import '../../Components/image_viewer.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -68,7 +68,7 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     String id = widget.productId.toString().trim();
-    var shopID = '';
+    //var shopID = '';
 
     return Scaffold(
       backgroundColor: appBgColor,
@@ -76,10 +76,14 @@ class _ProductScreenState extends State<ProductScreen> {
         padding: const EdgeInsets.only(bottom: 55, right: 10),
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context).push(
+            /*Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => ChatScreen(productId: widget.productId),
               )
+            );*/
+            Get.to(
+              ChatScreen(productId: widget.productId),
+              transition: Transition.fade,
             );
           },
           shape: RoundedRectangleBorder(
@@ -117,7 +121,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       var rating = snapshot.data!.get('rating');
                       var sold = snapshot.data!.get('sold');
                       var quantityAvailable = snapshot.data!.get('quantityAvailable');
-                      shopID = snapshot.data!.get('Shop ID');
+                      //shopID = snapshot.data!.get('Shop ID');
 
                       //SIZE LIST
                       sizes = snapshot.data!.get('size');
@@ -176,8 +180,14 @@ class _ProductScreenState extends State<ProductScreen> {
                                                   swipeDismissible: true,
                                                   doubleTapZoomable: true
                                               );*/
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(builder: (context) => ImageViewerScreen(imageUrl: images[index],),)
+                                              /*Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) => ImageViewerScreen(imageUrl: images[index],),
+                                                  )
+                                              );*/
+                                              Get.to(
+                                                ImageViewerScreen(imageUrl: images[index],),
+                                                transition: Transition.size,
                                               );
                                             },
                                             child: Image.network(
@@ -627,7 +637,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           ),
 
                           //Store info Card
-                          FutureBuilder(
+                          /*FutureBuilder(
                             future: FirebaseFirestore
                                 .instance
                                 .collection('/Admin Panel')
@@ -822,11 +832,11 @@ class _ProductScreenState extends State<ProductScreen> {
                                 );
                               }
                             },
-                          ),
+                          ),*/
 
                           //Space At the BOTTOM
                           const SizedBox(
-                            height: 100,
+                            height: 70,
                           ),
                         ],
                       );
@@ -943,7 +953,14 @@ class _ProductScreenState extends State<ProductScreen> {
                                         SnackBar(
                                           content: GestureDetector(
                                             onTap: (){
-                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),));
+                                              /*Navigator.of(context).push(
+                                                  MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),
+                                                  )
+                                              );*/
+                                              Get.to(
+                                                BottomBar(bottomIndex: 2),
+                                                transition: Transition.rightToLeft,
+                                              );
                                             },
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -967,7 +984,13 @@ class _ProductScreenState extends State<ProductScreen> {
                                                         ),
                                                       ),
                                                       onPressed: (){
-                                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),));
+                                                        /*Navigator.of(context).push(
+                                                            MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
+                                                        );*/
+                                                        Get.to(
+                                                          BottomBar(bottomIndex: 2),
+                                                          transition: Transition.rightToLeft,
+                                                        );
                                                       },
                                                       child: const Text(
                                                         'Open Cart',
@@ -993,7 +1016,13 @@ class _ProductScreenState extends State<ProductScreen> {
                                     SnackBar(
                                       content: GestureDetector(
                                         onTap: (){
-                                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),));
+                                          /*Navigator.of(context).push(
+                                              MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
+                                          );*/
+                                          Get.to(
+                                            BottomBar(bottomIndex: 2),
+                                            transition: Transition.rightToLeft,
+                                          );
                                         },
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1017,7 +1046,13 @@ class _ProductScreenState extends State<ProductScreen> {
                                                     ),
                                                   ),
                                                   onPressed: (){
-                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),));
+                                                    /*Navigator.of(context).push(
+                                                        MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
+                                                    );*/
+                                                    Get.to(
+                                                      BottomBar(bottomIndex: 3),
+                                                      transition: Transition.rightToLeft,
+                                                    );
                                                   },
                                                   child: const Text(
                                                     'Log In',

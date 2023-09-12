@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stormymart/utility/bottom_nav_bar.dart';
 import 'package:stormymart/utility/globalvariable.dart';
-
+import 'package:get/get.dart';
+import '../Search/search.dart';
 import 'category.dart';
 
 class GridViewPart extends StatelessWidget {
@@ -30,8 +30,12 @@ class GridViewPart extends StatelessWidget {
           return GestureDetector(
             onTap: () {
               keyword = data.title;
-              Navigator.of(context).push(
+              /*Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 1),)
+              );*/
+              Get.to(
+                SearchPage(keyword: keyword),
+                transition: Transition.fade,
               );
             },
             child: Column(

@@ -5,6 +5,7 @@ import 'package:stormymart/Screens/Chat%20Screen/chat_screen.dart';
 import 'package:stormymart/Screens/Profile/Coins/coins.dart';
 import 'package:stormymart/Screens/Profile/Wishlists/wishlist.dart';
 import 'package:stormymart/Screens/Profile/profile_accountinfo.dart';
+import 'package:get/get.dart';
 
 class ProfileTop extends StatefulWidget {
   const ProfileTop({super.key});
@@ -111,8 +112,12 @@ class _ProfileTopState extends State<ProfileTop> {
                     //wishlist
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => const WishList(),)
+                        // Navigator.of(context).push(
+                        //   MaterialPageRoute(builder: (context) => const WishList(),)
+                        // );
+                        Get.to(
+                          const WishList(),
+                          transition: Transition.fade,
                         );
                       },
                       child: Column(
@@ -161,8 +166,12 @@ class _ProfileTopState extends State<ProfileTop> {
                     //Chats
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => ChatScreen(),)
+                        // Navigator.of(context).push(
+                        //     MaterialPageRoute(builder: (context) => ChatScreen(),)
+                        // );
+                        Get.to(
+                          ChatScreen(),
+                          transition: Transition.fade,
                         );
                       },
                       child: const Column(
@@ -187,8 +196,12 @@ class _ProfileTopState extends State<ProfileTop> {
                     //Points
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => const Coins(),)
+                        // Navigator.of(context).push(
+                        //     MaterialPageRoute(builder: (context) => const Coins(),)
+                        // );
+                        Get.to(
+                          const Coins(),
+                          transition: Transition.fade,
                         );
                       },
                       child: Column(
