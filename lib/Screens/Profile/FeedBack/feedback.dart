@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 class FeedBackScreen extends StatefulWidget {
   const FeedBackScreen({Key? key}) : super(key: key);
@@ -29,6 +30,24 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 20, right: 10),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => BottomBar(bottomIndex: 3),
+                )
+            );
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100.0),
+          ),
+          child: const Icon(
+              Icons.arrow_back_rounded
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -36,17 +55,6 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 50,),
-
-              //Back Button
-              GestureDetector(
-                onTap: (){
-                  Navigator.of(context).pop();
-                },
-                child: const Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Icon(Icons.arrow_back)
-                ),
-              ),
 
               //FeedBack
               const Text(

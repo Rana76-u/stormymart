@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:stormymart/Screens/Chat%20Screen/chat_screen.dart';
 import 'package:stormymart/Screens/Home/gridview.dart';
 import 'package:stormymart/Screens/Home/horizontal_category.dart';
@@ -24,7 +25,28 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  @override
+  void initState() {
+    requestPermission();
+    super.initState();
+  }
+
+  void requestPermission() async {
+    var status = await Permission.storage.status;
+    await Permission.storage.request();
+
+    /*if(!status.isGranted){
+
+    }*/
+
+    /*var status1 = await Permission.manageExternalStorage.status;
+    if(!status1.isGranted){
+      await Permission.manageExternalStorage.request();
+    }*/
+  }
+
   Future<void> _handleRefresh() async {
+    await Permission.storage.request();
     final navigator = Navigator.pushReplacement(
       context,
       PageRouteBuilder(

@@ -1,7 +1,9 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stormymart/Components/notification_sender.dart';
 import 'package:stormymart/Screens/Profile/profile_accountinfo.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
 import 'package:get/get.dart';
@@ -21,7 +23,7 @@ class CheckOut extends StatefulWidget {
     required this.usedPromoCode,
     required this.itemsTotal,
     required this.promoDiscount,
-    required this.coinDiscount
+    required this.coinDiscount,
   });
 
   @override
@@ -33,13 +35,18 @@ class _CheckOutState extends State<CheckOut> {
   String randomID = "";
   String randomOrderListDocID = '';
   String? selectedAddress = '';
+  String selectedDivision = '';
   bool isLoading = false;
   Random random = Random();
   int randomNumber = 0;
+  double total = 0.0;
+  double deliveryCharge = 0.0;
+  String phoneNumber = '';
 
   @override
   void initState() {
     generateRandomID();
+    fetchUserData();
     super.initState();
   }
 
@@ -50,6 +57,24 @@ class _CheckOutState extends State<CheckOut> {
     for (int i = 0; i < 20; i++) {
       randomID += chars[random.nextInt(chars.length)];
     }
+  }
+
+  void fetchUserData() async {
+    final userDataSnapshot = await FirebaseFirestore.instance
+        .collection('userData')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    if( userDataSnapshot.get('Address1')[1] == 'Dhaka' ||
+        userDataSnapshot.get('Address2')[1] == 'Dhaka'){
+      deliveryCharge = 50;
+    }else{
+      deliveryCharge = 100;
+    }
+
+    setState(() {
+      total = widget.itemsTotal + deliveryCharge;
+    });
   }
 
   void generateRandomOrderListDocID() {
@@ -85,7 +110,8 @@ class _CheckOutState extends State<CheckOut> {
         .collection('Pending Orders').doc(randomID).set({
       'usedPromoCode': widget.usedPromoCode,
       'usedCoin': widget.usedCoins,
-      'total' : widget.itemsTotal,
+      'total' : total,
+      'deliveryLocation': '$selectedAddress, $selectedDivision',
       'time' : FieldValue.serverTimestamp(),
     });
 
@@ -149,7 +175,32 @@ class _CheckOutState extends State<CheckOut> {
         .update({
       'coins' : remainingCoins
     });
-  }  ///////
+  }
+
+  Future<void> sendNotification() async {
+
+    //Get all the admins Id's
+    CollectionReference reference = FirebaseFirestore.instance.collection('/Admin Panel');
+
+    QuerySnapshot querySnapshot = await reference.get();
+
+    for (var doc in querySnapshot.docs) {
+      if(doc.id != 'Sell Data'){
+
+        final tokenSnapshot = await FirebaseFirestore.instance.collection('userTokens')
+            .doc(doc.id).get();
+
+        String token = tokenSnapshot.get('token');
+
+        await SendNotification.toSpecific(
+            "Order Update",
+            'New Order Placed',
+            token,
+            'BottomBar(bottomIndex: 3)'
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +240,9 @@ class _CheckOutState extends State<CheckOut> {
               if(snapshot.hasData){
                 if(selectedAddress == ''){
                   selectedAddress = snapshot.data!.get('Address1')[0];
+                  selectedDivision = snapshot.data!.get('Address1')[1];
                 }
+                phoneNumber = snapshot.data!.get('Phone Number');
                 return Column(
                   children: [
                     //Card 1
@@ -297,7 +350,10 @@ class _CheckOutState extends State<CheckOut> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
-                                    color: Colors.greenAccent.withOpacity(0.15)
+                                    color: phoneNumber == '' || selectedAddress == '' ?
+                                    Colors.red.withOpacity(0.15)
+                                        :
+                                    Colors.greenAccent.withOpacity(0.15)
                                   ),
                                   width: double.infinity,
                                   child: const Padding(
@@ -360,9 +416,20 @@ class _CheckOutState extends State<CheckOut> {
                               ),
                               const SizedBox(height: 5,),
 
+                              //Delivery Charge
+                              Text(
+                                'Delivery Charge ( $selectedDivision ) : $deliveryCharge',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Urbanist',
+                                    overflow: TextOverflow.ellipsis
+                                ),
+                              ),
+                              const SizedBox(height: 5,),
+
                               //total
                               Text(
-                                'Total Payable Amount : ${widget.itemsTotal}',
+                                'Total Payable Amount : $total',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w800,
                                     fontFamily: 'Urbanist',
@@ -425,8 +492,21 @@ class _CheckOutState extends State<CheckOut> {
                                       setState(() {
                                         isLoading = false;
                                       });
-                                    }else{
+                                    }
+                                    else if(phoneNumber ==  ''){
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                              content: Text('Please add a Phone Number')
+                                          )
+                                      );
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                    }
+                                    else{
                                       fetchCartItemsAndPlaceOrder();
+
+                                      sendNotification();
 
                                       setState(() {
                                         isLoading = false;
@@ -463,9 +543,11 @@ class _CheckOutState extends State<CheckOut> {
                     ),
                   ],
                 );
-              }else if(snapshot.connectionState == ConnectionState.waiting){
+              }
+              else if(snapshot.connectionState == ConnectionState.waiting){
                 return const Center(child: LinearProgressIndicator(),);
-              }else {
+              }
+              else {
                 return const Center(child: Text(
                   'Error Loading Data: ',
                   style: TextStyle(

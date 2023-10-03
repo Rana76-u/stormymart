@@ -28,33 +28,12 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     //Requests Permission to send notification
-    requestPermission();
+    //requestPermission();
     getToken();
     _checkAndSaveUser();
     //initInfo();
     //_loadUserInfo();
     //_saveUserInfos();
-  }
-
-  void requestPermission() async{
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-    if(settings.authorizationStatus == AuthorizationStatus.authorized){
-      print('Permission Granted');
-    }else if(settings.authorizationStatus == AuthorizationStatus.provisional) {
-      print('Granted as Provisional');
-    }else{
-      print('Denied');
-    }
   }
 
   String? phoneToken = '';
@@ -136,40 +115,45 @@ class _ProfileState extends State<Profile> {
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 20, top: 10),
-                                child: Row(
-                                  children: [
-                                    //Bike Icon
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                                        color: Colors.amber,
-                                      ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: Icon(Icons.delivery_dining_outlined, color: Colors.white, size: 22,),
-                                      ),
-                                    ),
-                                    //Text
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 15),
-                                      child: Text(
-                                        'My Orders',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16.5,
-                                            fontFamily: 'Urbanist'
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    color: Colors.transparent
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      //Bike Icon
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                                          color: Colors.amber,
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Icon(Icons.delivery_dining_outlined, color: Colors.white, size: 22,),
                                         ),
                                       ),
-                                    ),
+                                      //Text
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 15),
+                                        child: Text(
+                                          'My Orders',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16.5,
+                                              fontFamily: 'Urbanist'
+                                          ),
+                                        ),
+                                      ),
 
-                                    const Spacer(),
-                                    //Forward button
-                                    const Icon(
-                                      Icons.arrow_forward_ios,
-                                      size: 18,
-                                      color: Colors.grey,
-                                    ),
-                                  ],
+                                      const Spacer(),
+                                      //Forward button
+                                      const Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -221,40 +205,45 @@ class _ProfileState extends State<Profile> {
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 20),
-                                child: Row(
-                                  children: [
-                                    //Icon
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                                        color: Color(0xFFFB8500),
-                                      ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: Icon(Icons.track_changes_outlined, color: Colors.white, size: 22,),
-                                      ),
-                                    ),
-                                    //Blood Donation Posts
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 15),
-                                      child: Text(
-                                        'Contacts', //Track
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16.5,
-                                            fontFamily: 'Urbanist'
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      color: Colors.transparent
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      //Icon
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                                          color: Color(0xFFFB8500),
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Icon(Icons.track_changes_outlined, color: Colors.white, size: 22,),
                                         ),
                                       ),
-                                    ),
+                                      //Blood Donation Posts
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 15),
+                                        child: Text(
+                                          'Contacts', //Track
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16.5,
+                                              fontFamily: 'Urbanist'
+                                          ),
+                                        ),
+                                      ),
 
-                                    const Spacer(),
-                                    //Forward button
-                                    const Icon(
-                                      Icons.arrow_forward_ios,
-                                      size: 18,
-                                      color: Colors.grey,
-                                    ),
-                                  ],
+                                      const Spacer(),
+                                      //Forward button
+                                      const Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -267,40 +256,45 @@ class _ProfileState extends State<Profile> {
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 20),
-                                child: Row(
-                                  children: [
-                                    //Bike Icon
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                                        color: Color(0xff219ebc),
-                                      ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: Icon(Icons.people, color: Colors.white, size: 22,),
-                                      ),
-                                    ),
-                                    //Blood Donation Posts
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 15),
-                                      child: Text(
-                                        'About Us',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16.5,
-                                            fontFamily: 'Urbanist'
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      color: Colors.transparent
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      //Bike Icon
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                                          color: Color(0xff219ebc),
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Icon(Icons.people, color: Colors.white, size: 22,),
                                         ),
                                       ),
-                                    ),
+                                      //Blood Donation Posts
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 15),
+                                        child: Text(
+                                          'About Us',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16.5,
+                                              fontFamily: 'Urbanist'
+                                          ),
+                                        ),
+                                      ),
 
-                                    const Spacer(),
-                                    //Forward button
-                                    const Icon(
-                                      Icons.arrow_forward_ios,
-                                      size: 18,
-                                      color: Colors.grey,
-                                    ),
-                                  ],
+                                      const Spacer(),
+                                      //Forward button
+                                      const Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -313,40 +307,45 @@ class _ProfileState extends State<Profile> {
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 11),
-                                child: Row(
-                                  children: [
-                                    //Bike Icon
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                                        color: Colors.green,
-                                      ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: Icon(Icons.feedback_rounded, color: Colors.white, size: 22,),
-                                      ),
-                                    ),
-                                    //Blood Donation Posts
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 15),
-                                      child: Text(
-                                        'Feedback',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16.5,
-                                            fontFamily: 'Urbanist'
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      color: Colors.transparent
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      //Bike Icon
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                                          color: Colors.green,
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Icon(Icons.feedback_rounded, color: Colors.white, size: 22,),
                                         ),
                                       ),
-                                    ),
+                                      //Blood Donation Posts
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 15),
+                                        child: Text(
+                                          'Feedback',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16.5,
+                                              fontFamily: 'Urbanist'
+                                          ),
+                                        ),
+                                      ),
 
-                                    const Spacer(),
-                                    //Forward button
-                                    const Icon(
-                                      Icons.arrow_forward_ios,
-                                      size: 18,
-                                      color: Colors.grey,
-                                    ),
-                                  ],
+                                      const Spacer(),
+                                      //Forward button
+                                      const Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

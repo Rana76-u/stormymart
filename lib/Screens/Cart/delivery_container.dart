@@ -37,7 +37,7 @@ class DeliveryContainer extends StatelessWidget {
                 SizedBox(
                   width: MediaQuery.of(context).size.width*0.55,
                   child: const Text(
-                    'Within Dhaka 1 Week, Outside Dhaka 7 to 10 Days',
+                    'Inside Dhaka 1-3 Days, \nOutside Dhaka 2-4 Days',
                     style: TextStyle(
                         fontSize: 13,
                         fontFamily: 'Urbanist',

@@ -18,7 +18,6 @@ class _CartState extends State<Cart> {
 
   String uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
-  int deliveryCharge = 0;
   double subTotal = 0.0;
   double total = 0.0;
 
@@ -57,7 +56,8 @@ class _CartState extends State<Cart> {
     super.initState();
     if(FirebaseAuth.instance.currentUser != null){
       fetchAllProductDocIds();
-    }else{
+    }
+    else{
       isLoading = false;
     }
   }
@@ -70,6 +70,7 @@ class _CartState extends State<Cart> {
       allProductDocIds.add(documentSnapshot.id);
     }
     fetchCartItems();
+    fetchCoinData();
   }
 
   void fetchCartItems() async {
@@ -145,19 +146,13 @@ class _CartState extends State<Cart> {
     }
   }
 
-  void fetchUserData() async {
+  void fetchCoinData() async {
     final userDataSnapshot = await FirebaseFirestore.instance
         .collection('userData')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
 
     availableCoins = userDataSnapshot.get('coins');
-    if( userDataSnapshot.get('Address1')[1] == 'Dhaka' ||
-        userDataSnapshot.get('Address2')[1] == 'Dhaka'){
-      deliveryCharge = 50;
-    }else{
-      deliveryCharge = 100;
-    }
   }
 
   void calculateSubtotal() {
@@ -171,7 +166,7 @@ class _CartState extends State<Cart> {
 
     setState(() {
       subTotal = tempSubtotal;
-      total = subTotal + deliveryCharge;
+      total = subTotal; // + delivery charge
     });
 
     setState(() {
@@ -554,9 +549,7 @@ class _CartState extends State<Cart> {
                                         child: Text(
                                           'Nothing to Show',
                                           style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey,
+                                            fontSize: 13,
                                             fontFamily: 'Urbanist'
                                           ),
                                         ),
@@ -648,7 +641,7 @@ class _CartState extends State<Cart> {
                             return Column(
                               children: [
                                 //Delivery Charge Line
-                                if( userDatasnapshot.data!.get('Address1')[1] == 'Dhaka' ||
+                                /*if( userDatasnapshot.data!.get('Address1')[1] == 'Dhaka' ||
                                     userDatasnapshot.data!.get('Address2')[1] == 'Dhaka')...[
                                   const Padding(
                                     padding: EdgeInsets.only(left: 5, top: 5),
@@ -681,7 +674,7 @@ class _CartState extends State<Cart> {
                                       ],
                                     ),
                                   ),
-                                ],
+                                ], */
                                 
                                 //Coins Line
                                 Padding(
@@ -796,9 +789,11 @@ class _CartState extends State<Cart> {
                                 ]
                               ],
                             );
-                          }else if(userDatasnapshot.connectionState == ConnectionState.waiting){
+                          }
+                          else if(userDatasnapshot.connectionState == ConnectionState.waiting){
                             return const Center(child: LinearProgressIndicator(),);
-                          }else{
+                          }
+                          else{
                             return const Center(child: Text('Error Loading, Try again'),);
                           }
                         },

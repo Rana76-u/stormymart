@@ -110,27 +110,29 @@ class _HotDealsState extends State<HotDeals> {
                                 ),
 
                                 //Discount %Off
-                                Positioned(
-                                  top: 10,
-                                  left: 10,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.red.shade800,
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: Padding(
-                                      padding:   const EdgeInsets.all(7),
-                                      child: Text(
-                                        'Discount: ${product.get('discount')}%',
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 11
+                                if(product.get('discount') != 0)...[
+                                  Positioned(
+                                    top: 10,
+                                    left: 10,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.shade800,
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Padding(
+                                        padding:   const EdgeInsets.all(7),
+                                        child: Text(
+                                          'Discount: ${product.get('discount')}%',
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 11
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
+                                ],
 
                                 //Title
                                 Positioned(

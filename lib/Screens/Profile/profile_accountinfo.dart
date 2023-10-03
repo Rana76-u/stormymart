@@ -136,7 +136,7 @@ class _AccountInfoState extends State<AccountInfo> {
               children: [
                 //Blank Space
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
+                  height: MediaQuery.of(context).size.height * 0.07,
                 ),
 
                 //"Account Details" Text
@@ -179,8 +179,12 @@ class _AccountInfoState extends State<AccountInfo> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text("Name *"),
-                          SizedBox(
+                          Container(
                             height: 50,
+                            decoration: BoxDecoration(
+                              color: nameController.text.isEmpty ? Colors.red.shade50 : Colors.transparent,
+                              borderRadius: BorderRadius.circular(5)
+                            ),
                             child: TextField(
                               controller: nameController,
                               style: const TextStyle(
@@ -203,7 +207,7 @@ class _AccountInfoState extends State<AccountInfo> {
                             ),
                           ),
 
-                          const Text("E-Mail *"),
+                          const Text("E-Mail"),
                           SizedBox(
                             height: 50,
                             child: TextField(
@@ -228,7 +232,7 @@ class _AccountInfoState extends State<AccountInfo> {
                             ),
                           ),
 
-                          const Text("Select Gender *"),
+                          const Text("Select Gender"),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: DropdownButton<String>(
@@ -263,8 +267,12 @@ class _AccountInfoState extends State<AccountInfo> {
                           ),
 
                           const Text("Phone Number *"),
-                          SizedBox(
+                          Container(
                             height: 50,
+                            decoration: BoxDecoration(
+                                color: phoneNumberController.text.isEmpty ? Colors.red.shade50 : Colors.transparent,
+                                borderRadius: BorderRadius.circular(5)
+                            ),
                             child: TextField(
                               controller: phoneNumberController,
                               keyboardType: TextInputType.number,
@@ -289,8 +297,12 @@ class _AccountInfoState extends State<AccountInfo> {
                           ),
 
                           const Text("Delivery Location 1 *"),
-                          SizedBox(
-                            height: 50,
+                          Container(
+                            height: 60,
+                            decoration: BoxDecoration(
+                                color: address1Controller.text.isEmpty ? Colors.red.shade50 : Colors.transparent,
+                                borderRadius: BorderRadius.circular(5)
+                            ),
                             width: MediaQuery.of(context).size.width*0.7,
                             child: TextField(
                               controller: address1Controller,
@@ -315,8 +327,12 @@ class _AccountInfoState extends State<AccountInfo> {
                           ),
                           //Select Division1
                           const Padding(padding: EdgeInsets.only(left: 15),child: Text("Select Division *")),
-                          SizedBox(
+                          Container(
                             height: 50,
+                            decoration: BoxDecoration(
+                                color: division1 == 'not selected' ? Colors.red.shade50 : Colors.white,
+                                borderRadius: BorderRadius.circular(5)
+                            ),
                             width: MediaQuery.of(context).size.width*0.7,
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -474,7 +490,8 @@ class _AccountInfoState extends State<AccountInfo> {
           ),
         ),
       );
-    }else{
+    }
+    else{
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),

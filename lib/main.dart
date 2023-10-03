@@ -6,10 +6,7 @@ import 'package:stormymart/utility/bottom_nav_bar.dart';
 import 'package:stormymart/utility/splash_screen.dart';
 import 'package:get/get.dart';
 
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async{
-  print('Handling a background message ${message.messageId}');
-}
+import 'Components/firebase_api.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,8 +22,10 @@ void main() async{
         projectId: "stormymart-43ea8"
     )
   );*/
-  await FirebaseMessaging.instance.getInitialMessage();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  /*await FirebaseMessaging.instance.getInitialMessage();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);*/
+
+  await FirebaseApi().initNotifications();
   runApp(const MyApp());
 }
 
