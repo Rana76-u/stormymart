@@ -124,12 +124,9 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        Get.to(
-          BottomBar(bottomIndex: 0),
-          transition: Transition.fade,
-        );
-        return false;
+      onWillPop: () {
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 0)), (route) => false);
+        return Future.value(false);
       },
       child: Scaffold(
         body: Padding(

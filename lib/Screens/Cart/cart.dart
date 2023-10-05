@@ -219,12 +219,9 @@ class _CartState extends State<Cart> {
     TextEditingController coinController = TextEditingController();
 
     return WillPopScope(
-      onWillPop: () async {
-        Get.to(
-          BottomBar(bottomIndex: 0),
-          transition: Transition.fade,
-        );
-        return false;
+      onWillPop: () {
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 0)), (route) => false);
+        return Future.value(false);
       },
       child: Scaffold(
         body: SizedBox(
@@ -740,10 +737,11 @@ class _CartState extends State<Cart> {
                                           onPressed: () {
                                             if(inputCoinAmount <= userDatasnapshot.data!.get('coins')){
                                               setState(() {
-                                                coinDiscount = inputCoinAmount / 25;
+                                                coinDiscount = inputCoinAmount / 1000;
                                                 total = total - coinDiscount;
                                               });
-                                            }else{
+                                            }
+                                            else{
                                               ScaffoldMessenger
                                                   .of(context)
                                                   .showSnackBar(

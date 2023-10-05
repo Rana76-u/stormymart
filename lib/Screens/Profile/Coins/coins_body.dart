@@ -63,7 +63,7 @@ class _CoinsBodyState extends State<CoinsBody> {
 
             //conversion rate txt
             const Text(
-              'Conversion Rates of Coins: \n1 Tk for 25 coins',
+              'Conversion Rates of Coins: \n1 Tk for 1000 coins',
               style: TextStyle(
                   fontSize: 20,
                   fontFamily: 'Urbanist',
@@ -77,7 +77,7 @@ class _CoinsBodyState extends State<CoinsBody> {
 
             //instruction txt
             const Text(
-              'Instructions on how to earn more & more coins by simple tasks and buying',
+              '#Buy More to Earn More',
               style: TextStyle(
                 fontSize: 15,
                 overflow: TextOverflow.clip,

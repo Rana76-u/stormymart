@@ -13,6 +13,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
+
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -68,7 +70,8 @@ class _LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
                     );
                   });
-                }).catchError((error) {
+                })
+                    .catchError((error) {
                   // Handle any error that occurred during sign-in
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -79,7 +82,6 @@ class _LoginPageState extends State<LoginPage> {
                     isLoading = false;
                   });
                 });
-                
               },
               child: const Text(
                 'Continue usign Google',

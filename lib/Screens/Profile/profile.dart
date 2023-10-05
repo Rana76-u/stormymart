@@ -19,9 +19,6 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  Future<bool> _onWillPop() async {
-    return false; //<-- SEE HERE
-  }
   bool isLoading = false;
 
   @override
@@ -29,6 +26,7 @@ class _ProfileState extends State<Profile> {
     super.initState();
     //Requests Permission to send notification
     //requestPermission();
+    isLoading = true;
     getToken();
     _checkAndSaveUser();
     //initInfo();
@@ -64,7 +62,7 @@ class _ProfileState extends State<Profile> {
     final userData = await FirebaseFirestore.instance.collection('userData').doc(uid).get();
     if (!userData.exists) {
       // Save user data if the user is new
-      FirebaseFirestore.instance.collection('userData').doc(uid).set({
+      await FirebaseFirestore.instance.collection('userData').doc(uid).set({
         'name' : FirebaseAuth.instance.currentUser?.displayName,
         'imageURL' : FirebaseAuth.instance.currentUser?.photoURL,
         'Email': FirebaseAuth.instance.currentUser?.email,
@@ -72,20 +70,34 @@ class _ProfileState extends State<Profile> {
         'Gender': 'not selected',
         'Address1': ['Address1 Not Found','not selected'],
         'Address2': ['Address2 Not Found','not selected'],
-        'coins': 1000,
-        'coupons': 0,
-        'wishlist': 0
+        'coins': 20000,
+        //'coupons': 0,
+        'wishlist': FieldValue.arrayUnion([])
       });
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: () {
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 0)), (route) => false);
+        return Future.value(false);
+      },
       child: Scaffold(
         body: FirebaseAuth.instance.currentUser == null ?
+
         const LoginPage() :
+
+        isLoading ?
+        const Center(
+          child: CircularProgressIndicator(),
+        )
+            :
         SingleChildScrollView(
           child: Column(
             children: [
@@ -110,14 +122,14 @@ class _ProfileState extends State<Profile> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => const MyOrders(),)
+                                    MaterialPageRoute(builder: (context) => const MyOrders(),)
                                 );
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 20, top: 10),
                                 child: Container(
                                   decoration: const BoxDecoration(
-                                    color: Colors.transparent
+                                      color: Colors.transparent
                                   ),
                                   child: Row(
                                     children: [
@@ -200,7 +212,7 @@ class _ProfileState extends State<Profile> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => const Contacts(),)
+                                    MaterialPageRoute(builder: (context) => const Contacts(),)
                                 );
                               },
                               child: Padding(
@@ -251,7 +263,7 @@ class _ProfileState extends State<Profile> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => const AboutUs(),)
+                                    MaterialPageRoute(builder: (context) => const AboutUs(),)
                                 );
                               },
                               child: Padding(

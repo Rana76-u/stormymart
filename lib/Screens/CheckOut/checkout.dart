@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stormymart/Components/notification_sender.dart';
 import 'package:stormymart/Screens/Profile/profile_accountinfo.dart';
-import 'package:stormymart/utility/bottom_nav_bar.dart';
+import 'package:stormymart/Screens/reward_coins.dart';
 import 'package:get/get.dart';
 
 // ignore: must_be_immutable
@@ -42,6 +42,8 @@ class _CheckOutState extends State<CheckOut> {
   double total = 0.0;
   double deliveryCharge = 0.0;
   String phoneNumber = '';
+  double rewardCoin = 0.0;
+  double newTotalCoins = 0.0;
 
   @override
   void initState() {
@@ -167,13 +169,41 @@ class _CheckOutState extends State<CheckOut> {
         .get();
     previousCoins = snapshot.get('coins').toDouble();
 
-    remainingCoins = previousCoins - widget.usedCoins;
+    setState(() {
+      remainingCoins = previousCoins - widget.usedCoins;
+
+      rewardCoin =  (total / 100) * 1000;
+
+      newTotalCoins = remainingCoins + rewardCoin;
+    });
 
     await FirebaseFirestore.instance
         .collection('userData')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .update({
-      'coins' : remainingCoins
+      'coins' : newTotalCoins
+    });
+
+    sendNotification();
+
+    setState(() {
+      isLoading = false;
+
+      if(isLoading == false){
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Congratulations 🎉, Your Order has been Placed.')
+            )
+        );
+
+        Get.to(
+            ShowRewardCoinScreen(
+              rewardCoins: rewardCoin,
+              newCoinBalance: newTotalCoins,
+            ),
+            transition: Transition.fade
+        );
+      }
     });
   }
 
@@ -506,7 +536,7 @@ class _CheckOutState extends State<CheckOut> {
                                     else{
                                       fetchCartItemsAndPlaceOrder();
 
-                                      sendNotification();
+                                      /*sendNotification();
 
                                       setState(() {
                                         isLoading = false;
@@ -518,11 +548,15 @@ class _CheckOutState extends State<CheckOut> {
                                               )
                                           );
 
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 0),)
+                                          Get.to(
+                                            ShowRewardCoinScreen(
+                                                rewardCoins: rewardCoin,
+                                              newCoinBalance: newTotalCoins,
+                                            ),
+                                            transition: Transition.fade
                                           );
                                         }
-                                      });
+                                      });*/
                                     }
                                   },
                                   style: const ButtonStyle(

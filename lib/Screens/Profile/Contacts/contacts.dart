@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stormymart/Screens/Profile/profile.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 class Contacts extends StatefulWidget {

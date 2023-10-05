@@ -59,9 +59,13 @@ class _AccountInfoState extends State<AccountInfo> {
         'Gender': 'not selected',
         'Address1': ['Address1 Not Found', 'not selected'],
         'Address2': ['Address2 Not Found', 'not selected'],
-        'coins': 1000,
-        'coupons': 0,
-        'wishlist': 0,
+        'coins': 20000,
+        //'coupons': 0,
+        'wishlist': FieldValue.arrayUnion([]),
+      });
+
+      setState(() {
+
       });
     }
     else{
@@ -99,7 +103,6 @@ class _AccountInfoState extends State<AccountInfo> {
         setState(() {
           _isDataLoaded = true;
         });
-        print(gender);
       }
     });
   }
