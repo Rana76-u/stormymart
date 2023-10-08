@@ -1,0 +1,101 @@
+When trying to login using Google in WEB this error shows up: 
+
+Message ignored. Request id does not match.
+[GSI_LOGGER-TOKEN_CLIENT]: Handling response. {"access_token":"ya29.a0AfB_byAtSHyvxyQl_mP2ZwY_paP99jOskISk0z-9wrVJcJPTI4OwdvgzKbc6Zf6yUmV4gkbqPlrOpWSfb42f68vM3sEGUN9UNNpVeZAEYhPqN3X1ahpdml-BkeCZx3VxuRA86HFOQYOOgtJMQUY6WImgacE2RA4eI3PHaCgYKAQ8SARMSFQGOcNnCCC8L8QjrkfSknDp3vA1sJw0171","token_type":"Bearer","expires_in":3599,"scope":"email profile openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile","authuser":"0","prompt":"none"}
+[GSI_LOGGER-OAUTH2_CLIENT]: Popup timer stopped.
+[GSI_LOGGER-TOKEN_CLIENT]: Trying to set gapi client token.
+[GSI_LOGGER-TOKEN_CLIENT]: The OAuth token was not passed to gapi.client, since the gapi.client library is not loaded in your page.
+Error: {
+  "error": {
+    "code": 403,
+    "message": "People API has not been used in project 608528534677 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/people.googleapis.com/overview?project=608528534677 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+    "status": "PERMISSION_DENIED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Google developers console API activation",
+            "url": "https://console.developers.google.com/apis/api/people.googleapis.com/overview?project=608528534677"
+          }
+        ]
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "SERVICE_DISABLED",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "people.googleapis.com",
+          "consumer": "projects/608528534677"
+        }
+      }
+    ]
+  }
+}
+
+ChatGPT
+
+The error message you're encountering is related to the Google People API, which is used when signing in with Google using Firebase Authentication. The error message suggests that the People API has not been enabled for your project with the ID 608528534677, or it may be disabled.
+
+Here's what you can do to resolve this issue:
+
+    Enable the Google People API:
+        Visit the Google Developers Console at https://console.developers.google.com.
+        Make sure you are signed in with the Google account associated with your Firebase project.
+        Select your project with the ID 608528534677.
+        In the sidebar, click on "APIs & Services" and then "Library."
+        Search for "People API" and click on it.
+        Click the "Enable" button if it's not already enabled.
+
+    Wait for Propagation:
+        If you have just enabled the People API, you might need to wait a few minutes for the changes to propagate through Google's systems.
+
+    Check Service Account Permissions:
+        If you are using a service account for Firebase Authentication, make sure that the service account has the necessary permissions to use the People API. You may need to grant it access in the Google Cloud Console.
+
+    Verify API Key:
+        Ensure that your Firebase project is correctly configured with the API key and OAuth 2.0 client ID for your web application. Double-check that they are correctly set up in the Firebase project settings.
+
+    Update Dependencies:
+        Ensure that you are using the latest versions of the Firebase and Google Sign-In Flutter packages. Outdated packages can sometimes cause issues.
+
+After taking these steps, try signing in with Google again in your Flutter Firebase web application. If you continue to experience issues, double-check your Firebase project configuration, and verify that the People API is enabled and properly configured.
+User
+How do I Check Service Account Permissions
+ChatGPT
+
+To check and configure service account permissions for your Firebase project, follow these steps:
+
+    Access the Google Cloud Console:
+        Visit https://console.cloud.google.com.
+        Sign in with the Google account associated with your Firebase project.
+
+    Select Your Project:
+        In the upper-right corner, click on the project selector and choose your Firebase project (the same one you're using for your Flutter Firebase web application).
+
+    Navigate to IAM & Admin:
+        In the left sidebar, click on "IAM & Admin" or "IAM" (Identity and Access Management).
+
+    View Service Accounts:
+        On the IAM page, you'll see a list of service accounts associated with your project. Look for the service account that your Firebase application uses.
+
+    Check Permissions:
+
+        Click on the service account name to view its details.
+
+        In the "Permissions" tab, you can see the roles assigned to this service account. Roles determine what actions and access the service account has within your Google Cloud project.
+
+        Make sure that the service account has the necessary roles or permissions for the actions it needs to perform. For Google Sign-In with Firebase Authentication, it typically requires roles like "Firebase Authentication Admin" or "Firebase Rules System."
+
+    Add or Modify Permissions:
+
+        To add or modify permissions for the service account, click the "+ Add Member" button.
+
+        In the "New members" field, enter the email address associated with your service account. You can usually find this email address in your Firebase project settings.
+
+        In the "Role" dropdown, select the appropriate role for your use case. For Firebase Authentication-related tasks, consider adding the "Firebase Authentication Admin" role.
+
+    Save Changes:
+        Click the "Save" button to apply the new permissions to the service account.
+
+After you've checked and configured the necessary permissions for your service account, try signing in with Google in your Flutter Firebase web application again. Ensure that the service account has the required access to perform authentication-related tasks and interact with the Google People API without encountering permission errors.
