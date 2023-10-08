@@ -179,8 +179,8 @@ class _RecommendedForYouState extends State<RecommendedForYou> {
                                   )
                               ),
 
-                              //Row
-                              Positioned(
+                              //Rating & Sold Amount
+                              /*Positioned(
                                 top: 260,
                                 left: 2,
                                 child:  Row(
@@ -212,7 +212,7 @@ class _RecommendedForYouState extends State<RecommendedForYou> {
                                     ),
                                   ],
                                 ),
-                              ),
+                              ),*/
                             ],
                           ),
                         ),

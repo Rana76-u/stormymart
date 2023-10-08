@@ -118,8 +118,8 @@ class _ProductScreenState extends State<ProductScreen> {
                       var price = snapshot.data!.get('price');
                       var discount = snapshot.data!.get('discount');
                       double discountCal = (price / 100) * (100 - discount);
-                      var rating = snapshot.data!.get('rating');
-                      var sold = snapshot.data!.get('sold');
+                      //var rating = snapshot.data!.get('rating');
+                      //var sold = snapshot.data!.get('sold');
                       var quantityAvailable = snapshot.data!.get('quantityAvailable');
                       //shopID = snapshot.data!.get('Shop ID');
 
@@ -479,7 +479,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                   ),
 
                                   //Rating & Sold
-                                  Padding(
+                                  /*Padding(
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Row(
                                       children: [
@@ -507,10 +507,10 @@ class _ProductScreenState extends State<ProductScreen> {
                                               fontSize: 13,
                                               color: Colors.grey.shade600//darker
                                           ),
-                                        ),
+                                        )
                                       ],
                                     ),
-                                  ),
+                                  ),*/
 
                                   // Description
                                   Padding(

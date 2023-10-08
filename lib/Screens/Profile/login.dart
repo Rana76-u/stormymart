@@ -78,13 +78,16 @@ class _LoginPageState extends State<LoginPage> {
                         content: Text('Error: $error')
                     )
                   );
+
+                  print('Error: $error');
+
                   setState(() {
                     isLoading = false;
                   });
                 });
               },
               child: const Text(
-                'Continue usign Google',
+                'Continue using Google',
                 style: TextStyle(
                     fontFamily: 'Urbanist',
                     fontWeight: FontWeight.bold,

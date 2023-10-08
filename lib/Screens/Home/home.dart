@@ -254,10 +254,17 @@ class _HomePageState extends State<HomePage> {
                               builder: (context) => ChatScreen(),
                             )
                           );*/
-                          Get.to(
-                            ChatScreen(),
-                            transition: Transition.fade,
-                          );
+                          if(FirebaseAuth.instance.currentUser != null){
+                            Get.to(
+                              ChatScreen(),
+                              transition: Transition.fade,
+                            );
+                          }
+                          else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("You'r Not Logged In."))
+                            );
+                          }
                         },
                         child: Icon(
                             Icons.chat_bubble_rounded,

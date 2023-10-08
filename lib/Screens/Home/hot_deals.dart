@@ -172,8 +172,8 @@ class _HotDealsState extends State<HotDeals> {
                                     )
                                 ),
 
-                                //Row
-                                Positioned(
+                                //Rating & Sold Amount
+                                /*Positioned(
                                   top: 260,
                                   left: 2,
                                   child:  Row(
@@ -205,14 +205,15 @@ class _HotDealsState extends State<HotDeals> {
                                       ),
                                     ],
                                   ),
-                                ),
+                                ),*/
                               ],
                             ),
                           )
                       ),
                     );
 
-                  }else if(snapshot.connectionState == ConnectionState.waiting){
+                  }
+                  else if(snapshot.connectionState == ConnectionState.waiting){
                     return const Center(
                       child: LinearProgressIndicator(),
                     );

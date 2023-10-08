@@ -24,7 +24,8 @@ void main() async{
   /*await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);*/
 
-  await FirebaseApi().initNotifications();
+  //await FirebaseApi().initNotifications();
+
   runApp(const MyApp());
 }
 
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'StormyMart - an universal ecommerce application',
+      title: 'StormyMart',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Urbanist'

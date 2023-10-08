@@ -19,14 +19,14 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
 
-  final double _minRating = 0;
-  final double _maxRating = 5;
-  double _selectedMinRating = 0.0;
-  double _selectedMaxRating = 0.0;
+  //final double _minRating = 0;
+  //final double _maxRating = 5;
+  //double _selectedMinRating = 0.0;
+ // double _selectedMaxRating = 0.0;
 
 
   final double _minPrice = 0;
-  final double _maxPrice = 1000000;
+  final double _maxPrice = 100000;
   double _selectedMinPrice = 0.0;
   double _selectedMaxPrice = 0.0;
 
@@ -38,7 +38,8 @@ class _SearchPageState extends State<SearchPage> {
 
     if(widget.keyword != null){
       filterProductsByKeyword();
-    }else{
+    }
+    else{
       performSearch('');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         FocusScope.of(context).requestFocus(_focusNode);
@@ -214,8 +215,8 @@ class _SearchPageState extends State<SearchPage> {
                             isFilterOpen = false;
                             _selectedMinPrice = 0;
                             _selectedMaxPrice = 1000000;
-                            _selectedMinRating = 0;
-                            _selectedMaxRating = 5;
+                            //_selectedMinRating = 0;
+                            //_selectedMaxRating = 5;
                           });
                           // Perform the search
                           performSearch(value);
@@ -258,7 +259,7 @@ class _SearchPageState extends State<SearchPage> {
                 Row(
                   children: [
                     //Rating
-                    Column(
+                    /*Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Padding(
@@ -297,7 +298,7 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         )
                       ],
-                    ),
+                    ),*/
                     //Price
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,7 +314,7 @@ class _SearchPageState extends State<SearchPage> {
                             )
                         ),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width*0.45,
+                          width: MediaQuery.of(context).size.width - 30,//0.45
                           child: RangeSlider(
                             values: RangeValues(_selectedMinPrice, _selectedMaxPrice),
                             min: _minPrice,
@@ -329,7 +330,7 @@ class _SearchPageState extends State<SearchPage> {
                                 _selectedMaxPrice = values.end;
                                 performSearch(
                                     searchedText,
-                                    minRating: _selectedMaxRating,
+                                    //minRating: _selectedMaxRating,
                                     minPrice: _selectedMinPrice,
                                     maxPrice: _selectedMaxPrice
                                 );
@@ -385,10 +386,11 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ],
 
+              // The search results are displayed in a list view
               if(isTyping == false || widget.keyword != null)...[
-                // The search results are displayed in a list view
                 Expanded(
                   child: GridView.builder(
+                    shrinkWrap: true, //Changed for web//Changed for web
                     itemCount: _searchResults.length,
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -399,7 +401,6 @@ class _SearchPageState extends State<SearchPage> {
                     itemBuilder: (context, index) {
                       // Get the document snapshot for the current item
                       var result = _searchResults[index];
-
                       double discountCal = (result.get('price') / 100) * (100 - result.get('discount'));
 
                       // Display a card for the result
@@ -429,34 +430,46 @@ class _SearchPageState extends State<SearchPage> {
                                     builder: (context, snapshot) {
                                       if(snapshot.hasData){
                                         String docID = snapshot.data!.docs.first.id;
-                                        return FutureBuilder(
-                                          future: result.reference.collection('/Variations').doc(docID).get(),
-                                          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                                            if(snapshot.hasData){
-                                              return CustomImage(
-                                                snapshot.data?['images'][0],
-                                                radius: 10,
-                                                width: 200,
-                                                height: 210,//210
-                                              );
-                                            }else if(snapshot.connectionState == ConnectionState.waiting){
-                                              return const Center(
-                                                child: LinearProgressIndicator(),
-                                              );
-                                            }
-                                            else{
-                                              return const Center(
-                                                child: Text(
-                                                  "Nothings Found",
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.grey
+                                        if(result.exists && docID.isNotEmpty){
+                                          return FutureBuilder(
+                                            future: FirebaseFirestore
+                                                .instance
+                                                .collection('/Products/${result.id}/Variations')
+                                                .doc(docID)
+                                                .get(),/*FirebaseFirestore
+                                                .instance
+                                                .collection('/Products/05v3qx45i4usqts06ch6/Variations').doc('Wrist watch ').get(),*///result.reference.collection('/Variations').doc(docID).get(),
+                                            builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                                              if(snapshot.hasData){
+                                                return CustomImage(
+                                                  snapshot.data?['images'][0],
+                                                  radius: 10,
+                                                  width: 200,
+                                                  height: 210,//210
+                                                );
+                                              }
+                                              else if(snapshot.connectionState == ConnectionState.waiting){
+                                                return const Center(
+                                                  child: LinearProgressIndicator(),
+                                                );
+                                              }
+                                              else{
+                                                return const Center(
+                                                  child: Text(
+                                                    "Nothings Found",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.grey
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            }
-                                          },
-                                        );
+                                                );
+                                              }
+                                            },
+                                          );
+                                        }
+                                        else{
+                                          return const SizedBox();
+                                        }
                                       }
                                       else if(snapshot.connectionState == ConnectionState.waiting){
                                         return const Center(
@@ -476,6 +489,7 @@ class _SearchPageState extends State<SearchPage> {
                                       }
                                     },
                                   ),
+
 
                                   //Discount %Off
                                   if(result.get('discount') != 0)...[
@@ -540,8 +554,8 @@ class _SearchPageState extends State<SearchPage> {
                                       )
                                   ),
 
-                                  //Row
-                                  Positioned(
+                                  //Ratings & Sold Amount
+                                  /*Positioned(
                                     top: 260,
                                     left: 2,
                                     child:  Row(
@@ -573,7 +587,7 @@ class _SearchPageState extends State<SearchPage> {
                                         ),
                                       ],
                                     ),
-                                  ),
+                                  ),*/
                                 ],
                               ),
                             ),

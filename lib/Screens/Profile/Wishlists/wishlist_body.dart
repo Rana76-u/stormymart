@@ -19,7 +19,7 @@ class _WishListBodyState extends State<WishListBody> {
   List<dynamic> productTitles = [];
   List<dynamic> productPrices = [];
   List<dynamic> productDiscounts = [];
-  List<dynamic> productRatings = [];
+  //List<dynamic> productRatings = [];
   List<dynamic> productImages = [];
 
   List<dynamic> wishListItemIds = [];
@@ -65,7 +65,7 @@ class _WishListBodyState extends State<WishListBody> {
         productTitles.add(productSnapshot.get('title'));
         productPrices.add(productSnapshot.get('price'));
         productDiscounts.add(productSnapshot.get('discount'));
-        productRatings.add(productSnapshot.get('rating'));
+        //productRatings.add(productSnapshot.get('rating'));
       }
       else{
         await FirebaseFirestore
@@ -280,7 +280,7 @@ class _WishListBodyState extends State<WishListBody> {
                                   ),
 
                                   //Rating
-                                  Padding(
+                                  /*Padding(
                                     padding: const EdgeInsets.only(top: 2),
                                     child: Text(
                                       'Rating: ${productRatings[index]}',
@@ -290,7 +290,7 @@ class _WishListBodyState extends State<WishListBody> {
                                           color: Colors.black54
                                       ),
                                     ),
-                                  ),
+                                  ),*/
                                 ],
                               ),
                             ),

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:slide_countdown/slide_countdown.dart';
 import 'package:stormymart/Components/custom_image.dart';
 import 'package:http/http.dart' as http;
 import '../../utility/globalvariable.dart';
@@ -215,10 +214,10 @@ class HotDealsTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text('Hot Deals',
+        Text('Hot Deals',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -227,9 +226,9 @@ class HotDealsTitle extends StatelessWidget {
             )
         ),
 
-        const Expanded(child: SizedBox()),
+        Expanded(child: SizedBox()),
 
-        SlideCountdownSeparated(
+        /*SlideCountdownSeparated(
           duration: remainingDuration,//Duration(days: 2),
           height: 20,
           width: 20,
@@ -239,7 +238,9 @@ class HotDealsTitle extends StatelessWidget {
             fontWeight: FontWeight.bold
           ),
         ),
-        const SizedBox(width: 10,),
+        const SizedBox(width: 10,),*/
+
+
         /*GestureDetector(
           onTap: () {
             keyword = 'hot';
