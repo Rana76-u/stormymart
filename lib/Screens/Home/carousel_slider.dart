@@ -12,6 +12,7 @@ class HorizontalSlider extends StatelessWidget {
       width: double.infinity,
       child: ListView(
         scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
         children: [
           GestureDetector(
             onTap: (){
@@ -21,7 +22,7 @@ class HorizontalSlider extends StatelessWidget {
               );
             },
             child: SizedBox(
-              width: MediaQuery.of(context).size.width*0.4,
+              width: 160,//MediaQuery.of(context).size.width*0.4,
               child: Card(
                 //margin: const EdgeInsets.all(10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -47,7 +48,7 @@ class HorizontalSlider extends StatelessWidget {
               );
             },
             child: SizedBox(
-              width: MediaQuery.of(context).size.width*0.4,
+              width: 160,//MediaQuery.of(context).size.width*0.4,
               child: Card(
                 //margin: const EdgeInsets.all(10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -73,7 +74,7 @@ class HorizontalSlider extends StatelessWidget {
               );
             },
             child: SizedBox(
-              width: MediaQuery.of(context).size.width*0.4,
+              width: 160,//MediaQuery.of(context).size.width*0.4,
               child: Card(
                 //margin: const EdgeInsets.all(10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

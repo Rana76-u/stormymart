@@ -113,7 +113,8 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       )
-                    ]else...[
+                    ]
+                    else...[
                       SizedBox(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -123,6 +124,10 @@ class _HomePageState extends State<HomePage> {
                           ),
                           onPressed: () {
                             //open login page
+                            Get.to(
+                              BottomBar(bottomIndex: 3),
+                              transition: Transition.fade
+                            );
                           },
                           child: const Text(
                             'Sign in using Google',
@@ -310,25 +315,30 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBody(BuildContext context){
-    return const Column(
-      children: [
-        SizedBox(height: 10,),
-        SearchField(),
-        SizedBox(height: 10,),
-        ImageSlider(),
-        SizedBox(height: 10,),
-        //Replace with Carosoul
-        //GridViewPart(),
-        HorizontalSlider(),
-        SizedBox(height: 10,),
-        HotDealsTitle(),
-        HotDeals(),
-        RecommendedForYouTitle(),
-        SizedBox(height: 10,),
-        //MostPupularCategory(),
-        RecommendedForYou(),
-        SizedBox(height: 100,)
-      ],
+    return Padding(
+      padding: MediaQuery.of(context).size.width >= 600 ?
+      EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05) :
+      const EdgeInsets.symmetric(horizontal: 0), //EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1)
+      child: const Column(
+        children: [
+          SizedBox(height: 10,),
+          SearchField(),
+          SizedBox(height: 10,),
+          ImageSlider(),
+          SizedBox(height: 10,),
+          //Replace with Carosoul
+          //GridViewPart(),
+          HorizontalSlider(),
+          SizedBox(height: 10,),
+          HotDealsTitle(),
+          HotDeals(),
+          RecommendedForYouTitle(),
+          SizedBox(height: 10,),
+          //MostPupularCategory(),
+          RecommendedForYou(),
+          SizedBox(height: 100,)
+        ],
+      ),
     );
   }
 }

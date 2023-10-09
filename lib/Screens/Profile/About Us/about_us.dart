@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stormymart/Screens/Profile/profile.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 class AboutUs extends StatefulWidget {
   const AboutUs({super.key});
@@ -18,7 +18,7 @@ class _AboutUsState extends State<AboutUs> {
           onPressed: () {
             Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const Profile(),
+                  builder: (context) => BottomBar(bottomIndex: 3),
                 )
             );
           },

@@ -228,7 +228,9 @@ class _CartState extends State<Cart> {
           child: FirebaseAuth.instance.currentUser == null ?
               //Login
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
+            padding: MediaQuery.of(context).size.width >= 600 ?
+            EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.3) :
+            const EdgeInsets.symmetric(horizontal: 25),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,

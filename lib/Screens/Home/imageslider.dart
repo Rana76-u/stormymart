@@ -20,8 +20,11 @@ class ImageSlider extends StatelessWidget {
             padding: const EdgeInsets.only(right: 0, left: 0, top: 10),
             child: SizedBox(
               //margin: const EdgeInsets.only(top: 15,left: 15, right: 15, bottom: 15),
-              width: MediaQuery.of(context).size.width*1,//150, 0.38
-              height: 181,//137
+              width: MediaQuery.of(context).size.width,//150, 0.38
+              height: MediaQuery.of(context).size.width <= 600 ?
+              181
+                  :
+              MediaQuery.of(context).size.height*0.4,//137
               /*decoration: BoxDecoration(
               border: Border.all(
                   width: 4,

@@ -18,13 +18,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
+      padding: MediaQuery.of(context).size.width >= 600 ?
+      EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.3) :
+      const EdgeInsets.symmetric(horizontal: 25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Expanded(child: SizedBox()),
 
-          Lottie.asset('assets/lottie/google-logo.json'),
+          Lottie.asset(
+              'assets/lottie/google-logo.json',
+            height: MediaQuery.of(context).size.height*0.4
+          ),
           const Padding(
             padding: EdgeInsets.only(left: 3),
             child: Text(
