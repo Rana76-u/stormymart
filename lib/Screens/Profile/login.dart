@@ -55,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: 7,),
 
           //Login Button
+          isLoading ? const LinearProgressIndicator():
           SizedBox(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -101,7 +102,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          isLoading ? const LinearProgressIndicator(): const SizedBox(),
           const Expanded(child: SizedBox()),
         ],
       ),

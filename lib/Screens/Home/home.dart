@@ -280,18 +280,25 @@ class _HomePageState extends State<HomePage> {
                       //coin icon
                       GestureDetector(
                         onTap: () {
-                          /*Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => const Coins(),)
-                          );*/
                           Get.to(
                             const Coins(),
                             transition: Transition.fade,
                           );
                         },
-                        child: Image.asset(
-                            'assets/lottie/gold-coin.gif',
+                        child: const Padding(
+                          padding: EdgeInsets.only(left: 5),
+                          child: Text(
+                            "🪙",
+                            style: TextStyle(
+                              fontSize: 22.5,
+                            ),
+                          ),
+                        )
+                        //Discontinued due to performance lag issue
+                        /*Image.asset(
+                          'assets/lottie/gold-coin.gif',
                           height: 60,
-                        ),
+                        )*/,
                       ),
                     ],
                   ),

@@ -91,6 +91,7 @@ flutter:
      - assets/lottie/google-logo.json
      - assets/images/orange_abstract_bg.jpg
      - assets/images/splash_screen.png
+     - assets/images/delivery-man.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

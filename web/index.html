@@ -66,18 +66,39 @@
   <script src="flutter.js" defer></script>
 </head>
 <body>
+<div class="loading" id="loading">
+  <style>
+      .loading {
+        position: absolute;
+        top: calc(50% - 100px);
+        left: calc(50% - 100px);
+        width: 200px;
+        height: 200px;
+        border: 5px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 3px solid #3498db;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg);}
+        100% { transform: rotate(360deg);}
+      }
+    </style>
+</div>
   <script>
     window.flutterWebRenderer = "html";
   </script>
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
+      let loading =document.querySelector('#loading');
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
           serviceWorkerVersion: serviceWorkerVersion,
         },
         onEntrypointLoaded: function(engineInitializer) {
           engineInitializer.initializeEngine().then(function(appRunner) {
+          loading.remove();
             appRunner.runApp();
           });
         }

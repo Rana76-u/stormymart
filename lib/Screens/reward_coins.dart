@@ -38,7 +38,7 @@ class _ShowRewardCoinScreenState extends State<ShowRewardCoinScreen> {
                   width: double.infinity,
                 ),
                 const Text(
-                  'Congratulations 🎉, \nYou Received Reward Coins',
+                  "You'll Receive The Following Reward Coins Once Your Order Gets Completed",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17
@@ -46,7 +46,7 @@ class _ShowRewardCoinScreenState extends State<ShowRewardCoinScreen> {
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  '${widget.rewardCoins}',
+                  '+${widget.rewardCoins}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.amber,

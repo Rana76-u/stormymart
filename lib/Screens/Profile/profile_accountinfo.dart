@@ -97,8 +97,17 @@ class _AccountInfoState extends State<AccountInfo> {
         genderController.text = gender!;
         emailController.text = email;
         phoneNumberController.text = phone;
-        address1Controller.text = address1;
-        address2Controller.text = address2;
+        
+        if(address1.contains('Address1 Not Found')){
+          address1Controller.text = '';
+        }else{
+          address1Controller.text = address1;
+        }
+        if(address2.contains('Address2 Not Found')){
+          address2Controller.text = '';
+        }else{
+          address2Controller.text = address2;
+        }
 
         setState(() {
           _isDataLoaded = true;

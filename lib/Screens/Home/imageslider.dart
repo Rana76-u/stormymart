@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:stormymart/Components/custom_image.dart';
+
+import '../../Components/custom_image.dart';
 
 class ImageSlider extends StatelessWidget {
   const ImageSlider({super.key});
@@ -44,7 +45,10 @@ class ImageSlider extends StatelessWidget {
                     autoPlayInterval: 3500,
                     isLoop: true,
                     children: List.generate(images.length, (index) {
-                      return CustomImage(
+                      return /*Image.network( //Not Really Sure about Performance i think CustomImage is better at performance
+                        images[index],
+                        fit: BoxFit.cover,
+                      )*/CustomImage(
                         images[index],
                         radius: 10,
                         height: 200,
@@ -78,37 +82,6 @@ class ImageSlider extends StatelessWidget {
           );
         }
       },
-    );
-  }
-
-  Widget _buildPageIndicator(int imageLength, int selectedIndex) {
-    List<Widget> list = [];
-    for (int i = 0; i < imageLength; i++) {
-      list.add(i == selectedIndex ? _indicator(true) : _indicator(false));
-    }
-    return Container(
-      height: 181,
-      alignment: Alignment.bottomCenter,
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: list,
-      ),
-    );
-  }
-
-  Widget _indicator(bool isActive) {
-    return SizedBox(
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-        height: 4.0,
-        width: isActive ? 16 : 4.0,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(2)),
-          color: isActive ? const Color(0XFF101010) : const Color(0xFFBDBDBD),
-        ),
-      ),
     );
   }
 }

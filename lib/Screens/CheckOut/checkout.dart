@@ -7,6 +7,7 @@ import 'package:stormymart/Components/notification_sender.dart';
 import 'package:stormymart/Screens/Profile/profile_accountinfo.dart';
 import 'package:stormymart/Screens/reward_coins.dart';
 import 'package:get/get.dart';
+import 'package:stormymart/utility/bottom_nav_bar.dart';
 
 // ignore: must_be_immutable
 class CheckOut extends StatefulWidget {
@@ -159,32 +160,35 @@ class _CheckOutState extends State<CheckOut> {
           .doc(doc.id).delete();
     }
 
-    //Decrease Coin Value
     double previousCoins = 0.0;
     double remainingCoins = 0.0;
 
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('userData')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    previousCoins = snapshot.get('coins').toDouble();
+    if(widget.usedCoins != 0){
+      //Decrease Coin Value
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('userData')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      previousCoins = snapshot.get('coins').toDouble();
 
-    setState(() {
-      remainingCoins = previousCoins - widget.usedCoins;
+      setState(() {
+        remainingCoins = previousCoins - widget.usedCoins;
 
-      rewardCoin =  (total / 100) * 1000;
+        rewardCoin =  (total / 100) * 1000;
 
-      newTotalCoins = remainingCoins + rewardCoin;
-    });
+        //newTotalCoins = remainingCoins + rewardCoin;
+      });
 
-    await FirebaseFirestore.instance
-        .collection('userData')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .update({
-      'coins' : newTotalCoins
-    });
+      //update new Coin Value
+      await FirebaseFirestore.instance
+          .collection('userData')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({
+        'coins' : remainingCoins
+      });
+    }
 
-    sendNotification();
+    await sendNotification();
 
     setState(() {
       isLoading = false;
@@ -196,13 +200,21 @@ class _CheckOutState extends State<CheckOut> {
             )
         );
 
-        Get.to(
-            ShowRewardCoinScreen(
-              rewardCoins: rewardCoin,
-              newCoinBalance: newTotalCoins,
-            ),
-            transition: Transition.fade
-        );
+        if(widget.usedCoins != 0){
+          Get.to(
+              ShowRewardCoinScreen(
+                rewardCoins: rewardCoin,
+                newCoinBalance: remainingCoins,//newTotalCoins
+              ),
+              transition: Transition.fade
+          );
+        }
+        else{
+          Get.to(
+              BottomBar(bottomIndex: 0),
+              transition: Transition.fade
+          );
+        }
       }
     });
   }
@@ -232,6 +244,30 @@ class _CheckOutState extends State<CheckOut> {
     }
   }
 
+  Future<void> _handleRefresh() async {
+    final navigator = Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => CheckOut(
+            usedCoins: widget.usedCoins,
+            usedPromoCode: widget.usedPromoCode,
+            itemsTotal: widget.itemsTotal,
+            promoDiscount: widget.promoDiscount,
+            coinDiscount: widget.coinDiscount
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return child;
+        },
+      ),
+    );
+
+    // Simulate a delay for the refresh indicator
+    await Future.delayed(const Duration(seconds: 1));
+
+    // Reload the same page by pushing a new instance onto the stack
+    navigator;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -256,6 +292,21 @@ class _CheckOutState extends State<CheckOut> {
         ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 20, right: 10),
+        child: FloatingActionButton(
+          onPressed: () {
+            _handleRefresh();
+          },
+          backgroundColor: Colors.green,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100.0),
+          ),
+          child: const Icon(
+              Icons.refresh_rounded
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -293,7 +344,7 @@ class _CheckOutState extends State<CheckOut> {
                                 ),
                               ),
                               const SizedBox(height: 10,),
-                              
+
                               //name
                               Text(
                                 'Name : ${snapshot.data!.get('name')}',
@@ -366,7 +417,7 @@ class _CheckOutState extends State<CheckOut> {
                                 ),
                               ),
                               const SizedBox(height: 10,),
-                              
+
                               GestureDetector(
                                 onTap: () {
                                   /*Navigator.of(context).push(

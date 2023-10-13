@@ -23,7 +23,8 @@ class CustomImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return
-      Container(width: width, height: height,
+      Container(
+          width: width, height: height,
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: borderRadius ?? BorderRadius.circular(radius),

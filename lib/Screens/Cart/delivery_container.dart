@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-
 class DeliveryContainer extends StatelessWidget {
   const DeliveryContainer({super.key});
 
@@ -13,13 +11,12 @@ class DeliveryContainer extends StatelessWidget {
         ),
         height: 100 ,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          //crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Lottie.network(
-                'https://assets10.lottiefiles.com/packages/lf20_jmejybvu.json',
-                height: 80,
-                width: 80
+            Image.asset(
+              'assets/images/delivery-man.png'
             ),
+
             const SizedBox(width: 10,),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +26,6 @@ class DeliveryContainer extends StatelessWidget {
                   'Cash on Delivery',
                   style: TextStyle(
                       fontSize: 17,
-                      fontFamily: 'Urbanist',
                       fontWeight: FontWeight.bold
                   ),
                 ),
@@ -40,7 +36,6 @@ class DeliveryContainer extends StatelessWidget {
                     'Inside Dhaka 1-3 Days, \nOutside Dhaka 2-4 Days',
                     style: TextStyle(
                         fontSize: 13,
-                        fontFamily: 'Urbanist',
                         fontWeight: FontWeight.bold,
                       overflow: TextOverflow.clip
                     ),

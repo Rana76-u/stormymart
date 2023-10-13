@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stormymart/Screens/Cart/delivery_container.dart';
+import 'package:stormymart/Screens/Product%20Screen/product_screen.dart';
 import '../../utility/bottom_nav_bar.dart';
 import '../CheckOut/checkout.dart';
-import 'delivery_container.dart';
 import 'package:get/get.dart';
 
 class Cart extends StatefulWidget {
@@ -44,7 +45,7 @@ class _CartState extends State<Cart> {
   List<String> productImages = [];
   List<double> priceAfterDiscount = [];
 
-  bool isLoading = true;
+  bool isLoading = false;
   bool isDeleting = false;
 
   List<String> allProductDocIds = [];
@@ -55,10 +56,8 @@ class _CartState extends State<Cart> {
   void initState() {
     super.initState();
     if(FirebaseAuth.instance.currentUser != null){
+      isLoading = true;
       fetchAllProductDocIds();
-    }
-    else{
-      isLoading = false;
     }
   }
 
@@ -240,7 +239,6 @@ class _CartState extends State<Cart> {
                   'StormyMart',
                   style: TextStyle(
                     fontSize: 25,
-                    fontFamily: 'Urbanist',
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -249,7 +247,6 @@ class _CartState extends State<Cart> {
                   style: TextStyle(
                       fontSize: 19,
                       fontWeight: FontWeight.w800,
-                      fontFamily: 'Urbanist'
                   ),
                 ),
                 const SizedBox(height: 10,),
@@ -273,7 +270,6 @@ class _CartState extends State<Cart> {
                     child: const Text(
                       'Go to Login Page',
                       style: TextStyle(
-                          fontFamily: 'Urbanist',
                           fontWeight: FontWeight.bold,
                           fontSize: 13
                       ),
@@ -285,12 +281,12 @@ class _CartState extends State<Cart> {
             ),
           )
               :
-          /*isLoading ? Center(
+          isLoading ? Center(
             child: SizedBox(
-              width: MediaQuery.of(context).size.width*0.5,
+              width: MediaQuery.of(context).size.width*0.4,
               child: const LinearProgressIndicator(),
             ),
-          ) :*/
+          ) :
           SingleChildScrollView(
             child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -305,7 +301,6 @@ class _CartState extends State<Cart> {
                         'My Cart',
                         style: TextStyle(
                             fontSize: 22,
-                            fontFamily: 'Urbanist',
                             fontWeight: FontWeight.bold
                         ),
                       ),
@@ -342,25 +337,6 @@ class _CartState extends State<Cart> {
                                     ),
                                   ),
 
-                                  //Select All
-                                  /*Padding(
-                                    padding: const EdgeInsets.only(right: 11),
-                                    child: SizedBox(
-                                      width: 10,
-                                      child: Checkbox(
-                                        value: isAllSelected,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            for (int i = 0; i < cartItemIds.length; i++) {
-                                              selectedItems[i] = !isAllSelected;
-                                            }
-                                            isAllSelected = !isAllSelected;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),*/
-
                                   //items
                                   if(cartItemIds.isNotEmpty)...[
                                     AnimatedSwitcher(
@@ -382,39 +358,32 @@ class _CartState extends State<Cart> {
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
-                                                  //CheckBox
-                                                  /*Padding(
-                                                    padding: const EdgeInsets.only(right: 11),
-                                                    child: SizedBox(
-                                                      width: 10,
-                                                      child: Checkbox(
-                                                        value: selectedItems[index],
-                                                        onChanged: (value) {
-                                                          setState(() {
-                                                            selectedItems[index] = !selectedItems[index]!;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ),*/
                                                   //Image
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(right: 10),
-                                                    child: Container(
-                                                      width: MediaQuery.of(context).size.width*0.38 - 25,//0.40, 0.38 - 25 0.32 - 10
-                                                      height: 124, //137 127 120
-                                                      decoration: BoxDecoration(
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Get.to(
+                                                          ProductScreen(productId: cartItemIds[index]),
+                                                          transition: Transition.fade
+                                                      );
+                                                    },
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(right: 10),
+                                                      child: Container(
+                                                        width: MediaQuery.of(context).size.width*0.38 - 25,//0.40, 0.38 - 25 0.32 - 10
+                                                        height: 124, //137 127 120
+                                                        decoration: BoxDecoration(
                                                           /*border: Border.all(
-                                                              width: 0, //4
-                                                              color: Colors.transparent
-                                                          ),*/
-                                                          borderRadius: BorderRadius.circular(20)
-                                                      ),
-                                                      child: ClipRRect(
-                                                        borderRadius: BorderRadius.circular(15),
-                                                        child:  Image.network(
-                                                          productImages[index],
-                                                          fit: BoxFit.cover,
+                                                                width: 0, //4
+                                                                color: Colors.transparent
+                                                            ),*/
+                                                            borderRadius: BorderRadius.circular(20)
+                                                        ),
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(15),
+                                                          child:  Image.network(
+                                                            productImages[index],
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -528,7 +497,7 @@ class _CartState extends State<Cart> {
                                                     },
                                                     child: const SizedBox(
                                                       child: Icon(
-                                                          Icons.delete_forever,
+                                                        Icons.delete_forever,
                                                         color: Colors.red,
                                                       ),
                                                     ),
@@ -549,7 +518,6 @@ class _CartState extends State<Cart> {
                                           'Nothing to Show',
                                           style: TextStyle(
                                             fontSize: 13,
-                                            fontFamily: 'Urbanist'
                                           ),
                                         ),
                                       ),
@@ -582,10 +550,10 @@ class _CartState extends State<Cart> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
+
                                 Text('${priceAfterDiscount[index].toStringAsFixed(0)}× ${cartItemQuantities[index]}'),
                                 // = Price
                                 Text('${priceAfterDiscount[index] * cartItemQuantities[index]}')
-                                //Discount
                               ],
                             ),
                           );
@@ -629,175 +597,118 @@ class _CartState extends State<Cart> {
                         ),
                       ),
 
-                      //DeliveryCharge + coin
-                      FutureBuilder(
-                        future: FirebaseFirestore.instance
-                            .collection('userData')
-                            .doc(uid)
-                            .get(),
-                        builder: (context, userDatasnapshot) {
-                          if(userDatasnapshot.hasData){
-                            return Column(
-                              children: [
-                                //Delivery Charge Line
-                                /*if( userDatasnapshot.data!.get('Address1')[1] == 'Dhaka' ||
-                                    userDatasnapshot.data!.get('Address2')[1] == 'Dhaka')...[
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 5, top: 5),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('Delivery Charge'),
-                                        Padding(
-                                            padding: EdgeInsets.only(right: 10),
-                                            child: Text(
-                                              '50',
-                                            )
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ]else...[
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 5, top: 5),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('Delivery Charge'),
-                                        Padding(
-                                            padding: EdgeInsets.only(right: 10),
-                                            child: Text(
-                                              '100',
-                                            )
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ], */
-                                
-                                //Coins Line
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5,left: 5),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const Text('You Have ',),
-                                      Text(
-                                        '${userDatasnapshot.data!.get('coins')}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w800,
-                                          color: Colors.amber,
-                                        ),
-                                      ),
-                                      const Text(' available COINS to use',)
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: Row(
-                                    children: [
-                                      //TextBox
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width*0.6,
-                                        height: 50,
-                                        child: TextField(
-                                          onChanged: (value) {
-                                            inputCoinAmount = double.parse(value);
-                                          },
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold
-                                          ),
-                                          decoration: InputDecoration(
-                                            hintText: "INPUT COIN AMOUNT",
-                                            hintStyle: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.grey.shade500,
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(5),
-                                              borderSide: const BorderSide(color: Colors.grey),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(5),
-                                              borderSide: const BorderSide(color: Colors.grey),
-                                            ),
-                                            prefixIcon: const Icon(Icons.money, color: Colors.amber,),
-                                          ),
-                                          keyboardType: TextInputType.number,
-                                          controller: coinController,
-                                        ),
-                                      ),
-                                      //Space
-                                      const SizedBox(width: 10,),
-                                      //Button
-                                      SizedBox(
-                                        height: 50,
-                                        width: MediaQuery.of(context).size.width*0.30,
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            if(inputCoinAmount <= userDatasnapshot.data!.get('coins')){
-                                              setState(() {
-                                                coinDiscount = inputCoinAmount / 1000;
-                                                total = total - coinDiscount;
-                                              });
-                                            }
-                                            else{
-                                              ScaffoldMessenger
-                                                  .of(context)
-                                                  .showSnackBar(
-                                                  const SnackBar(
-                                                      content: Text('More than available coins')
-                                                  )
-                                              );
-                                            }
-                                          },
-                                          style: const ButtonStyle(
-                                              backgroundColor: MaterialStatePropertyAll(Colors.amber)
-                                          ),
-                                          child: const Text('Redeem Coin'),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                if(coinDiscount != 0.0)...[
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 5, left: 5),
-                                          child: Text(
-                                              'Coin Discount for $inputCoinAmount coins is : '
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 5, right: 5),
-                                          child: Text(
-                                              '- $coinDiscount',
-                                            style: const TextStyle(
-                                              color: Colors.red
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ]
-                              ],
-                            );
-                          }
-                          else if(userDatasnapshot.connectionState == ConnectionState.waiting){
-                            return const Center(child: LinearProgressIndicator(),);
-                          }
-                          else{
-                            return const Center(child: Text('Error Loading, Try again'),);
-                          }
-                        },
+                      //Coins Line
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5,left: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text('You Have ',),
+                            Text(
+                              '$availableCoins',//${userDatasnapshot.data!.get('coins')}
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                                color: Colors.amber,
+                              ),
+                            ),
+                            const Text(' available COINS to use',)
+                          ],
+                        ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Row(
+                          children: [
+                            //TextBox
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width*0.6,
+                              height: 50,
+                              child: TextField(
+                                onChanged: (value) {
+                                  inputCoinAmount = double.parse(value);
+                                },
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: "INPUT COIN AMOUNT",
+                                  hintStyle: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: const BorderSide(color: Colors.grey),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: const BorderSide(color: Colors.grey),
+                                  ),
+                                  prefixIcon: const Icon(Icons.money, color: Colors.amber,),
+                                ),
+                                keyboardType: TextInputType.number,
+                                controller: coinController,
+                              ),
+                            ),
+                            //Space
+                            const SizedBox(width: 10,),
+                            //Button
+                            SizedBox(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width*0.30,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if(inputCoinAmount <= availableCoins){
+                                    setState(() {
+                                      coinDiscount = inputCoinAmount / 1000;
+                                      total = total - coinDiscount;
+                                    });
+                                  }
+                                  else{
+                                    ScaffoldMessenger
+                                        .of(context)
+                                        .showSnackBar(
+                                        const SnackBar(
+                                            content: Text('More than available coins')
+                                        )
+                                    );
+                                  }
+                                },
+                                style: const ButtonStyle(
+                                    backgroundColor: MaterialStatePropertyAll(Colors.amber)
+                                ),
+                                child: const Text('Redeem Coin'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if(coinDiscount != 0.0)...[
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5, left: 5),
+                                child: Text(
+                                    'Coin Discount for $inputCoinAmount coins is : '
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5, right: 5),
+                                child: Text(
+                                  '- $coinDiscount',
+                                  style: const TextStyle(
+                                      color: Colors.red
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
 
                       //Promo Text
                       const Padding(
@@ -976,19 +887,13 @@ class _CartState extends State<Cart> {
                               child: SizedBox(
                                 height: 50,
                                 width: double.infinity,
-                                child: ElevatedButton(
+                                child: isLoading ? LinearProgressIndicator(
+                                  color: Colors.green.shade300,
+                                  backgroundColor: Colors.green.shade100,
+                                )
+                                    :
+                                ElevatedButton(
                                   onPressed: (){
-                                    /*Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => CheckOut(
-                                            usedCoins: inputCoinAmount,
-                                            coinDiscount: coinDiscount,
-                                            usedPromoCode: promoCode,
-                                          itemsTotal: total,
-                                          promoDiscount: promoDiscountMoney,
-                                        ),
-                                      )
-                                    );*/
                                     Get.to(
                                       CheckOut(
                                         usedCoins: inputCoinAmount,
@@ -1003,11 +908,7 @@ class _CartState extends State<Cart> {
                                   style: const ButtonStyle(
                                       backgroundColor: MaterialStatePropertyAll(Colors.green)
                                   ),
-                                  child: isLoading ? LinearProgressIndicator(
-                                    color: Colors.green.shade300,
-                                    backgroundColor: Colors.green.shade100,
-                                  )
-                                      : const Text(
+                                  child: const Text(
                                     'Proceed to Check Out',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
