@@ -33,7 +33,7 @@ class CheckOut extends StatefulWidget {
 
 class _CheckOutState extends State<CheckOut> {
 
-  String randomID = "";
+  String randomID = '';
   String randomOrderListDocID = '';
   String? selectedAddress = '';
   String selectedDivision = '';
@@ -134,9 +134,10 @@ class _CheckOutState extends State<CheckOut> {
         'variant' : doc['variant'],
       });
 
-      //At shop location save the reference
-      // Reference to the orderLists document
-      DocumentReference orderListsReference = FirebaseFirestore.instance
+      //For MultiVendor
+        //At shop location save the reference
+        // Reference to the orderLists document
+      /*DocumentReference orderListsReference = FirebaseFirestore.instance
           .collection('Orders')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('Pending Orders')
@@ -150,7 +151,7 @@ class _CheckOutState extends State<CheckOut> {
           .doc(doc['Shop ID'])
           .set({
         'Pending Orders': FieldValue.arrayUnion([orderListsReference])
-      }, SetOptions(merge: true));
+      }, SetOptions(merge: true));*/
 
       //Then Delete added item from cart
       await FirebaseFirestore.instance

@@ -19,7 +19,9 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
           child: Hero(
             tag: widget.imageUrl,
             child: PhotoView(
-              imageProvider: NetworkImage(widget.imageUrl),
+              imageProvider: NetworkImage(
+                  widget.imageUrl,
+              ),
               maxScale: 4.0,
               loadingBuilder: (context, event) {
                 return const Center(

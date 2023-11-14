@@ -5,7 +5,6 @@ import 'package:stormymart/utility/bottom_nav_bar.dart';
 import 'package:stormymart/utility/splash_screen.dart';
 import 'package:get/get.dart';
 
-import 'Components/firebase_api.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();

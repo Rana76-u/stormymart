@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class CoinsTop extends StatelessWidget {
   const CoinsTop({super.key});
@@ -45,7 +46,14 @@ class CoinsTop extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.network(FirebaseAuth.instance.currentUser!.photoURL.toString()),
+                    child: /*Image.network(
+                        FirebaseAuth.instance.currentUser!.photoURL.toString()
+                    )*/
+                    FadeInImage.memoryNetwork(
+                      image: FirebaseAuth.instance.currentUser!.photoURL ??
+                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgBhcplevwUKGRs1P-Ps8Mwf2wOwnW_R_JIA&usqp=CAU',
+                      placeholder: kTransparentImage,
+                    ),
                   ),
                 ),
               ),

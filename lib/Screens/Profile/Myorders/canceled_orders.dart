@@ -1,43 +1,19 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:stormymart/Components/notification_sender.dart';
 
-class ProcessingOrders extends StatefulWidget {
-  const ProcessingOrders({super.key});
+class CanceledOrders extends StatefulWidget {
+  const CanceledOrders({super.key});
 
   @override
-  State<ProcessingOrders> createState() => _ProcessingOrdersState();
+  State<CanceledOrders> createState() => _CanceledOrdersState();
 }
 
-class _ProcessingOrdersState extends State<ProcessingOrders> {
+class _CanceledOrdersState extends State<CanceledOrders> {
 
   bool isLoading = false;
   List<String> docIds = [];
-  String randomID = '';
-  String randomOrderListDocID = '';
-  String token = '';
-
-  void generateRandomID() {
-    Random random = Random();
-    const String chars = "0123456789abcdefghijklmnopqrstuvwxyz";
-
-    for (int i = 0; i < 20; i++) {
-      randomID += chars[random.nextInt(chars.length)];
-    }
-  }
-
-  void generateRandomOrderListDocID() {
-    Random random = Random();
-    const String chars = "0123456789abcdefghijklmnopqrstuvwxyz";
-
-    for (int i = 0; i < 20; i++) {
-      randomOrderListDocID += chars[random.nextInt(chars.length)];
-    }
-  }
 
   @override
   void initState() {
@@ -59,30 +35,6 @@ class _ProcessingOrdersState extends State<ProcessingOrders> {
     });
   }
 
-  Future<void> sendNotificationToAllAdmins() async {
-
-    //Get all the admins Id's
-    CollectionReference reference = FirebaseFirestore.instance.collection('/Admin Panel');
-
-    QuerySnapshot querySnapshot = await reference.get();
-
-    for (var doc in querySnapshot.docs) {
-      if(doc.id != 'Sell Data'){
-
-        final tokenSnapshot = await FirebaseFirestore.instance.collection('userTokens')
-            .doc(doc.id).get();
-
-        String token = tokenSnapshot.get('token');
-
-        await SendNotification.toSpecific(
-            "Order Update",
-            'Order Canceled',
-            token,
-            'BottomBar(bottomIndex: 3)'
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,14 +45,14 @@ class _ProcessingOrdersState extends State<ProcessingOrders> {
     FutureBuilder(
       future: FirebaseFirestore
           .instance
-          .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Processing Orders')
+          .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Canceled Orders')
           .get(),
       builder: (context, pendingOrderSnapshot) {
         if(pendingOrderSnapshot.hasData){
           if(pendingOrderSnapshot.data!.docs.isEmpty){
             return const Center(
               child: Text(
-                'nothings processing',
+                'nothings canceled',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.grey,
@@ -122,7 +74,7 @@ class _ProcessingOrdersState extends State<ProcessingOrders> {
                   child: FutureBuilder(
                     future: FirebaseFirestore
                         .instance
-                        .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Processing Orders')
+                        .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Canceled Orders')
                         .doc(pendingOrderSnapshot.data!.docs[index].id)
                         .collection('/orderLists')
                         .get(),
@@ -132,171 +84,57 @@ class _ProcessingOrdersState extends State<ProcessingOrders> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             //Order items
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    //Order Items
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 10, left: 15),
-                                      child: Text(
-                                        "Order Items (${orderListSnapshot.data!.docs.length})",
-                                        style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Urbanist'
-                                        ),
-                                      ),
-                                    ),
-                                    //sku
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 0, left: 15),
-                                      child: SelectableText(
-                                        "sku: ${pendingOrderSnapshot.data!.docs[index].id}",
-                                        style: const TextStyle(
-                                            fontSize: 12.5,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Urbanist',
-                                            color: Colors.grey
-                                        ),
-                                      ),
-                                    ),
-                                    //Time
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 0, left: 15),
-                                      child: Text(
-                                        "Placed on : "
-                                            "${
-                                            DateFormat('EE, dd/MM H:mm')
-                                                .format(
-                                                pendingOrderSnapshot
-                                                    .data!
-                                                    .docs[index]
-                                                    .get('time')
-                                                    .toDate()
-                                            )
-                                        }",
-                                        style: const TextStyle(
-                                            fontSize: 12.5,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Urbanist',
-                                            color: Colors.grey
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                //Cancel Order Button
+                                //Order Items
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 20),
-                                  child: TextButton(
-                                      onPressed: () async {
-
-                                        setState(() {
-                                          isLoading = true;
-                                        });
-
-                                        generateRandomID();
-
-                                        //Order necessary details
-                                        await FirebaseFirestore
-                                            .instance
-                                            .collection('Orders')
-                                            .doc(FirebaseAuth.instance.currentUser!.uid)
-                                            .collection('Canceled Orders').doc(randomID).set({
-                                          'usedPromoCode': pendingOrderSnapshot.data!.docs[index].get('usedPromoCode'),
-                                          'usedCoin': pendingOrderSnapshot.data!.docs[index].get('usedCoin'),
-                                          'total' : pendingOrderSnapshot.data!.docs[index].get('total'),
-                                          'time' : pendingOrderSnapshot.data!.docs[index].get('time'),
-                                          'deliveryLocation': pendingOrderSnapshot.data!.docs[index].get('deliveryLocation'),
-                                        });
-
-                                        DocumentSnapshot totalSoldSnapshot = await FirebaseFirestore
-                                            .instance
-                                            .collection('/Admin Panel')
-                                            .doc('Sell Data').get();
-
-                                        await FirebaseFirestore
-                                            .instance
-                                            .collection('/Admin Panel')
-                                            .doc('Sell Data').set({
-                                          'totalSold': totalSoldSnapshot.get('totalSold') - pendingOrderSnapshot.data!.docs[index].get('total'),
-                                        });
-
-                                        //upload Each Order Details
-                                        for (int i=0; i<orderListSnapshot.data!.docs.length; i++) {
-                                          //For every Cart item
-                                          generateRandomOrderListDocID();
-                                          // add them into Order list
-                                          await FirebaseFirestore
-                                              .instance
-                                              .collection('Orders')
-                                              .doc(FirebaseAuth.instance.currentUser!.uid) //FirebaseAuth.instance.currentUser!.uid
-                                              .collection('Canceled Orders')
-                                              .doc(randomID)
-                                              .collection('orderLists')
-                                              .doc(randomOrderListDocID)
-                                              .set({
-                                            'productId' : orderListSnapshot.data!.docs[i].get('productId'),
-                                            'quantity' : orderListSnapshot.data!.docs[i].get('quantity'),
-                                            'selectedSize' : orderListSnapshot.data!.docs[i].get('selectedSize'),
-                                            'variant' : orderListSnapshot.data!.docs[i].get('variant'),
-                                          });
-                                        }
-
-                                        //Retrieve Coin
-                                        DocumentSnapshot existingCoinSnapshot  = await FirebaseFirestore
-                                            .instance
-                                            .collection('userData')
-                                            .doc(FirebaseAuth.instance.currentUser!.uid)
-                                            .get();
-
-                                        double existingCoins = existingCoinSnapshot.get('coins');
-                                        double usedCoin = pendingOrderSnapshot.data!.docs[index].get('usedCoin');
-                                        double totalCoins = existingCoins + usedCoin;
-
-                                        await FirebaseFirestore
-                                            .instance
-                                            .collection('/userData')
-                                            .doc(FirebaseAuth.instance.currentUser!.uid).update({
-                                          'coins': totalCoins,
-                                        });
-
-                                        //Delete from Processing order
-                                        await FirebaseFirestore
-                                            .instance
-                                            .collection('Orders')
-                                            .doc(FirebaseAuth.instance.currentUser!.uid)
-                                            .collection('Processing Orders')
-                                            .doc(pendingOrderSnapshot.data!.docs[index].id).delete();
-
-                                        // Delete the subCollection 'orderLists'
-                                        await FirebaseFirestore.instance
-                                            .collection('Orders')
-                                            .doc(FirebaseAuth.instance.currentUser!.uid)
-                                            .collection('Processing Orders')
-                                            .doc(pendingOrderSnapshot.data!.docs[index].id)
-                                            .collection('orderLists')
-                                            .get()
-                                            .then((querySnapshot) {
-                                          querySnapshot.docs.forEach((doc) {
-                                            doc.reference.delete();
-                                          });
-                                        });
-
-                                        //Send Push Notification
-                                        await sendNotificationToAllAdmins();
-                                        //-------------------------------------
-
-                                        setState(() {
-                                          isLoading = false;
-                                        });
-                                      },
-                                      child: const Text('Cancel Order')
+                                  padding: const EdgeInsets.only(top: 10, left: 15),
+                                  child: Text(
+                                    "Order Items (${orderListSnapshot.data!.docs.length})",
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Urbanist'
+                                    ),
                                   ),
                                 ),
+                                //sku
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 0, left: 15),
+                                  child: SelectableText(
+                                    "sku: ${pendingOrderSnapshot.data!.docs[index].id}",
+                                    style: const TextStyle(
+                                        fontSize: 12.5,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Urbanist',
+                                        color: Colors.grey
+                                    ),
+                                  ),
+                                ),
+                                //Time
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 0, left: 15),
+                                  child: Text(
+                                    "Placed on : "
+                                        "${
+                                        DateFormat('EE, dd/MM H:mm')
+                                            .format(
+                                            pendingOrderSnapshot
+                                                .data!
+                                                .docs[index]
+                                                .get('time')
+                                                .toDate()
+                                        )
+                                    }",
+                                    style: const TextStyle(
+                                        fontSize: 12.5,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Urbanist',
+                                        color: Colors.grey
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
 
@@ -365,7 +203,8 @@ class _ProcessingOrdersState extends State<ProcessingOrders> {
                                                 );
                                               }
                                               else if(!imageSnapshot.data!.exists){
-                                                return const Text('Data not Found');
+                                                print('not exists');
+                                                return Text('Data not Found');
                                               }
                                               else {
                                                 return const Center(

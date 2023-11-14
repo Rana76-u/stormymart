@@ -8,7 +8,7 @@ import '../../theme/color.dart';
 import '../Product Screen/product_screen.dart';
 import '../Search/search.dart';
 
-class RecommendedForYou extends StatefulWidget {
+/*class RecommendedForYou extends StatefulWidget {
   const RecommendedForYou({super.key});
 
   @override
@@ -16,6 +16,15 @@ class RecommendedForYou extends StatefulWidget {
 }
 
 class _RecommendedForYouState extends State<RecommendedForYou> {
+  @override
+  Widget build(BuildContext context) {
+    return ;
+  }
+}*/
+
+class RecommendedForYou extends StatelessWidget {
+  const RecommendedForYou({super.key});
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -27,21 +36,21 @@ class _RecommendedForYouState extends State<RecommendedForYou> {
           return Expanded(
             flex: 0,
             child: ResponsiveGridList(
-                horizontalGridSpacing: 0, // Horizontal space between grid items
-                verticalGridSpacing: 0, // Vertical space between grid items
-                horizontalGridMargin: 0, // Horizontal space around the grid
-                verticalGridMargin: 0, // Vertical space around the grid
-                minItemWidth: 300, // The minimum item width (can be smaller, if the layout constraints are smaller)
-                minItemsPerRow: 2, // The minimum items to show in a single row. Takes precedence over minItemWidth
-                maxItemsPerRow: null, // The maximum items to show in a single row. Can be useful on large screens
+              horizontalGridSpacing: 0, // Horizontal space between grid items
+              verticalGridSpacing: 0, // Vertical space between grid items
+              horizontalGridMargin: 0, // Horizontal space around the grid
+              verticalGridMargin: 0, // Vertical space around the grid
+              minItemWidth: 300, // The minimum item width (can be smaller, if the layout constraints are smaller)
+              minItemsPerRow: 2, // The minimum items to show in a single row. Takes precedence over minItemWidth
+              maxItemsPerRow: null, // The maximum items to show in a single row. Can be useful on large screens
               listViewBuilderOptions: ListViewBuilderOptions(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 primary: true,
               ), // Options that are getting passed to the ListView.builder() function
-                children: List.generate(
-                    snapshot.data!.docs.length,
-                  (index) {
+              children: List.generate(
+                  snapshot.data!.docs.length,
+                      (index) {
                     if(snapshot.hasData){
                       DocumentSnapshot product = snapshot.data!.docs[index];
                       double discountCal = (product.get('price') / 100) * (100 - product.get('discount'));
@@ -230,7 +239,7 @@ class _RecommendedForYouState extends State<RecommendedForYou> {
                       );
                     }
                   }
-                ), // The list of widgets in the grid
+              ), // The list of widgets in the grid
             ),
           );
         }else{
@@ -244,6 +253,7 @@ class _RecommendedForYouState extends State<RecommendedForYou> {
     );
   }
 }
+
 
 class RecommendedForYouTitle extends StatelessWidget {
   const RecommendedForYouTitle({super.key});

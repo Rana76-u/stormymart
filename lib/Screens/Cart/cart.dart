@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stormymart/Screens/Cart/delivery_container.dart';
 import 'package:stormymart/Screens/Product%20Screen/product_screen.dart';
+import 'package:transparent_image/transparent_image.dart';
 import '../../utility/bottom_nav_bar.dart';
 import '../CheckOut/checkout.dart';
 import 'package:get/get.dart';
@@ -380,8 +381,12 @@ class _CartState extends State<Cart> {
                                                         ),
                                                         child: ClipRRect(
                                                           borderRadius: BorderRadius.circular(15),
-                                                          child:  Image.network(
+                                                          child:  /*Image.network(
                                                             productImages[index],
+                                                            fit: BoxFit.cover,
+                                                          )*/FadeInImage.memoryNetwork(
+                                                            image: productImages[index],
+                                                            placeholder: kTransparentImage,
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),

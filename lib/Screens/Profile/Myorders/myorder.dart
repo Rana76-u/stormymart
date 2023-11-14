@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stormymart/Screens/Profile/Myorders/canceled_orders.dart';
 import 'package:stormymart/Screens/Profile/Myorders/completed_order.dart';
 import 'package:stormymart/Screens/Profile/Myorders/pending_order.dart';
 import 'package:stormymart/Screens/Profile/Myorders/processing_orders.dart';
@@ -14,7 +15,7 @@ class _MyOrdersState extends State<MyOrders> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -30,6 +31,7 @@ class _MyOrdersState extends State<MyOrders> {
               Tab(text: 'Pending'),
               Tab(text: 'Processing'),
               Tab(text: 'Completed'),
+              Tab(text: 'Canceled'),
             ],
           ),
           backgroundColor: MaterialStateColor.resolveWith((states) => Colors.blueGrey),
@@ -210,6 +212,23 @@ class _MyOrdersState extends State<MyOrders> {
               ),
             ),
 
+            // Forth Tab - Canceled Orders
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+
+                    //PendingOrders,
+                    const CanceledOrders(),
+
+                    const SizedBox(height: 200,),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

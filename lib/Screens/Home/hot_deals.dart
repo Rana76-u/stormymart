@@ -5,14 +5,10 @@ import 'package:responsive_grid_list/responsive_grid_list.dart';
 import '../../Components/custom_image.dart';
 import '../../theme/color.dart';
 import '../Product Screen/product_screen.dart';
-class HotDeals extends StatefulWidget {
+
+class HotDeals extends StatelessWidget {
   const HotDeals({super.key});
 
-  @override
-  State<HotDeals> createState() => _HotDealsState();
-}
-
-class _HotDealsState extends State<HotDeals> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -36,14 +32,14 @@ class _HotDealsState extends State<HotDeals> {
                 minItemsPerRow: 2, // The minimum items to show in a single row. Takes precedence over minItemWidth
                 maxItemsPerRow: null, // The maximum items to show in a single row. Can be useful on large screens
                 listViewBuilderOptions: ListViewBuilderOptions(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  primary: true,
-                  scrollDirection: Axis.horizontal
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    primary: true,
+                    scrollDirection: Axis.horizontal
                 ),
                 children: List.generate(
-                    snapshot.data!.docs.length,
-                  (index) {
+                  snapshot.data!.docs.length,
+                      (index) {
                     if(snapshot.hasData) {
                       DocumentSnapshot product = snapshot.data!.docs[index];
                       double discountCal = (product.get('price') / 100) * (100 - product.get('discount'));

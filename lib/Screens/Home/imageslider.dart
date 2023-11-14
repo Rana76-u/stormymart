@@ -42,7 +42,7 @@ class ImageSlider extends StatelessWidget {
                     indicatorColor: Colors.amber,
                     indicatorBackgroundColor: Colors.grey,
                     onPageChanged: (value) {},
-                    autoPlayInterval: 3500,
+                    autoPlayInterval: 5000,
                     isLoop: true,
                     children: List.generate(images.length, (index) {
                       return /*Image.network( //Not Really Sure about Performance i think CustomImage is better at performance
@@ -56,7 +56,8 @@ class ImageSlider extends StatelessWidget {
                       );
                     })
                 ),
-              ) :
+              )
+                  :
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.network(
