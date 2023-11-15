@@ -124,7 +124,7 @@ class _ProcessingOrdersState extends State<ProcessingOrders> {
                         .instance
                         .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Processing Orders')
                         .doc(pendingOrderSnapshot.data!.docs[index].id)
-                        .collection('/orderLists')
+                        .collection('orderLists')
                         .get(),
                     builder: (context, orderListSnapshot) {
                       if(orderListSnapshot.hasData){

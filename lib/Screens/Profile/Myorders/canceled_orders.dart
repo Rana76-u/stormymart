@@ -76,7 +76,7 @@ class _CanceledOrdersState extends State<CanceledOrders> {
                         .instance
                         .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Canceled Orders')
                         .doc(pendingOrderSnapshot.data!.docs[index].id)
-                        .collection('/orderLists')
+                        .collection('orderLists')
                         .get(),
                     builder: (context, orderListSnapshot) {
                       if(orderListSnapshot.hasData){
@@ -203,8 +203,7 @@ class _CanceledOrdersState extends State<CanceledOrders> {
                                                 );
                                               }
                                               else if(!imageSnapshot.data!.exists){
-                                                print('not exists');
-                                                return Text('Data not Found');
+                                                return const Text('Data not Found');
                                               }
                                               else {
                                                 return const Center(

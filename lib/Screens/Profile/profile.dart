@@ -40,7 +40,7 @@ class _ProfileState extends State<Profile> {
             (token) {
           setState(() {
             phoneToken = token;
-            print("My token is $phoneToken");
+            //print("My token is $phoneToken");
           });
           saveTokenInFirebase(token!);
         }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'bottom_nav_bar.dart';
 
 class SplashFuturePage extends StatefulWidget {
-  SplashFuturePage({Key? key}) : super(key: key);
+  const SplashFuturePage({Key? key}) : super(key: key);
 
   @override
   _SplashFuturePageState createState() => _SplashFuturePageState();

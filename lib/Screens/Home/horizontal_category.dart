@@ -57,10 +57,10 @@ class _MostPupularCategoryState extends State<MostPupularCategory> {
           remainingDuration = offerEndDate.difference(now);
         });
       } else {
-        print('Document does not exist');
+        //print('Document does not exist');
       }
     } catch (error) {
-      print('Error retrieving data: $error');
+      //print('Error retrieving data: $error');
     }
 
   }

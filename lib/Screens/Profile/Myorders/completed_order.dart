@@ -77,7 +77,7 @@ class _CompletedOrdersState extends State<CompletedOrders> {
                         .instance
                         .collection('/Orders/${FirebaseAuth.instance.currentUser!.uid}/Completed Orders')
                         .doc(pendingOrderSnapshot.data!.docs[index].id)
-                        .collection('/orderLists')
+                        .collection('orderLists')
                         .get(),
                     builder: (context, orderListSnapshot) {
                       if(orderListSnapshot.hasData){
@@ -226,7 +226,6 @@ class _CompletedOrdersState extends State<CompletedOrders> {
                                                   );
                                                 }
                                                 else if(!imageSnapshot.data!.exists){
-                                                  print('not exists');
                                                   return const Text('Data not Found');
                                                 }
                                                 else {

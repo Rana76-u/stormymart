@@ -4,9 +4,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
-  print('Title: ${message.notification?.title}');
+  /*print('Title: ${message.notification?.title}');
   print('Body: ${message.notification?.body}');
-  print('Payload: ${message.data}');
+  print('Payload: ${message.data}');*/
 }
 
 class FirebaseApi {
@@ -24,9 +24,9 @@ class FirebaseApi {
   void handleMessage(RemoteMessage? message) {
     if(message == null) return;
 
-    print('${message.notification?.title}');
+    /*print('${message.notification?.title}');
     print('${message.notification?.body}');
-    print('${message.data}');
+    print('${message.data}');*/
   }
 
   Future initLocalNotifications() async {
@@ -103,8 +103,8 @@ class FirebaseApi {
 
   Future<void> initNotifications() async {
     await _firebaseMessaging.requestPermission();
-    final fcMToken = await _firebaseMessaging.getToken();
-    print('Token: $fcMToken');
+    //final fcMToken = await _firebaseMessaging.getToken();
+    //print('Token: $fcMToken');
     initPushNotifications();
     initLocalNotifications();
   }

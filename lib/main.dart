@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:stormymart/Components/firebase_api.dart';
 import 'package:stormymart/firebase_options.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
 import 'package:stormymart/utility/splash_screen.dart';
@@ -23,7 +24,7 @@ void main() async{
   /*await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);*/
 
-  //await FirebaseApi().initNotifications();
+  await FirebaseApi().initNotifications();
 
   runApp(const MyApp());
 }
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
       //home: BottomBar(bottomIndex: 0),
       initialRoute: '/',
       routes: {
-        '/': (context) => SplashFuturePage(),
+        '/': (context) => const SplashFuturePage(),
         // '/': (context) => SplashFuturePage(),
         '/home': (context) => BottomBar(bottomIndex: 0),
       },
