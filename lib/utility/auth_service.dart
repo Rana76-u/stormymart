@@ -5,7 +5,7 @@ import 'package:stormymart/Screens/Cart/cart_loginpage.dart';
 import 'package:stormymart/Screens/Search/search.dart';
 
 
-class Authservice {
+class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     //clientId: const String.fromEnvironment('608528534677-9k5dmi7ceihfoph33b4md35khifobfjg.apps.googleusercontent.com')//newly added for web

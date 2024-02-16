@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:stormymart/Screens/Chat%20Screen/chat_screen.dart';
 import 'package:stormymart/theme/color.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
@@ -71,69 +72,63 @@ class _ProductScreenState extends State<ProductScreen> {
     //var shopID = '';
 
     return Scaffold(
-      backgroundColor: appBgColor,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 55, right: 10),
-        child: FloatingActionButton(
-          onPressed: () {
-            /*Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ChatScreen(productId: widget.productId),
-              )
-            );*/
-            Get.to(
-              ChatScreen(productId: widget.productId),
-              transition: Transition.fade,
-            );
-          },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100.0),
+      appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 30),
+            child: GestureDetector(
+              onTap: () {
+                if(FirebaseAuth.instance.currentUser != null){
+                  Get.to(
+                    ChatScreen(productId: widget.productId),
+                    transition: Transition.fade,
+                  );
+                }
+                else{
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("You're Not Logged In."))
+                  );
+                }
+              },
+              child: const Icon(
+                MingCute.comment_2_fill,
+              ),
+            ),
           ),
-          child: const Icon(
-              Icons.messenger
-          ),
-        ),
+        ],
       ),
-      body: Column(
-        children: [
-          //Space
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.002,
-          ),
+      backgroundColor: appBgColor,
+      floatingActionButton: floatingButtonWidget(widget.productId.toString().trim()),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: FutureBuilder(
+            future: FirebaseFirestore.instance
+                .collection('Products')
+                .doc(id)
+                .get()
+                .then((value) => value),
+            builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+              if (snapshot.hasData) {
+                var price = snapshot.data!.get('price');
+                var discount = snapshot.data!.get('discount');
+                double discountCal = (price / 100) * (100 - discount);
+                //var rating = snapshot.data!.get('rating');
+                //var sold = snapshot.data!.get('sold');
+                var quantityAvailable = snapshot.data!.get('quantityAvailable');
+                //shopID = snapshot.data!.get('Shop ID');
 
-          //Screen
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.928,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: FutureBuilder(
-                  future: FirebaseFirestore.instance
-                      .collection('Products')
-                      .doc(id)
-                      .get()
-                      .then((value) => value),
-                  builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                    if (snapshot.hasData) {
-                      var price = snapshot.data!.get('price');
-                      var discount = snapshot.data!.get('discount');
-                      double discountCal = (price / 100) * (100 - discount);
-                      //var rating = snapshot.data!.get('rating');
-                      //var sold = snapshot.data!.get('sold');
-                      var quantityAvailable = snapshot.data!.get('quantityAvailable');
-                      //shopID = snapshot.data!.get('Shop ID');
+                //SIZE LIST
+                sizes = snapshot.data!.get('size');
 
-                      //SIZE LIST
-                      sizes = snapshot.data!.get('size');
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //Space From TOP
+                    //SizedBox(height: MediaQuery.of(context).size.height * 0.03,),
 
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          //Space From TOP
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.03,),
-
-                          //Arrow Button
-                          GestureDetector(
+                    //Arrow Button
+                    /*GestureDetector(
                             onTap: (){
                               Navigator.of(context).pop();
                             },
@@ -143,343 +138,343 @@ class _ProductScreenState extends State<ProductScreen> {
                                 Icons.arrow_back,
                               ),
                             ),
-                          ),
+                          ),*/
 
-                          //ImageSlider
-                          FutureBuilder(
-                            future: FirebaseFirestore.instance
-                                .collection('Products/$id/Variations')
-                                .doc(imageSliderDocID)
-                                .get()
-                                .then((value) => value),
-                            builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                              if (snapshot.hasData) {
-                                List<dynamic> images =
-                                snapshot.data!.get('images');
-                                return images.isNotEmpty ?
-                                Padding(
-                                  padding: const EdgeInsets.all(0),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(25),
-                                    child: ImageSlideshow(
-                                        width: double.infinity,
-                                        height: MediaQuery.of(context).size.height * 0.42,//0.45
-                                        initialPage: 0,
-                                        indicatorColor: Colors.amber,
-                                        indicatorBackgroundColor: Colors.grey,
-                                        onPageChanged: (value) {},
-                                        autoPlayInterval: 7000,
-                                        isLoop: true,
-                                        children:
-                                        List.generate(images.length, (index) {
-                                          return GestureDetector(
-                                            onTap: (){
-                                              /*showImageViewer(
+                    //ImageSlider
+                    FutureBuilder(
+                      future: FirebaseFirestore.instance
+                          .collection('Products/$id/Variations')
+                          .doc(imageSliderDocID)
+                          .get()
+                          .then((value) => value),
+                      builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          List<dynamic> images =
+                          snapshot.data!.get('images');
+                          return images.isNotEmpty ?
+                          Padding(
+                            padding: const EdgeInsets.all(0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: ImageSlideshow(
+                                  width: double.infinity,
+                                  height: MediaQuery.of(context).size.height * 0.42,//0.45
+                                  initialPage: 0,
+                                  indicatorColor: Colors.amber,
+                                  indicatorBackgroundColor: Colors.grey,
+                                  onPageChanged: (value) {},
+                                  autoPlayInterval: 7000,
+                                  isLoop: true,
+                                  children:
+                                  List.generate(images.length, (index) {
+                                    return GestureDetector(
+                                      onTap: (){
+                                        /*showImageViewer(
                                                   context,
                                                   NetworkImage(images[index]),
                                                   swipeDismissible: true,
                                                   doubleTapZoomable: true
                                               );*/
-                                              /*Navigator.of(context).push(
+                                        /*Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                     builder: (context) => ImageViewerScreen(imageUrl: images[index],),
                                                   )
                                               );*/
-                                              Get.to(
-                                                ImageViewerScreen(imageUrl: images[index],),
-                                                transition: Transition.size,
-                                              );
-                                            },
-                                            child: Image.network(
-                                              images[index],
-                                              fit: BoxFit.cover,
-                                            ),
-                                          );
-                                        })),
-                                  ),
-                                ) :  Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    height: MediaQuery.of(context).size.height * 0.45,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
+                                        Get.to(
+                                          ImageViewerScreen(imageUrl: images[index],),
+                                          transition: Transition.size,
+                                        );
+                                      },
                                       child: Image.network(
-                                        'https://cdn.dribbble.com/users/256646/screenshots/17751098/media/768417cc4f382d6171053ad620bc3c3b.png',
+                                        images[index],
                                         fit: BoxFit.cover,
                                       ),
+                                    );
+                                  })),
+                            ),
+                          ) :  Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.45,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Image.network(
+                                  'https://cdn.dribbble.com/users/256646/screenshots/17751098/media/768417cc4f382d6171053ad620bc3c3b.png',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ),
+
+                    //Space
+                    const SizedBox(height: 5,),
+
+                    //Variation Name & Images
+                    Container(
+                      height: variationWarning ? 140 : 115,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: variationWarning ? Colors.red.withOpacity(0.25) : appBgColor,
+                      ),
+                      child: ListView.builder(
+                        controller: scrollController,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: variationCount,
+                        itemBuilder: (context, index) {
+                          return FutureBuilder(
+                            future: FirebaseFirestore
+                                .instance
+                                .collection('/Products/$id/Variations')
+                                .get()
+                                .then((value) => value),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                variationDocID = snapshot.data!.docs[index].id;
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //Name
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 5, left: 11),
+                                      width: 70,
+                                      child: Text(
+                                        //snapshot.data!.docs[index].id,
+                                        variationDocID,
+                                        style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis
+                                        ),
+                                        maxLines: 1,
+                                      ),
                                     ),
-                                  ),
+                                    //image
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          variationSelected = index;
+                                          imageSliderDocID = snapshot.data!.docs[index].id;
+                                          variationWarning = false;
+                                        });
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.only(top: 5,left: 10, right: 15, bottom: 15),
+                                        width: 70,//200
+                                        height: 70,//136.5
+
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: variationWarning == false ?
+                                              _variationCardColor(index) : Colors.red,
+                                              width: 2,//5
+                                            ),
+                                            borderRadius: BorderRadius.circular(10)
+                                        ),
+                                        child: FutureBuilder(
+                                          future: FirebaseFirestore.instance
+                                              .collection('/Products/$id/Variations')
+                                              .doc(variationDocID) //place String value of selected variation
+                                              .get()
+                                              .then((value) => value),
+                                          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                                            if (snapshot.hasData) {
+                                              List<dynamic> images =
+                                              snapshot.data!.get('images');
+                                              return ImageSlideshow(
+                                                  initialPage: 0,
+                                                  indicatorColor: Colors.amber,
+                                                  indicatorBackgroundColor: Colors.grey,
+                                                  onPageChanged: (value) {},
+                                                  autoPlayInterval: 3500,
+                                                  isLoop: true,
+                                                  children: List.generate(images.length, (index) {
+                                                    return ClipRRect(
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      child: Image.network(
+                                                        images[index],
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    );
+                                                  }));
+                                            } else {
+                                              return const Center(
+                                                child: CircularProgressIndicator(),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    if (variationWarning == true)
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15),
+                                        child: Container(
+                                          color: Colors.red,
+                                          alignment: Alignment.center,
+                                          child: const Padding(
+                                            padding: EdgeInsets.only(left: 4, right: 4),
+                                            child: Text(
+                                              'Please select a variation',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontFamily: 'Urbanist',
+                                                  fontWeight: FontWeight.bold
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
                                 );
                               } else {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
+                                return const Text(
+                                  'No Variations',
+                                  style: TextStyle(color: Colors.grey),
                                 );
                               }
                             },
-                          ),
+                          );
+                        },
+                      ),
+                    ),
 
-                          //Space
-                          const SizedBox(height: 5,),
+                    if (variationWarning == true)
+                      const SizedBox(height: 7,),
 
-                          //Variation Name & Images
-                          Container(
-                            height: variationWarning ? 140 : 114,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: variationWarning ? Colors.red.withOpacity(0.25) : appBgColor,
-                            ),
-                            child: ListView.builder(
-                              controller: scrollController,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: variationCount,
-                              itemBuilder: (context, index) {
-                                return FutureBuilder(
-                                  future: FirebaseFirestore
-                                      .instance
-                                      .collection('/Products/$id/Variations')
-                                      .get()
-                                      .then((value) => value),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      variationDocID = snapshot.data!.docs[index].id;
-                                      return Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          //Name
-                                          Container(
-                                            margin: const EdgeInsets.only(top: 5, left: 11),
-                                            width: 70,
-                                            child: Text(
-                                              //snapshot.data!.docs[index].id,
-                                              variationDocID,
-                                              style: const TextStyle(
-                                                  color: Colors.black54,
-                                                  fontWeight: FontWeight.bold,
-                                                overflow: TextOverflow.ellipsis
-                                              ),
-                                              maxLines: 1,
-                                            ),
-                                          ),
-                                          //image
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                variationSelected = index;
-                                                imageSliderDocID = snapshot.data!.docs[index].id;
-                                                variationWarning = false;
-                                              });
-                                            },
-                                            child: Container(
-                                              margin: const EdgeInsets.only(top: 5,left: 10, right: 15, bottom: 15),
-                                              width: 70,//200
-                                              height: 70,//136.5
+                    //Product Info Card
+                    Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
 
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color: variationWarning == false ?
-                                                    _variationCardColor(index) : Colors.red,
-                                                    width: 2,//5
-                                                  ),
-                                                borderRadius: BorderRadius.circular(10)
-                                              ),
-                                              child: FutureBuilder(
-                                                future: FirebaseFirestore.instance
-                                                    .collection('/Products/$id/Variations')
-                                                    .doc(variationDocID) //place String value of selected variation
-                                                    .get()
-                                                    .then((value) => value),
-                                                builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                                                  if (snapshot.hasData) {
-                                                    List<dynamic> images =
-                                                    snapshot.data!.get('images');
-                                                    return ImageSlideshow(
-                                                        initialPage: 0,
-                                                        indicatorColor: Colors.amber,
-                                                        indicatorBackgroundColor: Colors.grey,
-                                                        onPageChanged: (value) {},
-                                                        autoPlayInterval: 3500,
-                                                        isLoop: true,
-                                                        children: List.generate(images.length, (index) {
-                                                          return ClipRRect(
-                                                            borderRadius: BorderRadius.circular(8),
-                                                            child: Image.network(
-                                                              images[index],
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          );
-                                                        }));
-                                                  } else {
-                                                    return const Center(
-                                                      child: CircularProgressIndicator(),
-                                                    );
-                                                  }
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                          if (variationWarning == true)
-                                            Padding(
-                                              padding: const EdgeInsets.only(left: 15),
-                                              child: Container(
-                                                color: Colors.red,
-                                                alignment: Alignment.center,
-                                                child: const Padding(
-                                                  padding: EdgeInsets.only(left: 4, right: 4),
-                                                  child: Text(
-                                                    'Please select a variation',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                      fontSize: 12,
-                                                      fontFamily: 'Urbanist',
-                                                      fontWeight: FontWeight.bold
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      );
-                                    } else {
-                                      return const Text(
-                                        'No Variations',
-                                        style: TextStyle(color: Colors.grey),
-                                      );
-                                    }
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-
-                          if (variationWarning == true)
-                            const SizedBox(height: 7,),
-
-                          //Product Info Card
-                          Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-
-                                  //Discount
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      //Discount
-                                      if(discount == 0.0)...[
-                                        const SizedBox(),
-                                      ]
-                                      else...[
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.red.shade800,
-                                            borderRadius: BorderRadius.circular(15),
-                                          ),
-                                          child: Padding(
-                                            padding:   const EdgeInsets.all(10),
-                                            child: Text(
-                                              'Discount: $discount%',
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 13
-                                              ),
-                                            ),
-                                          ),
+                            //Discount
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                //Discount
+                                if(discount == 0.0)...[
+                                  const SizedBox(),
+                                ]
+                                else...[
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.red.shade800,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: Padding(
+                                      padding:   const EdgeInsets.all(10),
+                                      child: Text(
+                                        'Discount: $discount%',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13
                                         ),
-                                      ],
-
-                                      //wishlist
-                                      GestureDetector(
-                                        onTap: () async {
-                                          final messenger = ScaffoldMessenger.of(context);
-                                          await FirebaseFirestore
-                                              .instance
-                                              .collection('/userData')
-                                              .doc(FirebaseAuth.instance.currentUser!.uid).update({
-                                            'wishlist': FieldValue.arrayUnion([id])
-                                          });
-
-                                          messenger.showSnackBar(
-                                              const SnackBar(
-                                                  content: Text('Item added to Wishlist')
-                                              )
-                                          );
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.blueGrey,
-                                            borderRadius: BorderRadius.circular(5),
-                                          ),
-                                          child: const Padding(
-                                            padding:   EdgeInsets.all(7),
-                                            child: Text(
-                                              '+ wishlist',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  //Title
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, bottom: 5, left: 0, right: 5),
-                                    child: Text(
-                                      snapshot.data!.get('title'),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: Colors.grey.shade700
                                       ),
                                     ),
                                   ),
+                                ],
 
-                                  //Price
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "BDT ${discountCal.toStringAsFixed(0)}/-",
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 21.5,
+                                //wishlist
+                                GestureDetector(
+                                  onTap: () async {
+                                    final messenger = ScaffoldMessenger.of(context);
+                                    await FirebaseFirestore
+                                        .instance
+                                        .collection('/userData')
+                                        .doc(FirebaseAuth.instance.currentUser!.uid).update({
+                                      'wishlist': FieldValue.arrayUnion([id])
+                                    });
+
+                                    messenger.showSnackBar(
+                                        const SnackBar(
+                                            content: Text('Item added to Wishlist')
+                                        )
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.blueGrey,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: const Padding(
+                                      padding:   EdgeInsets.all(7),
+                                      child: Text(
+                                        '+ wishlist',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15
                                         ),
                                       ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      if(discount == 0.0)...[
-                                        const SizedBox(),
-                                      ]
-                                      else...[
-                                        Text(
-                                          "of ${price.toString()}/-",
-                                          style: const TextStyle(
-                                            //fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold,
-                                              decoration: TextDecoration.lineThrough
-                                          ),
-                                        ),
-                                      ]
-                                    ],
+                                    ),
                                   ),
+                                ),
+                              ],
+                            ),
 
-                                  //Rating & Sold
-                                  /*Padding(
+                            //Title
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 10, bottom: 5, left: 0, right: 5),
+                              child: Text(
+                                snapshot.data!.get('title'),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.grey.shade700
+                                ),
+                              ),
+                            ),
+
+                            //Price
+                            Row(
+                              children: [
+                                Text(
+                                  "BDT ${discountCal.toStringAsFixed(0)}/-",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 21.5,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                if(discount == 0.0)...[
+                                  const SizedBox(),
+                                ]
+                                else...[
+                                  Text(
+                                    "of ${price.toString()}/-",
+                                    style: const TextStyle(
+                                      //fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.lineThrough
+                                    ),
+                                  ),
+                                ]
+                              ],
+                            ),
+
+                            //Rating & Sold
+                            /*Padding(
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Row(
                                       children: [
@@ -512,132 +507,132 @@ class _ProductScreenState extends State<ProductScreen> {
                                     ),
                                   ),*/
 
-                                  // Description
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: Text(
-                                      snapshot.data!.get('description'),
-                                      style: const TextStyle(
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.w600
-                                      ),
-                                    ),
-                                  ),
-
-                                  //Show Sizes
-                                  if(sizes.isEmpty)...[const SizedBox()]
-                                  else...[
-                                    SizedBox(
-                                      height: 50,
-                                      width: double.infinity,
-                                      child: ListView.builder(
-                                        itemCount: sizes.length,
-                                        scrollDirection: Axis.horizontal,
-                                        itemBuilder: (context, index) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                sizeSelected = index;
-                                                sizeWarning = false;
-                                              });
-                                            },
-                                            child: Card(
-                                              color: sizeWarning == false ? _cardColor(index) : Colors.red,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(100)
-                                              ),//CircleBorder()
-                                              child: Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(top: 10, bottom: 10, right: 15, left: 15),
-                                                  child: Text(
-                                                    sizes[index],
-                                                    style: TextStyle(
-                                                      color: sizeSelected == index || sizeWarning
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 17,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  ],
-
-                                  // Quantity
-                                  if(quantityAvailable == 0)...[
-                                    const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Text(
-                                        '*Sold Out',
-                                        style: TextStyle(
-                                            fontSize: 22,
-                                            fontFamily: 'Urbanist',
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.amber
-                                        ),
-                                      ),
-                                    ),
-                                  ]
-                                  else...[
-                                    const Padding(
-                                      padding: EdgeInsets.only(top: 10, bottom: 5),
-                                      child: Text(
-                                        'Select Quantity',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 39,//42
-                                      width: MediaQuery.of(context).size.width * 0.41,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.shade300,
-                                          borderRadius: BorderRadius.circular(15),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(Icons.remove),
-                                              onPressed: () {
-                                                // Decrement quantity
-                                                setState(() {
-                                                  if (quantity != 1) {
-                                                    quantity--;
-                                                  }
-                                                });
-                                              },
-                                            ),
-                                            Text(quantity.toString()),
-                                            IconButton(
-                                              icon: const Icon(Icons.add),
-                                              onPressed: () {
-                                                // Increment quantity
-                                                setState(() {
-                                                  quantity++;
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ],
+                            // Description
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Text(
+                                snapshot.data!.get('description'),
+                                style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w600
+                                ),
                               ),
                             ),
-                          ),
 
-                          //Store info Card
-                          /*FutureBuilder(
+                            //Show Sizes
+                            if(sizes.isEmpty)...[const SizedBox()]
+                            else...[
+                              SizedBox(
+                                height: 50,
+                                width: double.infinity,
+                                child: ListView.builder(
+                                  itemCount: sizes.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          sizeSelected = index;
+                                          sizeWarning = false;
+                                        });
+                                      },
+                                      child: Card(
+                                        color: sizeWarning == false ? _cardColor(index) : Colors.red,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(100)
+                                        ),//CircleBorder()
+                                        child: Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(top: 10, bottom: 10, right: 15, left: 15),
+                                            child: Text(
+                                              sizes[index],
+                                              style: TextStyle(
+                                                color: sizeSelected == index || sizeWarning
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 17,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                            ],
+
+                            // Quantity
+                            if(quantityAvailable == 0)...[
+                              const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  '*Sold Out',
+                                  style: TextStyle(
+                                      fontSize: 22,
+                                      fontFamily: 'Urbanist',
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.amber
+                                  ),
+                                ),
+                              ),
+                            ]
+                            else...[
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10, bottom: 5),
+                                child: Text(
+                                  'Select Quantity',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 39,//42
+                                width: MediaQuery.of(context).size.width * 0.41,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade300,
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.remove),
+                                        onPressed: () {
+                                          // Decrement quantity
+                                          setState(() {
+                                            if (quantity != 1) {
+                                              quantity--;
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      Text(quantity.toString()),
+                                      IconButton(
+                                        icon: const Icon(Icons.add),
+                                        onPressed: () {
+                                          // Increment quantity
+                                          setState(() {
+                                            quantity++;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    //Store info Card
+                    /*FutureBuilder(
                             future: FirebaseFirestore
                                 .instance
                                 .collection('/Admin Panel')
@@ -834,273 +829,249 @@ class _ProductScreenState extends State<ProductScreen> {
                             },
                           ),*/
 
-                          //Space At the BOTTOM
-                          const SizedBox(
-                            height: 70,
-                          ),
-                        ],
-                      );
-                    }
-                    else {
-                      return Center(
-                      child: Column(
-                        children: [
-                          SizedBox(height: MediaQuery.of(context).size.height*0.45,),
-                          const CircularProgressIndicator(),
-                        ],
-                      ),
-                    );
-                    }
-                  },
-                ),
-              ),
-            ),
+                    //Space At the BOTTOM
+                    const SizedBox(
+                      height: 70,
+                    ),
+                  ],
+                );
+              }
+              else {
+                return Center(
+                  child: Column(
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height*0.45,),
+                      const CircularProgressIndicator(),
+                    ],
+                  ),
+                );
+              }
+            },
           ),
+        ),
+      ),
+    );
+  }
 
-          // Add to Cart Button
-          FutureBuilder(
-            future: FirebaseFirestore.instance
-                .collection('Products')
-                .doc(id)
-                .get()
-                .then((value) => value),
-            builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-              if(snapshot.hasData){
-                var price = snapshot.data!.get('price');
-                var discount = snapshot.data!.get('discount');
-                double discountCal = (price / 100) * (100 - discount);
-                var quantityAvailable = snapshot.data!.get('quantityAvailable');
-                var shopID = snapshot.data!.get('Shop ID');
+  Widget floatingButtonWidget(String id) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 5),
+      child: SizedBox(
+        height: 80,
+        width: 130,
+        child: FutureBuilder(
+          future: FirebaseFirestore.instance
+              .collection('Products')
+              .doc(id)
+              .get()
+              .then((value) => value),
+          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if(snapshot.hasData){
+              //var price = snapshot.data!.get('price');
+              //var discount = snapshot.data!.get('discount');
+              //double discountCal = (price / 100) * (100 - discount);
+              var quantityAvailable = snapshot.data!.get('quantityAvailable');
+              var shopID = snapshot.data!.get('Shop ID');
 
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.070,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 5, bottom: 5, right: 30, left: 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Price',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.grey.shade600,
-                                  fontSize: 14
-                              ),
-                            ),
-                            Text(
-                              'BDT ${discountCal.toStringAsFixed(0)}',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 17
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.32,
-                          height: 42,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)
-                              ),
-                            ),
-                            onPressed: () async {
-                              final messenger = ScaffoldMessenger.of(context);
-                              final mediaQuery = MediaQuery.of(context);
+              return FittedBox(
+                child: FloatingActionButton.extended(
+                  onPressed: () async {
+                    final messenger = ScaffoldMessenger.of(context);
+                    final mediaQuery = MediaQuery.of(context);
 
-                              if(FirebaseAuth.instance.currentUser != null){
-                                setState(() {
-                                  sizeWarning = false;
-                                  variationWarning = false;
-                                });
-                                if(quantityAvailable == 0){
-                                  messenger.showSnackBar(
-                                    const SnackBar(content: Text('Product Got Sold Out'))
-                                  );
-                                }
-                                else{
-                                  if(sizeSelected == -1 && sizes.isNotEmpty){
-                                    setState(() {
-                                      sizeWarning = true;
-                                    });
-                                    ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Size')));
-                                  }
-                                  else if(variationSelected == -1){
-                                    setState(() {
-                                      variationWarning = true;
-                                    });
-                                    ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Variant')));
-                                  }
-                                  else{
-                                    String uid = FirebaseAuth.instance.currentUser!.uid;
+                    if(FirebaseAuth.instance.currentUser != null){
+                      setState(() {
+                        sizeWarning = false;
+                        variationWarning = false;
+                      });
+                      if(quantityAvailable == 0){
+                        messenger.showSnackBar(
+                            const SnackBar(content: Text('Product Got Sold Out'))
+                        );
+                      }
+                      else{
+                        if(sizeSelected == -1 && sizes.isNotEmpty){
+                          setState(() {
+                            sizeWarning = true;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Size')));
+                        }
+                        else if(variationSelected == -1){
+                          setState(() {
+                            variationWarning = true;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Select Variant')));
+                        }
+                        else{
+                          String uid = FirebaseAuth.instance.currentUser!.uid;
 
-                                    await FirebaseFirestore.instance.collection('userData/$uid/Cart/')
-                                        .doc()
-                                        .set({
-                                      //'1': FieldValue.arrayUnion(valuesToAdd)
-                                      'Shop ID': shopID,
-                                      'id': id,
-                                      'selectedSize': sizeSelected == -1 ? 'not applicable' : sizes[sizeSelected].toString(),
-                                      'variant': imageSliderDocID,
-                                      'quantity': quantity
-                                    });
+                          await FirebaseFirestore.instance.collection('userData/$uid/Cart/')
+                              .doc()
+                              .set({
+                            //'1': FieldValue.arrayUnion(valuesToAdd)
+                            'Shop ID': shopID,
+                            'id': id,
+                            'selectedSize': sizeSelected == -1 ? 'not applicable' : sizes[sizeSelected].toString(),
+                            'variant': imageSliderDocID,
+                            'quantity': quantity
+                          });
 
-                                    messenger.showSnackBar(
-                                        SnackBar(
-                                          content: GestureDetector(
-                                            onTap: (){
+                          messenger.showSnackBar(
+                              SnackBar(
+                                content: GestureDetector(
+                                  onTap: (){
+                                    /*Navigator.of(context).push(
+                                                MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),
+                                                )
+                                            );*/
+                                    Get.to(
+                                      BottomBar(bottomIndex: 2),
+                                      transition: Transition.rightToLeft,
+                                    );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: mediaQuery.size.width*0.4,
+                                        child: const Text(
+                                          'Congratulations 🎉, Your Product added to the cart.',
+                                          style: TextStyle(
+                                              overflow: TextOverflow.clip
+                                          ),
+                                        ),
+                                      ),
+                                      if(mounted)...[
+                                        SizedBox(
+                                          width: mediaQuery.size.width*0.4,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20)
+                                              ),
+                                            ),
+                                            onPressed: (){
                                               /*Navigator.of(context).push(
-                                                  MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),
-                                                  )
-                                              );*/
+                                                          MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
+                                                      );*/
                                               Get.to(
                                                 BottomBar(bottomIndex: 2),
                                                 transition: Transition.rightToLeft,
                                               );
+                                              /*BlocProvider.of<BottomBarBloc>(context)
+                                                  .add(IndexChange(currentIndex: 2));*/
                                             },
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                SizedBox(
-                                                  width: mediaQuery.size.width*0.4,
-                                                  child: const Text(
-                                                    'Congratulations 🎉, Your Product added to the cart.',
-                                                    style: TextStyle(
-                                                        overflow: TextOverflow.clip
-                                                    ),
-                                                  ),
-                                                ),
-                                                if(mounted)...[
-                                                  SizedBox(
-                                                    width: mediaQuery.size.width*0.4,
-                                                    child: ElevatedButton(
-                                                      style: ElevatedButton.styleFrom(
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(20)
-                                                        ),
-                                                      ),
-                                                      onPressed: (){
-                                                        /*Navigator.of(context).push(
-                                                            MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
-                                                        );*/
-                                                        Get.to(
-                                                          BottomBar(bottomIndex: 2),
-                                                          transition: Transition.rightToLeft,
-                                                        );
-                                                      },
-                                                      child: const Text(
-                                                        'Open Cart',
-                                                        style: TextStyle(
-                                                            fontFamily: 'Urbanist',
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 14.5
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ]
-                                              ],
+                                            child: const Text(
+                                              'Open Cart',
+                                              style: TextStyle(
+                                                  fontFamily: 'Urbanist',
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14.5
+                                              ),
                                             ),
                                           ),
-                                          duration: const Duration(seconds: 3),
                                         )
-                                    );
-                                  }
-                                }
-                              }else{
-                                messenger.showSnackBar(
-                                    SnackBar(
-                                      content: GestureDetector(
-                                        onTap: (){
+                                      ]
+                                    ],
+                                  ),
+                                ),
+                                duration: const Duration(seconds: 3),
+                              )
+                          );
+                        }
+                      }
+                    }
+                    else{
+                      messenger.showSnackBar(
+                          SnackBar(
+                            content: GestureDetector(
+                              onTap: (){
+                                /*Navigator.of(context).push(
+                                            MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
+                                        );*/
+                                Get.to(
+                                  BottomBar(bottomIndex: 2),
+                                  transition: Transition.rightToLeft,
+                                );
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: mediaQuery.size.width*0.4,
+                                    child: const Text(
+                                      'You\'re not logged in',
+                                      style: TextStyle(
+                                          overflow: TextOverflow.clip
+                                      ),
+                                    ),
+                                  ),
+                                  if(mounted)...[
+                                    SizedBox(
+                                      width: mediaQuery.size.width*0.4,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20)
+                                          ),
+                                        ),
+                                        onPressed: (){
                                           /*Navigator.of(context).push(
-                                              MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 2),)
-                                          );*/
+                                                      MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
+                                                  );*/
                                           Get.to(
-                                            BottomBar(bottomIndex: 2),
+                                            BottomBar(bottomIndex: 3),
                                             transition: Transition.rightToLeft,
                                           );
                                         },
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            SizedBox(
-                                              width: mediaQuery.size.width*0.4,
-                                              child: const Text(
-                                                'You\'re not logged in',
-                                                style: TextStyle(
-                                                    overflow: TextOverflow.clip
-                                                ),
-                                              ),
-                                            ),
-                                            if(mounted)...[
-                                              SizedBox(
-                                                width: mediaQuery.size.width*0.4,
-                                                child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(20)
-                                                    ),
-                                                  ),
-                                                  onPressed: (){
-                                                    /*Navigator.of(context).push(
-                                                        MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)
-                                                    );*/
-                                                    Get.to(
-                                                      BottomBar(bottomIndex: 3),
-                                                      transition: Transition.rightToLeft,
-                                                    );
-                                                  },
-                                                  child: const Text(
-                                                    'Log In',
-                                                    style: TextStyle(
-                                                        fontFamily: 'Urbanist',
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 14.5
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ]
-                                          ],
+                                        child: const Text(
+                                          'Log In',
+                                          style: TextStyle(
+                                              fontFamily: 'Urbanist',
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14.5
+                                          ),
                                         ),
                                       ),
-                                      duration: const Duration(seconds: 3),
                                     )
-                                );
-                              }
-                            },
-                            child: const Text(
-                                'Add to Cart',
-                              style: TextStyle(
-                                fontFamily: 'Urbanist',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.5
+                                  ]
+                                ],
                               ),
                             ),
-                          ),
-                        ),
-                      ],
+                            duration: const Duration(seconds: 3),
+                          )
+                      );
+                    }
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100.0),
+                  ),
+                  label: const Text(
+                    'Add To Cart',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15
                     ),
                   ),
-                );
-              }
-              else if(snapshot.connectionState == ConnectionState.waiting){
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width*0.4,
-                  child: const LinearProgressIndicator(),
-                );
-             }
-              else{
-                return const Text('Error Loading');
-              }
-            },
-          ),
-        ],
+                  icon: const Icon(
+                      Icons.shopping_cart_rounded
+                  ),
+                ),
+              );
+            }
+            else if(snapshot.connectionState == ConnectionState.waiting){
+              return SizedBox(
+                width: MediaQuery.of(context).size.width*0.4,
+                child: const LinearProgressIndicator(),
+              );
+            }
+            else{
+              return const Text('Error Loading');
+            }
+          },
+        ),
       ),
     );
   }
+
 }

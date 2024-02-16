@@ -125,11 +125,12 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
+    return PopScope(
+      onPopInvoked: (didPop) {
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 0)), (route) => false);
-        return Future.value(false);
+        //return Future.value(false);
       },
+      canPop: false,
       child: Scaffold(
         floatingActionButton: Visibility(
           visible: widget.keyword != null ? true : false,

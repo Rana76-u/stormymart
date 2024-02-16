@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../Blocks/Bottom Navigation Bloc/bottom_navigation_bloc.dart';
+import '../../Blocks/Bottom Navigation Bloc/bottom_navigation_events.dart';
 
-import '../../utility/bottom_nav_bar.dart';
-
-class CartLoginPage extends StatefulWidget {
+class CartLoginPage extends StatelessWidget {
   const CartLoginPage({super.key});
 
   @override
-  State<CartLoginPage> createState() => _CartLoginPageState();
-}
-
-class _CartLoginPageState extends State<CartLoginPage> {
-  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
+    return Scaffold(
+      body: Padding(
+        padding: MediaQuery.of(context).size.width >= 600 ?
+        EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.3) :
+        const EdgeInsets.symmetric(horizontal: 25),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Expanded(child: SizedBox()),
@@ -23,16 +22,14 @@ class _CartLoginPageState extends State<CartLoginPage> {
               'StormyMart',
               style: TextStyle(
                 fontSize: 25,
-                fontFamily: 'Urbanist',
                 fontWeight: FontWeight.w700,
               ),
             ),
             const Text(
               'Login to access the cart',
               style: TextStyle(
-                  fontSize: 19,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Urbanist'
+                fontSize: 19,
+                fontWeight: FontWeight.w800,
               ),
             ),
             const SizedBox(height: 10,),
@@ -45,12 +42,12 @@ class _CartLoginPageState extends State<CartLoginPage> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),));
+                  BlocProvider.of<BottomBarBloc>(context)
+                      .add(IndexChange(currentIndex: 3));
                 },
                 child: const Text(
                   'Go to Login Page',
                   style: TextStyle(
-                      fontFamily: 'Urbanist',
                       fontWeight: FontWeight.bold,
                       fontSize: 13
                   ),

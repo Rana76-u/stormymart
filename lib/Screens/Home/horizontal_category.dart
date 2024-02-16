@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stormymart/Components/custom_image.dart';
 import 'package:http/http.dart' as http;
+import 'package:stormymart/Screens/Home/show_all_hotdeals.dart';
 import '../../utility/globalvariable.dart';
 import '../Search/search.dart';
 
@@ -11,14 +12,14 @@ DateTime now = DateTime.now();
 DateTime offerEndDate = DateTime(now.year, now.month, now.day+2);
 Duration remainingDuration = offerEndDate.difference(now);
 
-class MostPupularCategory extends StatefulWidget {
-  const MostPupularCategory({super.key});
+class MostPopularCategory extends StatefulWidget {
+  const MostPopularCategory({super.key});
 
   @override
-  State<MostPupularCategory> createState() => _MostPupularCategoryState();
+  State<MostPopularCategory> createState() => _MostPopularCategoryState();
 }
 
-class _MostPupularCategoryState extends State<MostPupularCategory> {
+class _MostPopularCategoryState extends State<MostPopularCategory> {
 
   List<List<dynamic>> dataSets = [];
   int lengthOfFields = 0;
@@ -214,19 +215,35 @@ class HotDealsTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return  Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('Hot Deals',
+        const Text(
+            'Hot Deals',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 17,
                 fontFamily: 'Urbanist',
                 color: Color(0xFF212121)
             )
         ),
 
-        Expanded(child: SizedBox()),
+        GestureDetector(
+          onTap: () {
+            Get.to(
+              const ShowAllHotDeals(),
+              transition: Transition.fade,
+            );
+          },
+          child: const Text(
+            'See All',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                fontFamily: 'Urbanist'
+            ),
+          ),
+        ),
 
         /*SlideCountdownSeparated(
           duration: remainingDuration,//Duration(days: 2),

@@ -42,7 +42,7 @@ class ImageSlider extends StatelessWidget {
                     indicatorColor: Colors.amber,
                     indicatorBackgroundColor: Colors.grey,
                     onPageChanged: (value) {},
-                    autoPlayInterval: 5000,
+                    autoPlayInterval: 8000,
                     isLoop: true,
                     children: List.generate(images.length, (index) {
                       return /*Image.network( //Not Really Sure about Performance i think CustomImage is better at performance

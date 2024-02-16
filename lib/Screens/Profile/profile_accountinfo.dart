@@ -219,11 +219,12 @@ class _AccountInfoState extends State<AccountInfo> {
                             ),
                           ),
 
-                          const Text("E-Mail"),
+                          const Text("Additional E-Mail"),
                           SizedBox(
                             height: 50,
                             child: TextField(
                               controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -287,7 +288,7 @@ class _AccountInfoState extends State<AccountInfo> {
                             ),
                             child: TextField(
                               controller: phoneNumberController,
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.phone,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

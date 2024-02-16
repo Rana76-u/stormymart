@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
+import 'package:stormymart/Screens/Product%20Screen/product_screen.dart';
 import 'package:stormymart/Screens/Profile/Wishlists/wishlist.dart';
 
 class WishListBody extends StatefulWidget {
@@ -145,7 +147,8 @@ class _WishListBodyState extends State<WishListBody> {
               ),
             ],
           )
-          : Column(
+          : 
+      Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -202,99 +205,106 @@ class _WishListBodyState extends State<WishListBody> {
                         ),
                       ],
                     ),
-                    child: SizedBox(
-                      height: 170,
-                      width: double.infinity,
-                      child: Card(
-                        elevation: 0,
-                        child: Row(
-                          children: [
-                            //Image
-                            Padding(
-                              padding: const EdgeInsets.only(right: 12),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width*0.40 - 25,//150,
-                                height: 137,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 4,
-                                        color: Colors.transparent
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(
+                            () => ProductScreen(productId: wishListItemIds[index])
+                        );
+                      },
+                      child: SizedBox(
+                        height: 170,
+                        width: double.infinity,
+                        child: Card(
+                          elevation: 0,
+                          child: Row(
+                            children: [
+                              //Image
+                              Padding(
+                                padding: const EdgeInsets.only(right: 12),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width*0.40 - 25,//150,
+                                  height: 137,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 4,
+                                          color: Colors.transparent
+                                      ),
+                                      borderRadius: BorderRadius.circular(20)
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child:  Image.network(
+                                      productImages[index],
+                                      fit: BoxFit.cover,
                                     ),
-                                    borderRadius: BorderRadius.circular(20)
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child:  Image.network(
-                                    productImages[index],
-                                    fit: BoxFit.cover,
                                   ),
                                 ),
                               ),
-                            ),
-
-                            //Texts
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width*0.48,//200,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  //Title
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 25),
-                                    child: Text(
-                                      productTitles[index],
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.bold,
+                      
+                              //Texts
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width*0.48,//200,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //Title
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 25),
+                                      child: Text(
+                                        productTitles[index],
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-
-                                  //Price
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 5),
-                                    child: Text(
-                                      'Price: ${productPrices[index]} BDT',
-                                      style: const TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold
+                      
+                                    //Price
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5),
+                                      child: Text(
+                                        'Price: ${productPrices[index]} BDT',
+                                        style: const TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold
+                                        ),
                                       ),
                                     ),
-                                  ),
-
-                                  //Discount
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 2),
-                                    child: Text(
-                                      'Discount: ${productDiscounts[index]}',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black54
+                      
+                                    //Discount
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 2),
+                                      child: Text(
+                                        'Discount: ${productDiscounts[index]}',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black54
+                                        ),
                                       ),
                                     ),
-                                  ),
-
-                                  //Rating
-                                  /*Padding(
-                                    padding: const EdgeInsets.only(top: 2),
-                                    child: Text(
-                                      'Rating: ${productRatings[index]}',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black54
+                      
+                                    //Rating
+                                    /*Padding(
+                                      padding: const EdgeInsets.only(top: 2),
+                                      child: Text(
+                                        'Rating: ${productRatings[index]}',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black54
+                                        ),
                                       ),
-                                    ),
-                                  ),*/
-                                ],
+                                    ),*/
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stormymart/Blocks/Bottom%20Navigation%20Bloc/bottom_navigation_bloc.dart';
+import 'package:stormymart/Blocks/Cart%20Bloc/cart_bloc.dart';
 import 'package:stormymart/Components/firebase_api.dart';
 import 'package:stormymart/firebase_options.dart';
 import 'package:stormymart/utility/bottom_nav_bar.dart';
@@ -34,20 +37,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'StormyMart',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'Urbanist'
-      ),
-      //home: BottomBar(bottomIndex: 0),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashFuturePage(),
-        // '/': (context) => SplashFuturePage(),
-        '/home': (context) => BottomBar(bottomIndex: 0),
-      },
-      debugShowCheckedModeBanner: false,
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => BottomBarBloc(),),
+          BlocProvider(create: (context) => CartBloc(),),
+        ],
+        child: GetMaterialApp(
+          title: 'StormyMart',
+          theme: ThemeData(
+              primarySwatch: Colors.blue,
+              fontFamily: 'Urbanist'
+          ),
+          //home: BottomBar(bottomIndex: 0),
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const SplashFuturePage(),
+            // '/': (context) => SplashFuturePage(),
+            '/home': (context) => BottomBar(bottomIndex: 0),
+          },
+          debugShowCheckedModeBanner: false,
+        )
     );
   }
 }

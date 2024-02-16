@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:stormymart/Screens/Chat%20Screen/chat_screen.dart';
 import 'package:stormymart/Screens/Home/carousel_slider.dart';
 import 'package:stormymart/Screens/Home/horizontal_category.dart';
@@ -12,7 +13,6 @@ import 'package:stormymart/utility/bottom_nav_bar.dart';
 import 'package:stormymart/utility/globalvariable.dart';
 import 'package:get/get.dart';
 import 'package:transparent_image/transparent_image.dart';
-import '../../Components/searchfield.dart';
 import '../Search/search.dart';
 
 /*class HomePage extends StatefulWidget {
@@ -66,15 +66,11 @@ class HomePage extends StatelessWidget {
     navigator;
   }*/
 
-  Future<bool> _onWillPop() async {
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
-    const padding = EdgeInsets.fromLTRB(24, 0, 24, 0);
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    const padding = EdgeInsets.only(left: 10, right: 10);
+    return PopScope(
+      canPop: false,
       child: Scaffold(
         drawer: _drawer(context),
         body: CustomScrollView( //RefreshIndicator just above here
@@ -256,9 +252,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _appbar(BuildContext context){
-    return SliverPadding(
-      padding: const EdgeInsets.all(0),
-      sliver: SliverAppBar(
+    return SliverAppBar(
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
@@ -300,9 +294,8 @@ class HomePage extends StatelessWidget {
                   );
                 }
               },
-              child: Icon(
-                Icons.chat_bubble_rounded,
-                color: Colors.grey.shade500,
+              child: const Icon(
+                MingCute.comment_2_line,
               ),
             ),
 
@@ -315,13 +308,16 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Padding(
-                padding: EdgeInsets.only(left: 5),
-                child: Text(
+                padding: EdgeInsets.only(left: 12),
+                child: Icon(
+                  MingCute.copper_coin_line,
+                  color: Colors.yellow,
+                ), /*Text(
                   "🪙",
                   style: TextStyle(
                     fontSize: 22.5,
                   ),
-                ),
+                )*/
               )
               //Discontinued due to performance lag issue
               /*Image.asset(
@@ -332,8 +328,7 @@ class HomePage extends StatelessWidget {
           ],
         ),
         //flexibleSpace: HomePageHeader(),
-      ),
-    );
+      );
   }
 
   Widget _buildBody(BuildContext context){
@@ -343,21 +338,28 @@ class HomePage extends StatelessWidget {
       const EdgeInsets.symmetric(horizontal: 0), //EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1)
       child: const Column(
         children: [
-          SizedBox(height: 10,),
+          /*SizedBox(height: 10,),
           SearchField(),
-          SizedBox(height: 10,),
+          SizedBox(height: 10,),*/
           ImageSlider(),
           SizedBox(height: 10,),
           //Replace with Carosoul
           //GridViewPart(),
-          HorizontalSlider(),
-          SizedBox(height: 10,),
-          HotDealsTitle(),
-          HotDeals(),
-          RecommendedForYouTitle(),
-          SizedBox(height: 10,),
-          //MostPupularCategory(),
-          RecommendedForYou(),
+          Padding(
+            padding: EdgeInsets.only(left: 4, right: 4),
+            child: Column(
+              children: [
+                HorizontalSlider(),
+                SizedBox(height: 10,),
+                HotDealsTitle(),
+                HotDeals(),
+                RecommendedForYouTitle(),
+                SizedBox(height: 10,),
+                //MostPopularCategory(),
+                RecommendedForYou(),
+              ],
+            ),
+          ),
           SizedBox(height: 100,)
         ],
       ),

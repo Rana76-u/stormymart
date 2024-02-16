@@ -35,7 +35,7 @@ class DeliveryContainer extends StatelessWidget {
                   child: const Text(
                     'Inside Dhaka 1-3 Days, \nOutside Dhaka 2-4 Days',
                     style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
                       overflow: TextOverflow.clip
                     ),

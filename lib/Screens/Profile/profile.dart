@@ -376,7 +376,7 @@ class _ProfileState extends State<Profile> {
                           onPressed: () {
                             //Authservice().signOut();
                             try{
-                              Authservice().signOut();
+                              AuthService().signOut();
                               setState(() {
                                 Navigator.of(context).push(
                                     MaterialPageRoute(builder: (context) => BottomBar(bottomIndex: 3),)

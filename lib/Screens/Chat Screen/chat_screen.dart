@@ -27,10 +27,10 @@ class ChatScreen extends StatefulWidget {
   });
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  ChatScreenState createState() => ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class ChatScreenState extends State<ChatScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _messageController = TextEditingController();
@@ -436,7 +436,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         _sendImage();
                       }
                       else{
-                        if (_messageController.text.isNotEmpty) {
+                        if (_messageController.text.trim().isNotEmpty) {
                           _sendMessage(_messageController.text);
                         }
                       }

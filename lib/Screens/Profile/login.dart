@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                 });
 
                //await Authservice().signInWithGoogle();
-                Authservice().signInWithGoogle().then((_) {
+                AuthService().signInWithGoogle().then((_) {
                   setState(() {
                     isLoading = false;
                     Navigator.of(context).push(

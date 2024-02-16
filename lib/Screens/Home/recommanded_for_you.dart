@@ -36,7 +36,7 @@ class RecommendedForYou extends StatelessWidget {
           return Expanded(
             flex: 0,
             child: ResponsiveGridList(
-              horizontalGridSpacing: 0, // Horizontal space between grid items
+              horizontalGridSpacing: 10, // Horizontal space between grid items
               verticalGridSpacing: 0, // Vertical space between grid items
               horizontalGridMargin: 0, // Horizontal space around the grid
               verticalGridMargin: 0, // Vertical space around the grid
@@ -54,183 +54,180 @@ class RecommendedForYou extends StatelessWidget {
                     if(snapshot.hasData){
                       DocumentSnapshot product = snapshot.data!.docs[index];
                       double discountCal = (product.get('price') / 100) * (100 - product.get('discount'));
-                      return Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: GestureDetector(
-                            onTap: () {
-                              /*Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => ProductScreen(productId: product.id))
-                          );*/
-                              Get.to(
-                                ProductScreen(productId: product.id),
-                                transition: Transition.fade,
-                              );
-                            },
-                            child: SizedBox(
-                              //width: 200,
-                              width: MediaQuery.of(context).size.width*0.48,
-                              height: 300,
-                              child: Stack(
-                                children: [
-                                  //Pulls image from variation 1's 1st image
-                                  FutureBuilder(
-                                    future: FirebaseFirestore
-                                        .instance
-                                        .collection('/Products/${product.id}/Variations').get(),
-                                    builder: (context, snapshot) {
-                                      if(snapshot.hasData){
-                                        String docID = snapshot.data!.docs.first.id;
-                                        return FutureBuilder(
-                                          future: FirebaseFirestore
-                                              .instance
-                                              .collection('/Products/${product.id}/Variations').doc(docID).get(),
-                                          builder: (context, imageSnapshot) {
-                                            if(imageSnapshot.hasData){
-                                              return CustomImage(
-                                                imageSnapshot.data?['images'][0],
-                                                radius: 10,
-                                                width: 200,
-                                                height: 210,//210
-                                              );
-                                            }else if(imageSnapshot.connectionState == ConnectionState.waiting){
-                                              return const Center(
-                                                child: LinearProgressIndicator(),
-                                              );
-                                            }
-                                            else{
-                                              return const Center(
-                                                child: Text(
-                                                  "Nothings Found",
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.grey
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                          },
-                                        );
-                                      }
-                                      else if(snapshot.connectionState == ConnectionState.waiting){
-                                        return const Center(
-                                          child: LinearProgressIndicator(),
-                                        );
-                                      }
-                                      else{
-                                        return const Center(
-                                          child: Text(
-                                            "Nothings Found",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey
+                      return GestureDetector(
+                        onTap: () {
+                          /*Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => ProductScreen(productId: product.id))
+                      );*/
+                          Get.to(
+                            ProductScreen(productId: product.id),
+                            transition: Transition.fade,
+                          );
+                        },
+                        child: SizedBox(
+                          //width: 200,
+                          width: MediaQuery.of(context).size.width*0.48,
+                          height: 300,
+                          child: Stack(
+                            children: [
+                              //Pulls image from variation 1's 1st image
+                              FutureBuilder(
+                                future: FirebaseFirestore
+                                    .instance
+                                    .collection('/Products/${product.id}/Variations').get(),
+                                builder: (context, snapshot) {
+                                  if(snapshot.hasData){
+                                    String docID = snapshot.data!.docs.first.id;
+                                    return FutureBuilder(
+                                      future: FirebaseFirestore
+                                          .instance
+                                          .collection('/Products/${product.id}/Variations').doc(docID).get(),
+                                      builder: (context, imageSnapshot) {
+                                        if(imageSnapshot.hasData){
+                                          return CustomImage(
+                                            imageSnapshot.data?['images'][0],
+                                            radius: 10,
+                                            width: 200,
+                                            height: 210,//210
+                                          );
+                                        }else if(imageSnapshot.connectionState == ConnectionState.waiting){
+                                          return const Center(
+                                            child: LinearProgressIndicator(),
+                                          );
+                                        }
+                                        else{
+                                          return const Center(
+                                            child: Text(
+                                              "Nothings Found",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  ),
-
-                                  //Discount %Off
-                                  if(product.get('discount') != 0)...[
-                                    Positioned(
-                                      top: 10,
-                                      left: 10,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.red.shade800,
-                                          borderRadius: BorderRadius.circular(15),
-                                        ),
-                                        child: Padding(
-                                          padding:   const EdgeInsets.all(7),
-                                          child: Text(
-                                            'Discount: ${product.get('discount')}%',
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 11
-                                            ),
-                                          ),
+                                          );
+                                        }
+                                      },
+                                    );
+                                  }
+                                  else if(snapshot.connectionState == ConnectionState.waiting){
+                                    return const Center(
+                                      child: LinearProgressIndicator(),
+                                    );
+                                  }
+                                  else{
+                                    return const Center(
+                                      child: Text(
+                                        "Nothings Found",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey
                                         ),
                                       ),
-                                    ),
-                                  ],
-
-                                  //Title
-                                  Positioned(
-                                    top: 220,
-                                    left: 5,
-                                    child: Text(
-                                      product.get('title'),
-                                      style: const TextStyle(
-                                          overflow: TextOverflow.clip,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14,
-                                          color: Colors.black45//darker
-                                      ),
-                                    ),
-                                  ),
-
-                                  //price
-                                  Positioned(
-                                      top: 240,
-                                      left: 5,
-                                      child: Row(
-                                        children: [
-                                          /*SvgPicture.asset(
-                                        "assets/icons/taka.svg",
-                                        width: 17,
-                                        height: 17,
-                                      ),*/
-                                          Text(
-                                            "Tk ${discountCal.toStringAsFixed(2)}/-",
-                                            maxLines: 1,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w900,
-                                                fontSize: 16,
-                                                color: textColor),
-                                          ),
-                                        ],
-                                      )
-                                  ),
-
-                                  //Rating & Sold Amount
-                                  /*Positioned(
-                                top: 260,
-                                left: 2,
-                                child:  Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                      size: 15,
-                                    ),
-                                    const SizedBox(width: 3,),
-                                    //Rating
-                                    Text(
-                                      product.get('rating').toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13,
-                                          color: Colors.grey.shade400//darker
-                                      ),
-                                    ),
-                                    const SizedBox(width: 20,),
-                                    //Sold
-                                    Text(
-                                      "${product.get('sold').toString()} Sold",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13,
-                                          color: Colors.grey.shade400//darker
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),*/
-                                ],
+                                    );
+                                  }
+                                },
                               ),
+
+                              //Discount %Off
+                              if(product.get('discount') != 0)...[
+                                Positioned(
+                                  top: 10,
+                                  left: 10,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.red.shade800,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: Padding(
+                                      padding:   const EdgeInsets.all(7),
+                                      child: Text(
+                                        'Discount: ${product.get('discount')}%',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 11
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+
+                              //Title
+                              Positioned(
+                                top: 220,
+                                left: 5,
+                                child: Text(
+                                  product.get('title'),
+                                  style: const TextStyle(
+                                      overflow: TextOverflow.clip,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
+                                      color: Colors.black45//darker
+                                  ),
+                                ),
+                              ),
+
+                              //price
+                              Positioned(
+                                  top: 240,
+                                  left: 5,
+                                  child: Row(
+                                    children: [
+                                      /*SvgPicture.asset(
+                                    "assets/icons/taka.svg",
+                                    width: 17,
+                                    height: 17,
+                                  ),*/
+                                      Text(
+                                        "Tk ${discountCal.toStringAsFixed(2)}/-",
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w900,
+                                            fontSize: 16,
+                                            color: textColor),
+                                      ),
+                                    ],
+                                  )
+                              ),
+
+                              //Rating & Sold Amount
+                              /*Positioned(
+                            top: 260,
+                            left: 2,
+                            child:  Row(
+                              children: [
+                                const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                  size: 15,
+                                ),
+                                const SizedBox(width: 3,),
+                                //Rating
+                                Text(
+                                  product.get('rating').toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                      color: Colors.grey.shade400//darker
+                                  ),
+                                ),
+                                const SizedBox(width: 20,),
+                                //Sold
+                                Text(
+                                  "${product.get('sold').toString()} Sold",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                      color: Colors.grey.shade400//darker
+                                  ),
+                                ),
+                              ],
                             ),
-                          )
+                          ),*/
+                            ],
+                          ),
+                        ),
                       );
                     }
                     else{
@@ -254,7 +251,6 @@ class RecommendedForYou extends StatelessWidget {
   }
 }
 
-
 class RecommendedForYouTitle extends StatelessWidget {
   const RecommendedForYouTitle({super.key});
 
@@ -264,7 +260,7 @@ class RecommendedForYouTitle extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            'Recommanded For You',
+            'Recommended For You',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 17,
@@ -287,7 +283,7 @@ class RecommendedForYouTitle extends StatelessWidget {
               'See All',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 17,
+                  fontSize: 15,
                   fontFamily: 'Urbanist'
               ),
             ),
